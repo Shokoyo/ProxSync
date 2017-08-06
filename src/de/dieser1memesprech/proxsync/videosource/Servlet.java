@@ -27,7 +27,7 @@ public class Servlet extends HttpServlet {
             out.println("<html>");
             out.println("<head>");
             out.println("<title>Prox-Sync</title>");
-            out.println("</head");
+            out.println("</head>");
             out.println("<body>");
             out.println(player);
             out.println("</body>");
