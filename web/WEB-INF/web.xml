@@ -14,6 +14,6 @@
 </servlet>
 <servlet-mapping>
 <servlet-name>proxSync</servlet-name>
-<url-pattern>/ProxSync_war_exploded/Servlet/*</url-pattern>  <!-- This is the URL of the servlet. -->
+<url-pattern>/proxSync/*</url-pattern>  <!-- This is the URL of the servlet. -->
 </servlet-mapping>
 </web-app>

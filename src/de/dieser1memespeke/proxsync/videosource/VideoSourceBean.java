@@ -1,9 +1,9 @@
 package de.dieser1memespeke.proxsync.videosource;
 
 
-import javax.faces.bean.ManagedBean;
+import javax.ejb.Stateless;
 
-@ManagedBean
+@Stateless
 public class VideoSourceBean {
 
     public String buildPlayer(String url) {
