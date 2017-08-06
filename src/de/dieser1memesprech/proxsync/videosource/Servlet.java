@@ -26,6 +26,8 @@ public class Servlet extends HttpServlet {
         try {
             out.println("<html>");
             out.println("<head>");
+            out.println("<link href=\"http://vjs.zencdn.net/6.2.4/video-js.css\" rel=\"stylesheet\">");
+            out.println("<script src=\"http://vjs.zencdn.net/6.2.4/video.js\"></script>");
             out.println("<title>Prox-Sync</title>");
             out.println("</head>");
             out.println("<body>");

@@ -3,6 +3,6 @@
  */
 var myPlayer = videojs('my-player');
 myPlayer.ready(function() {
-myPlayer.volume(0.5);
-myPlayer.play();
+  myPlayer.volume(0.1);
+  myPlayer.play();
 });

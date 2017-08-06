@@ -10,7 +10,6 @@ public class VideoSourceBean {
         return  "<video id=\"my-player\" class=\"video-js\" controls preload=\"auto\" width=\"640\" height=\"264\">\n" +
                 "<source src=\"" + url + "\" type=\"video/mp4\">\n" +
                 "</video>\n" +
-                "<script src=\"http://vjs.zencdn.net/6.2.4/video.js\"></script>" +
                 "<script src=\"res/player-script.js\"></script>";
     }
 }
