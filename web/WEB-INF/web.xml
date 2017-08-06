@@ -10,7 +10,7 @@
     </session-config>
 <servlet>
     <servlet-name>proxSync</servlet-name>
-    <servlet-class>de.dieser1memespeke.proxsync.videosource.Servlet</servlet-class>
+    <servlet-class>de.dieser1memesprech.proxsync.videosource.Servlet</servlet-class>
 </servlet>
 <servlet-mapping>
 <servlet-name>proxSync</servlet-name>

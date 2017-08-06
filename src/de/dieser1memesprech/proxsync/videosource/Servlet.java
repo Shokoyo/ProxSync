@@ -1,4 +1,4 @@
-package de.dieser1memespeke.proxsync.videosource;
+package de.dieser1memesprech.proxsync.videosource;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -27,6 +27,7 @@ public class Servlet extends HttpServlet {
             out.println("<html>");
             out.println("<head>");
             out.println("<title>Prox-Sync</title>");
+            out.println("</head");
             out.println("<body>");
             out.println(player);
             out.println("</body>");

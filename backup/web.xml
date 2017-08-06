@@ -1,7 +1,7 @@
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
     <servlet>
         <servlet-name>ProxSync</servlet-name>
-        <servlet-class>de.dieser1memespeke.proxsync.videosource.Servlet</servlet-class>
+        <servlet-class>de.dieser1memesprech.proxsync.videosource.Servlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ProxSync</servlet-name>
