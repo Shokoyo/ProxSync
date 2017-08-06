@@ -23,5 +23,6 @@
     <orderEntry type="library" scope="PROVIDED" name="GlassFish 4.1.2 - Batch Applications" level="application_server_libraries" />
     <orderEntry type="library" scope="PROVIDED" name="GlassFish 4.1.2 - JSF" level="application_server_libraries" />
     <orderEntry type="library" name="Java EE 6-Java EE 6" level="project" />
+    <orderEntry type="library" name="javaee-api-7.0" level="project" />
   </component>
 </module>
