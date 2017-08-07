@@ -1,49 +1,56 @@
 package de.dieser1memesprech.proxsync.websocket;
 
-import de.dieser1memesprech.proxsync.user.User;
+import de.dieser1memesprech.proxsync.user.Room;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.json.JsonObject;
 import javax.websocket.Session;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 
 @ApplicationScoped
 public class UserSessionHandler {
     private final Set<Session> sessions = new HashSet<Session>();
-    private final Set<User> users = new HashSet<User>();
+    private static UserSessionHandler instance;
 
-    public void addSession(Session session) {
+    private UserSessionHandler() {}
+
+    public static UserSessionHandler getInstance() {
+        if(instance == null) {
+            instance = new UserSessionHandler();
+        }
+        return instance;
+    }
+
+    public void addSession(javax.websocket.Session session) {
         sessions.add(session);
     }
 
-    public void removeSession(Session session) {
+    public void removeSession(javax.websocket.Session session) {
         sessions.remove(session);
     }
 
-    public List<User> getUsers() {
-        return new ArrayList<User>(users);
+    public List<Session> getSessions() {
+        return new ArrayList<Session>(sessions);
     }
 
-    public void addUser(User user) {
+    public void addUser(Session session) {
     }
 
     public void removeUser(int id) {
     }
 
-    private User getUserById(int id) {
-        return null;
+    public void sendToRoom(JsonObject message, Room room) {
+        for(Session s: room.getSessions()) {
+            sendToSession(s,message);
+        }
     }
 
-    private JsonObject createAddMessage(User user) {
-        return null;
-    }
-
-    private void sendToAllConnectedSessions(JsonObject message) {
-    }
-
-    private void sendToSession(Session session, JsonObject message) {
+    public void sendToSession(javax.websocket.Session session, JsonObject message) {
+        try {
+            session.getBasicRemote().sendText(message.toString());
+        } catch (IOException ex) {
+            sessions.remove(session);
+        }
     }
 }
