@@ -84,6 +84,13 @@ public class UserWebSocket {
                                 .build();
                         RoomHandler.getInstance().mapSession(session, r);
                         UserSessionHandler.getInstance().sendToSession(session, messageJson);
+                        if(r.getUrl()!=null && !"".equals(r.getUrl())) {
+                            JsonObject messageJsonUrl = provider.createObjectBuilder()
+                                    .add("action", "video")
+                                    .add("url", r.getUrl())
+                                    .build();
+                            UserSessionHandler.getInstance().sendToRoom(messageJsonUrl, r);
+                        }
                     }
                 }
                 if(!found) {

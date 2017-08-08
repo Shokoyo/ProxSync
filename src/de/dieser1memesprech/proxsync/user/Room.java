@@ -133,4 +133,6 @@ public class Room {
     public int getId() {
         return id;
     }
+
+    public String getUrl() { return video; }
 }
