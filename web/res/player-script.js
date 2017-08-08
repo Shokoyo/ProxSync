@@ -59,7 +59,6 @@ function createRoom() {
 }
 function joinRoom() {
     if (!roomJoined) {
-        roomJoined = true;
         isOwner = false;
         var id = document.getElementById("room-id-in").value;
         var userAction = {
@@ -69,6 +68,10 @@ function joinRoom() {
         socket.send(JSON.stringify(userAction));
         hidePlayButtons();
     }
+}
+
+function leaveRoom() {
+
 }
 
 function loadVideo() {
@@ -104,7 +107,13 @@ function onMessage(event) {
         myPlayer.src(eventJSON.url);
     }
     if (eventJSON.action === "roomID") {
-        document.getElementById("room-id-out").innerHTML = "Room ID: " + eventJSON.id;
+        if(eventJSON.id === "-1") {
+            document.getElementById("room-id-out").innerHTML = "Room ID: invalid";
+            roomJoined = false;
+        } else {
+            document.getElementById("room-id-out").innerHTML = "Room ID: " + eventJSON.id;
+            roomJoined = true;
+        }
     }
 }
 

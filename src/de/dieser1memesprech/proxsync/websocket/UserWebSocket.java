@@ -32,6 +32,10 @@ public class UserWebSocket {
 
     @OnClose
     public void close(Session session) {
+        Room r = RoomHandler.getInstance().getRoomBySession(session);
+        if(r != null) {
+            r.removeSession(session);
+        }
         UserSessionHandler.getInstance().removeSession(session);
     }
 
@@ -45,9 +49,13 @@ public class UserWebSocket {
         JsonReader reader = Json.createReader(new StringReader(message));
         JsonObject jsonMessage = reader.readObject();
 
+
         if ("create".equals(jsonMessage.getString("action"))) {
-            Room r = new Room();
-            r.addSession(session);
+            Room old = RoomHandler.getInstance().getRoomBySession(session);
+            if(old != null) {
+                old.removeSession(session);
+            }
+            Room r = new Room(session);
             JsonProvider provider = JsonProvider.provider();
             JsonObject messageJson = provider.createObjectBuilder()
                     .add("action", "roomID")
@@ -58,13 +66,33 @@ public class UserWebSocket {
         }
 
         if ("join".equals(jsonMessage.getString("action"))) {
+            Room old = RoomHandler.getInstance().getRoomBySession(session);
+            if(old != null) {
+                old.removeSession(session);
+            }
             try {
                 int id = Integer.parseInt(jsonMessage.getString("id"));
+                boolean found = false;
                 for (Room r : RoomHandler.getInstance().getRooms()) {
                     if (r.getId() == id) {
+                        found = true;
                         r.addSession(session);
+                        JsonProvider provider = JsonProvider.provider();
+                        JsonObject messageJson = provider.createObjectBuilder()
+                                .add("action", "roomID")
+                                .add("id", r.getId())
+                                .build();
                         RoomHandler.getInstance().mapSession(session, r);
+                        UserSessionHandler.getInstance().sendToSession(session, messageJson);
                     }
+                }
+                if(!found) {
+                    JsonProvider provider = JsonProvider.provider();
+                    JsonObject messageJson = provider.createObjectBuilder()
+                            .add("action", "roomID")
+                            .add("id", "-1")
+                            .build();
+                    UserSessionHandler.getInstance().sendToSession(session, messageJson);
                 }
             } catch (NumberFormatException e) {
 
@@ -110,6 +138,14 @@ public class UserWebSocket {
                 }
             }
         }
+
+        if("leave".equals(jsonMessage.getString("actuib"))) {
+            Room old = RoomHandler.getInstance().getRoomBySession(session);
+            if(old != null) {
+                old.removeSession(session);
+            }
+        }
+
         reader.close();
     }
 }
