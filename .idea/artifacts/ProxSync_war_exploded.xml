@@ -1,18 +1,22 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="ProxSync:war exploded">
-    <output-path>$PROJECT_DIR$/out/artifacts/ProxSync_war_exploded</output-path>
+    <output-path>$PROJECT_DIR$/target/ProxSync-1.0-SNAPSHOT</output-path>
     <root id="root">
-      <element id="javaee-facet-resources" facet="ProxSync/web/Web" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="ProxSync" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="PrimeFaces-5.2" />
-          <element id="library" level="project" name="Jersey-2.2" />
-          <element id="library" level="project" name="Mojarra-2.2.1" />
+          <element id="library" level="project" name="Maven: org.glassfish:javax.json:1.0.4" />
+          <element id="library" level="project" name="Maven: javax:javaee-api:7.0" />
+          <element id="library" level="project" name="Maven: com.sun.mail:javax.mail:1.5.0" />
+          <element id="library" level="project" name="Maven: javax.activation:activation:1.1" />
         </element>
       </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/target/ProxSync-1.0-SNAPSHOT/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="javaee-facet-resources" facet="ProxSync/web/Web" />
     </root>
   </artifact>
 </component>
