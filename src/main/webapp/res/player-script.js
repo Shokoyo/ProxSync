@@ -40,6 +40,7 @@ myPlayer.on('play', handlePlayEvent);
 function hideVideoURL() {
     document.getElementById("url").style.display = 'none';
     document.getElementById("url-button").style.display = 'none';
+    document.getElementById("intro-button").style.display = 'none';
 }
 
 function hidePlayButtons() {
@@ -49,7 +50,6 @@ function hidePlayButtons() {
 }
 
 myPlayer.ready(function () {
-    myPlayer.src("http://vjs.zencdn.net/v/oceans.mp4");
     myPlayer.volume(0.1);
 });
 
@@ -63,6 +63,7 @@ function createRoom() {
         socket.send(JSON.stringify(userAction));
         document.getElementById("url").style.display = '';
         document.getElementById("url-button").style.display = '';
+        document.getElementById("intro-button").style.display = '';
     }
 }
 function joinRoom() {
@@ -74,7 +75,6 @@ function joinRoom() {
             id: id
         };
         socket.send(JSON.stringify(userAction));
-        hidePlayButtons();
     }
 }
 
@@ -99,6 +99,11 @@ function onMessage(event) {
         sendBufferedInd();
         syncing = false;
     }
+    if(eventJSON.action === "stop") {
+        myPlayer.pause();
+        syncing = false;
+        sendBufferedInd();
+    }
     if (eventJSON.action === "play") {
         if (!syncing) {
             myPlayer.play();
@@ -112,25 +117,48 @@ function onMessage(event) {
         sendBufferedInd();
     }
     if (eventJSON.action === "video") {
-        myPlayer.src(eventJSON.url);
+        var SourceString = eventJSON.url;
+        var SourceObject;
+        if(SourceString.indexOf(".mp4") !== -1) {
+            SourceObject = {src: SourceString, type: 'video/mp4'}
+        } else {
+            SourceObject = {src: SourceString, type: 'video/webm'}
+        }
+        myPlayer.src(SourceObject);
+        syncing = true;
+        setTimeout(myPlayer.play,20);
+        setTimeout(function() { syncing = false; }, 20);
+        setTimeout(myPlayer.pause,20);
     }
     if (eventJSON.action === "roomID") {
-        if(eventJSON.id === "-1") {
+        if (eventJSON.id === "-1") {
             document.getElementById("room-id-out").innerHTML = "Room ID: invalid";
             roomJoined = false;
         } else {
+            if (!isOwner) {
+                hidePlayButtons();
+            }
             document.getElementById("room-id-out").innerHTML = "Room ID: " + eventJSON.id;
             roomJoined = true;
         }
     }
+    if(eventJSON.action === "debug") {
+        document.getElementById("debug-out").innerHTML = eventJSON.message;
+    }
+}
+
+function skipIntro() {
+    var currentTime = myPlayer.currentTime();
+    myPlayer.currentTime(currentTime + 80);
+    myPlayer.pause();
+    setTimeout(handlePlayEvent,500);
+    setTimeout(handlePlayEvent,1000);
 }
 
 function sendBufferedInd() {
     var userAction = {
         action: "bufferedIndication",
-        current: myPlayer.currentTime(),
-        buffered: myPlayer.bufferedEnd(),
-        percentage: myPlayer.bufferedPercent()
+        readyState: myPlayer.readyState()
     };
     socket.send(JSON.stringify(userAction));
 }
