@@ -14,16 +14,16 @@
     <title>Prox-Sync</title>
 </head>
 <body>
-<h3>This is ProxSync Alpha 0.0.0.0.1</h3>
+<h3>This is ProxSync Alpha 0.0.0.0.2_1</h3>
 <video id="my-player" class="video-js" controls preload="auto" width="853" height="480" data-setup='{}'>
 </video>
 <p id="room-id-out">Room ID: </p>
-
+<p id="debug-out"></p>
 <button onclick="createRoom()">Host a room</button><br>
 <input type="text" id="room-id-in"><button onclick="joinRoom()">Join room</button>
 <br>
-<input type="text" id="url">
-<button onclick="loadVideo()" id="url-button">Load Video URL</button><br>
+<input type="text" id="url"><button onclick="loadVideo()" id="url-button">Load Video URL</button><br>
+<button onclick="skipIntro()" id="intro-button">Skip OP/ED</button>
 <script src="res/player-script.js"></script>
 </body>
 </html>
