@@ -41,6 +41,8 @@ function hideVideoURL() {
     document.getElementById("url").style.display = 'none';
     document.getElementById("url-button").style.display = 'none';
     document.getElementById("intro-button").style.display = 'none';
+    document.getElementById("invite-link").style.display = 'none';
+    document.getElementById("invite-button").style.display = 'none';
 }
 
 function hidePlayButtons() {
@@ -139,6 +141,8 @@ function onMessage(event) {
                 hidePlayButtons();
             }
             document.getElementById("room-id-out").innerHTML = "Room ID: " + eventJSON.id;
+            document.getElementById("invite-link").innerHTML = "http://" + loc.host + loc.pathname + "?r=" + eventJSON.id;
+            document.getElementById("invite-button").style.display = '';
             roomJoined = true;
         }
     }
@@ -183,4 +187,12 @@ function handleStopEvent() {
         socket.send(JSON.stringify(userAction));
         syncing = false;
     }
+}
+
+function copyToClipboard(element) {
+    var $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val($(element).text()).select();
+    document.execCommand("copy");
+    $temp.remove();
 }

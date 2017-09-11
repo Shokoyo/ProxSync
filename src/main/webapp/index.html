@@ -3,6 +3,7 @@
     <meta charset="utf-8"/>
     <link href="http://vjs.zencdn.net/6.2.4/video-js.css" rel="stylesheet">
     <script src="http://vjs.zencdn.net/6.2.4/video.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <style>
         .video-js.vjs-playing .vjs-tech {
             pointer-events: none;
@@ -23,7 +24,8 @@
 <input type="text" id="room-id-in"><button onclick="joinRoom()">Join room</button>
 <br>
 <input type="text" id="url"><button onclick="loadVideo()" id="url-button">Load Video URL</button><br>
-<button onclick="skipIntro()" id="intro-button">Skip OP/ED</button>
+<button onclick="skipIntro()" id="intro-button">Skip OP/ED</button><br>
+<p id="invite-link"></p><button id="invite-button" onclick="copyToClipboard('#invite-link')">Copy Invite-Link</button>
 <script src="res/player-script.js"></script>
 </body>
 </html>

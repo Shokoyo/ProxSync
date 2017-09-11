@@ -17,6 +17,7 @@
           <element id="library" level="project" name="Maven: commons-codec:commons-codec:1.9" />
           <element id="library" level="project" name="Maven: org.jsoup:jsoup:1.8.3" />
           <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.8.1" />
+          <element id="library" level="project" name="Maven: commons-io:commons-io:2.5" />
         </element>
       </element>
       <element id="directory" name="META-INF">

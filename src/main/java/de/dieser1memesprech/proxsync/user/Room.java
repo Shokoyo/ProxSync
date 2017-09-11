@@ -174,6 +174,8 @@ public class Room {
                     sendDebugToHost("Couldn't find video URL. May be my fault or your fault");
                 }
             } else {
+                String content = getWebsiteContent(video);
+                System.out.println(content);
                 sendDebugToHost("Host not supported (yet?)");
             }
         } catch(MalformedURLException e) {
