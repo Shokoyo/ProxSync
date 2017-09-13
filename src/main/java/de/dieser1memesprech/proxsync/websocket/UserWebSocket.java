@@ -95,6 +95,13 @@ public class UserWebSocket {
             }
         }
 
+        if("resync".equals(jsonMessage.getString("action"))) {
+            Room r = RoomHandler.getInstance().getRoomBySession(session);
+            if(r != null) {
+                r.pause(jsonMessage.getJsonNumber("current"), session, false);
+            }
+        }
+
         if ("video".equals(jsonMessage.getString("action"))) {
             Room r = RoomHandler.getInstance().getRoomBySession(session);
             if(r != null) {
@@ -110,10 +117,10 @@ public class UserWebSocket {
         }
 
         if ("stopped".equals(jsonMessage.getString("action"))) {
-            //TODO decide if buffering issues or intended stop
             Room r = RoomHandler.getInstance().getRoomBySession(session);
             if(r != null) {
-                r.pause(jsonMessage.getJsonNumber("current"), session);
+                boolean intended = jsonMessage.getBoolean("intended");
+                r.pause(jsonMessage.getJsonNumber("current"), session, intended);
             }
         }
 
@@ -131,6 +138,13 @@ public class UserWebSocket {
             Room old = RoomHandler.getInstance().getRoomBySession(session);
             if(old != null) {
                 old.removeSession(session);
+            }
+        }
+
+        if("current".equals(jsonMessage.getString("action"))) {
+            Room r = RoomHandler.getInstance().getRoomBySession(session);
+            if(r != null) {
+                r.setCurrent(jsonMessage.getJsonNumber("current"));
             }
         }
 

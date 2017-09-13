@@ -15,6 +15,7 @@ socket.onmessage = onMessage;
 var isOwner = true;
 var roomJoined = false;
 var syncing = false;
+var startTime;
 
 //add onload function
 if (window.attachEvent) {
@@ -56,6 +57,7 @@ myPlayer.ready(function () {
 });
 
 function createRoom() {
+    myPlayer.on('timeupdate',sendCurrentTime);
     if (!roomJoined) {
         isOwner = true;
         roomJoined = true;
@@ -101,6 +103,16 @@ function onMessage(event) {
         sendBufferedInd();
         syncing = false;
     }
+    if(eventJSON.action === "resync") {
+        myPlayer.pause();
+        syncing = false;
+        var userAction = {
+            action: "resync",
+            current: myPlayer.currentTime(),
+            buffered: myPlayer.bufferedEnd()
+        };
+        socket.send(JSON.stringify(userAction));
+    }
     if(eventJSON.action === "stop") {
         myPlayer.pause();
         syncing = false;
@@ -121,16 +133,19 @@ function onMessage(event) {
     if (eventJSON.action === "video") {
         var SourceString = eventJSON.url;
         var SourceObject;
+        startTime = eventJSON.current;
         if(SourceString.indexOf(".mp4") !== -1) {
             SourceObject = {src: SourceString, type: 'video/mp4'}
         } else {
             SourceObject = {src: SourceString, type: 'video/webm'}
         }
         myPlayer.src(SourceObject);
-        syncing = true;
-        setTimeout(myPlayer.play,20);
-        setTimeout(function() { syncing = false; }, 20);
-        setTimeout(myPlayer.pause,20);
+        myPlayer.pause();
+        myPlayer.one('canplay',setStartTime);
+        //syncing = true;
+        //setTimeout(myPlayer.play,20);
+        //setTimeout(function() { syncing = false; }, 20);
+        //setTimeout(myPlayer.pause,20);
     }
     if (eventJSON.action === "roomID") {
         if (eventJSON.id === "-1") {
@@ -179,9 +194,12 @@ function handlePlayEvent() {
 
 function handleStopEvent() {
     if (syncing) {
+        var buffered = myPlayer.readyState();
+        var intended = (buffered === 4);
         var userAction = {
             action: "stopped",
             current: myPlayer.currentTime(),
+            intended: intended,
             buffered: myPlayer.bufferedEnd()
         };
         socket.send(JSON.stringify(userAction));
@@ -195,4 +213,18 @@ function copyToClipboard(element) {
     $temp.val($(element).text()).select();
     document.execCommand("copy");
     $temp.remove();
+}
+
+function sendCurrentTime() {
+    var userAction = {
+        action: "current",
+        current: myPlayer.currentTime()
+    };
+    socket.send(JSON.stringify(userAction));
+}
+
+function setStartTime() {
+    myPlayer.currentTime(startTime);
+    myPlayer.pause();
+    myPlayer.on('canplaythrough',sendBufferedInd);
 }

@@ -2,12 +2,10 @@ package de.dieser1memesprech.proxsync.user;
 
 import com.google.gson.Gson;
 import de.dieser1memesprech.proxsync.websocket.UserSessionHandler;
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
-import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -18,11 +16,8 @@ import org.jsoup.nodes.Element;
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.spi.JsonProvider;
-import javax.print.Doc;
 import javax.websocket.Session;
 import java.io.*;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -30,56 +25,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Room {
+    private static final String ripLink = "http://i.imgur.com/eKmmyv1.mp4";
     private HashMap<Session, Boolean> readyStates = new HashMap<Session, Boolean>();
     private List<Session> sessions;
     private String video = "";
     private Session host;
     private int id;
     private boolean playing = false;
+    private boolean buffering = false;
     private boolean isDirectLink = false;
     private CloseableHttpClient httpClient;
-
-    private JsonNumber currentTime = new JsonNumber() {
-        public boolean isIntegral() {
-            return false;
-        }
-
-        public int intValue() {
-            return 0;
-        }
-
-        public int intValueExact() {
-            return 0;
-        }
-
-        public long longValue() {
-            return 0;
-        }
-
-        public long longValueExact() {
-            return 0;
-        }
-
-        public BigInteger bigIntegerValue() {
-            return null;
-        }
-
-        public BigInteger bigIntegerValueExact() {
-            return null;
-        }
-
-        public double doubleValue() {
-            return 0;
-        }
-
-        public BigDecimal bigDecimalValue() {
-            return null;
-        }
-
-        public ValueType getValueType() {
-            return null;
-        }
-    };
+    private JsonNumber timestamp;
 
     public Room(Session host) {
         this.host = host;
@@ -97,15 +53,19 @@ public class Room {
         return playing;
     }
 
-    public void pause(JsonNumber current, Session session) {
+    public void pause(JsonNumber current, Session session, boolean intended) {
         if (this.playing) {
+            buffering = !intended;
             this.playing = false;
+            this.timestamp = current;
             JsonProvider provider = JsonProvider.provider();
             JsonObject messageJson = provider.createObjectBuilder()
                     .add("action", "pause")
                     .add("current", current)
                     .build();
-            this.markReady(session, false);
+            if(!intended) {
+                this.markReady(session, false);
+            }
             UserSessionHandler.getInstance().sendToRoom(messageJson, this);
         }
     }
@@ -122,15 +82,8 @@ public class Room {
         readyStates.put(session, false);
         sessions.add(session);
         if (!video.equals("")) {
-            sendVideoToSession(session);
+            sendVideoToSession(session, true);
         }
-        playing = false;
-        JsonProvider provider = JsonProvider.provider();
-        JsonObject messageJson = provider.createObjectBuilder()
-                .add("action", "stop")
-                .build();
-        this.markReady(session, false);
-        UserSessionHandler.getInstance().sendToSession(host, messageJson);
     }
 
     public void removeSession(Session session) {
@@ -139,6 +92,9 @@ public class Room {
     }
 
     public void setVideo(String url) {
+        for(Session s : readyStates.keySet()) {
+            markReady(s, false);
+        }
         video = url;
         playing = false;
         isDirectLink = checkDirectLink(url);
@@ -147,17 +103,37 @@ public class Room {
 
     private void sendVideoToRoom() {
         for (Session s : sessions) {
-            sendVideoToSession(s);
+            sendVideoToSession(s, false);
         }
     }
 
-    private void sendVideoToSession(Session s) {
+    public void setCurrent(JsonNumber current) {
+        this.timestamp = current;
+    }
+
+    private void sendVideoToSession(Session s, boolean newJoin) {
+        if(newJoin) {
+            if(timestamp != null) {
+                System.out.println("pause");
+                pause(timestamp, s, false);
+            }
+        }
         String url = createDirectLink();
         JsonProvider provider = JsonProvider.provider();
-        JsonObject messageJson = provider.createObjectBuilder()
-                .add("action", "video")
-                .add("url", url)
-                .build();
+        JsonObject messageJson;
+        if(timestamp == null) {
+            messageJson = provider.createObjectBuilder()
+                    .add("action", "video")
+                    .add("url", url)
+                    .add("current", 0)
+                    .build();
+        } else {
+            messageJson = provider.createObjectBuilder()
+                    .add("action", "video")
+                    .add("url", url)
+                    .add("current", timestamp)
+                    .build();
+        }
         UserSessionHandler.getInstance().sendToSession(s, messageJson);
     }
 
@@ -207,6 +183,10 @@ public class Room {
     }
 
     private String getProxerLink() {
+        if(!UserSessionHandler.getInstance().proxRequest()) {
+            sendDebugToHost("Too many Proxer requests");
+            return ripLink;
+        }
         String content = getWebsiteContent(video);
         //System.out.println(content);
         Pattern STREAM_PATTERN = Pattern.compile("(var streams = ?)(\\[.*?\\]);");
@@ -313,12 +293,16 @@ public class Room {
 
     public void markReady(Session s, boolean status) {
         readyStates.put(s, status);
+        if(!playing && buffering) {
+            play();
+        }
     }
 
     public void play() {
         boolean flag = true;
         for (Session s : sessions) {
             if (!readyStates.get(s)) {
+                sendBufferedRequest(s);
                 flag = false;
             }
         }
@@ -329,19 +313,17 @@ public class Room {
                     .add("action", "play")
                     .build();
             playing = true;
+            buffering = false;
             UserSessionHandler.getInstance().sendToRoom(messageJson, this);
-        } else {
-            //check buffered status
-            sendBufferedRequests();
         }
     }
 
-    private void sendBufferedRequests() {
+    private void sendBufferedRequest(Session s) {
         JsonProvider provider = JsonProvider.provider();
         JsonObject messageJson = provider.createObjectBuilder()
                 .add("action", "bufferedRequest")
                 .build();
-        UserSessionHandler.getInstance().sendToRoom(messageJson, this);
+        UserSessionHandler.getInstance().sendToSession(s,messageJson);
     }
 
     public int getId() {
