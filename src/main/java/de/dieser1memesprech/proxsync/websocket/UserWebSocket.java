@@ -45,20 +45,21 @@ public class UserWebSocket {
         JsonReader reader = Json.createReader(new StringReader(message));
         JsonObject jsonMessage = reader.readObject();
 
+        if("changeName".equals(jsonMessage.getString("action"))) {
+            Room old = RoomHandler.getInstance().getRoomBySession(session);
+            String name = jsonMessage.getString("name");
+            if(name != null && !name.equals("") && old != null) {
+                old.changeName(session, name);
+            }
+        }
 
         if ("create".equals(jsonMessage.getString("action"))) {
             Room old = RoomHandler.getInstance().getRoomBySession(session);
             if(old != null) {
                 old.removeSession(session);
             }
-            Room r = new Room(session);
-            JsonProvider provider = JsonProvider.provider();
-            JsonObject messageJson = provider.createObjectBuilder()
-                    .add("action", "roomID")
-                    .add("id", r.getId())
-                    .build();
+            Room r = new Room(session, jsonMessage.getString("name"));
             RoomHandler.getInstance().mapSession(session, r);
-            UserSessionHandler.getInstance().sendToSession(session, messageJson);
         }
 
         if ("join".equals(jsonMessage.getString("action"))) {
@@ -72,14 +73,8 @@ public class UserWebSocket {
                 for (Room r : RoomHandler.getInstance().getRooms()) {
                     if (r.getId() == id) {
                         found = true;
-                        r.addSession(session);
-                        JsonProvider provider = JsonProvider.provider();
-                        JsonObject messageJson = provider.createObjectBuilder()
-                                .add("action", "roomID")
-                                .add("id", r.getId())
-                                .build();
+                        r.addSession(session, jsonMessage.getString("name"));
                         RoomHandler.getInstance().mapSession(session, r);
-                        UserSessionHandler.getInstance().sendToSession(session, messageJson);
                     }
                 }
                 if(!found) {

@@ -1,0 +1,15 @@
+.room-list-container {
+    width: 300px;
+    float: left;
+    padding-left:15px;
+}
+.left-container {
+    float:left;
+    width:853px;
+}
+.player-wrapper {
+    float: left;
+}
+.room-control {
+    padding-top:10px;
+}

@@ -55,6 +55,7 @@ class PageCreator {
                 "isOwner = false;\n" +
                 "        var userAction = {\n" +
                 "            action: \"join\",\n" +
+                "            name: getCookie(\"username\"),\n" +
                 "            id: \"" + id + "\"\n" +
                 "        };\n" +
                 "        socket.send(JSON.stringify(userAction));" +

@@ -24,7 +24,7 @@ public class UserSessionHandler {
     }
 
     public boolean proxRequest() {
-        if(System.currentTimeMillis() < lastProxerRequest + 10000) {
+        if(System.currentTimeMillis() < lastProxerRequest + 30000) {
             return false;
         } else {
             lastProxerRequest = System.currentTimeMillis();

@@ -2,7 +2,6 @@ package de.dieser1memesprech.proxsync.user;
 
 import com.google.gson.Gson;
 import de.dieser1memesprech.proxsync.websocket.UserSessionHandler;
-import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
@@ -18,15 +17,19 @@ import javax.json.JsonObject;
 import javax.json.spi.JsonProvider;
 import javax.websocket.Session;
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Room {
+    private static final String USER_AGENT = "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.13) Gecko/20101206 Ubuntu/10.10 (maverick) Firefox/3.6.13";
     private static final String ripLink = "http://i.imgur.com/eKmmyv1.mp4";
     private HashMap<Session, Boolean> readyStates = new HashMap<Session, Boolean>();
+    private HashMap<Session, String> nameMap = new HashMap<Session, String>();
     private List<Session> sessions;
     private String video = "";
     private Session host;
@@ -34,17 +37,18 @@ public class Room {
     private boolean playing = false;
     private boolean buffering = false;
     private boolean isDirectLink = false;
+    private String lastCookie = "";
     private CloseableHttpClient httpClient;
     private JsonNumber timestamp;
+    private Random random = new Random();
 
-    public Room(Session host) {
+    public Room(Session host, String hostname) {
         this.host = host;
-        Random random = new Random();
         do {
             id = random.nextInt(999);
         } while (!RoomHandler.getInstance().checkId(id));
         sessions = new LinkedList<Session>();
-        this.addSession(host);
+        this.addSession(host, hostname);
         RoomHandler.getInstance().addRoom(this);
         httpClient = HttpClients.createDefault();
     }
@@ -78,17 +82,57 @@ public class Room {
         return new LinkedList<Session>(sessions);
     }
 
-    public void addSession(Session session) {
+    public void addSession(Session session, String name) {
+        setName(session,name);
         readyStates.put(session, false);
         sessions.add(session);
+        JsonProvider provider = JsonProvider.provider();
+        JsonObject messageJson = provider.createObjectBuilder()
+                .add("action", "roomID")
+                .add("id", id)
+                .build();
+        UserSessionHandler.getInstance().sendToSession(session, messageJson);
         if (!video.equals("")) {
             sendVideoToSession(session, true);
         }
+        sendRoomList();
     }
 
     public void removeSession(Session session) {
         readyStates.remove(session);
+        nameMap.remove(session);
         sessions.remove(session);
+        sendRoomList();
+    }
+
+    private void sendRoomList() {
+        StringBuilder builder = new StringBuilder();
+        for(String s: nameMap.values()) {
+            builder.append(s);
+            builder.append("<br>");
+        }
+        String roomString = builder.toString();
+        JsonProvider provider = JsonProvider.provider();
+        JsonObject messageJson = provider.createObjectBuilder()
+                .add("action", "room-list")
+                .add("roomString", roomString)
+                .build();
+        UserSessionHandler.getInstance().sendToRoom(messageJson,this);
+    }
+
+    public void changeName(Session s, String name) {
+        String old = nameMap.get(s);
+        if(!name.equals(old)) {
+            setName(s,name);
+            sendRoomList();
+        }
+    }
+
+    private void setName(Session s, String name) {
+        if(name.contains("<")) {
+            name = "User " + random.nextInt(10000);
+        }
+        nameMap.put(s,name);
     }
 
     public void setVideo(String url) {
@@ -149,9 +193,9 @@ public class Room {
                 if(website == null || website.equals("")) {
                     sendDebugToHost("Couldn't find video URL. May be my fault or your fault");
                 }
+            } else if(url.getHost().equals("9anime.to")) {
+                website = get9animeLink();
             } else {
-                String content = getWebsiteContent(video);
-                System.out.println(content);
                 sendDebugToHost("Host not supported (yet?)");
             }
         } catch(MalformedURLException e) {
@@ -162,10 +206,24 @@ public class Room {
         return website;
     }
 
-    private String getWebsiteContent(String url) {
-        String website = "http://vjs.zencdn.net/v/oceans.mp4";
+    private String get9animeLink() {
+        //String content = getWebsiteContent(video, "");
+        return "";
+    }
+
+    private String getWebsiteContent(String url, String cookie) {
+        /*String website = "http://vjs.zencdn.net/v/oceans.mp4";
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpGet httpget = new HttpGet(url);
+        if(url.contains("proxer")) {
+            if(url.contains("https")) {
+                url = url.replaceFirst("https","http");
+                httpget = new HttpGet(url);
+            }
+            httpget.setHeader("User-Agent","Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1");
+            httpget.setHeader("X-Requested-With", "XMLHttpRequest");
+            httpget.setHeader("Origin","http://proxer.me");
+        }
         try {
             CloseableHttpResponse response = httpclient.execute(httpget);
             try {
@@ -178,17 +236,46 @@ public class Room {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }*/
+        String website = "";
+        if(url.contains("proxer") && !UserSessionHandler.getInstance().proxRequest()) {
+            sendDebugToHost("Too many Proxer requests");
+            return ripLink;
+        }
+        try {
+            System.out.println("kek");
+            StringBuilder result = new StringBuilder();
+            URL urlT = new URL(url);
+            HttpURLConnection conn = (HttpURLConnection) urlT.openConnection();
+            conn.setRequestMethod("GET");
+            if(cookie!=null && !cookie.equals("")) {
+                if(url.contains("proxer")) {
+                    conn.addRequestProperty("Cookie","chatactivate=false; _pk_ref.1.0e5d=%5B%22%22%2C%22%22%2C1494012577%2C%22https%3A%2F%2Fwww.google.de%2F%22%5D; wiki_db_wiki_UserID=67335; wiki_db_wiki_UserName=Schoki-; __cfduid=d5051858a3acb8b0e349ee61defdc30551498418460; cookieconsent_dismissed=yes; stream_choose=mp4upload; joomla_remember_me_d125cc75d135b0170a7c24322ab2c4c5=y3BrUANeyZGxJfac.jh3fkcL2pDiXrljRs1gK; proxer_loggedin=true; style=gray; default_design=gray; tmode=ht; MW57ac91865e5064f231cf620988223590=U2Nob2tpLXw2Y2RmOTYxODZmNjNkODFlMjYzN2JkMDEyNTZlNDQ5OQ%3D%3D; e0da4f913f5f05ed7a3f6dc5f0488c7b=n8vucfkmr2o3bv995bphgdo3n3; joomla_user_state=logged_in");
+                } else {
+                    conn.addRequestProperty("Cookie", cookie);
+                }
+            }
+            conn.addRequestProperty("User-Agent", "Mozilla/4.76");
+            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            lastCookie = conn.getHeaderField("Set-Cookie");
+            String line;
+            while ((line = rd.readLine()) != null) {
+                result.append(line);
+            }
+            rd.close();
+            website = result.toString();
+        } catch(IOException e) {
+            e.printStackTrace();
+            sendDebugToHost("Something went wrong");
         }
         return website;
     }
 
     private String getProxerLink() {
-        if(!UserSessionHandler.getInstance().proxRequest()) {
-            sendDebugToHost("Too many Proxer requests");
+        String content = getWebsiteContent(video, "");
+        if (content.equals(ripLink)) {
             return ripLink;
         }
-        String content = getWebsiteContent(video);
-        //System.out.println(content);
         Pattern STREAM_PATTERN = Pattern.compile("(var streams = ?)(\\[.*?\\]);");
         Matcher m = STREAM_PATTERN.matcher(content);
         String res = "";
@@ -218,21 +305,25 @@ public class Room {
         }
         if(stream != null) {
             stream.replace = stream.replace.replace("#",stream.code);
-            String content = getWebsiteContent("https:" + stream.replace);
+            String content = getWebsiteContent("https:" + stream.replace, lastCookie);
             Pattern MP4_PATTERN = Pattern.compile("\\|var\\|com\\|(.*?)\\|url");
             //System.out.println(content);
             Matcher m = MP4_PATTERN.matcher(content);
             if(m.find()) {
                 String raw = m.group(1);
                 String[] parts = raw.split("\\|");
+                String token = "";
+                for(String s: parts) {
+                    if(s.length()>=25) {
+                        token = s;
+                    }
+                }
                 StringBuilder urlBuilder = new StringBuilder();
                 urlBuilder.append(parts[1]);
                 urlBuilder.append("://");
                 urlBuilder.append(parts[4]);
-                urlBuilder.append(".mp4upload.com:");
-                urlBuilder.append(parts[17]);
-                urlBuilder.append("/d/");
-                urlBuilder.append(parts[16]);
+                urlBuilder.append(".mp4upload.com:282/d/");
+                urlBuilder.append(token);
                 urlBuilder.append("/video.mp4");
                 res = urlBuilder.toString();
             }
@@ -251,7 +342,7 @@ public class Room {
             return "";
         }
         s.replace = s.replace.replace("#", s.code);
-        String iframe = getWebsiteContent("https:" + s.replace + "?utype=member");
+        String iframe = getWebsiteContent("https:" + s.replace + "?utype=member", "");
         Document doc = Jsoup.parse(iframe);
         Element vid = doc.select("video").first();
         Pattern VIDEO_LINK_PATTERN = Pattern.compile("src=\"(.*?)\"");
