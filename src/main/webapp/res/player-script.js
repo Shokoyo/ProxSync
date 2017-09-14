@@ -17,7 +17,9 @@ var roomJoined = false;
 var syncing = false;
 var startTime;
 var roomId;
-
+var lastName;
+var roomDialog;
+var cookieDialog;
 //add onload function
 if (window.attachEvent) {
     window.attachEvent('onload', onloadFunction);
@@ -67,10 +69,18 @@ myPlayer.ready(function () {
     // Then on resize call resizeVideoJS()
     window.onresize = resizeVideoJS;
 });
-
-
+$("#name").blur(function() {
+    document.getElementById("name").focus();
+    lastName = document.getElementById("name").value;
+    document.getElementById("name").value=getCookie("username");
+    $("#name").blur(function() {});
+    document.getElementById("name").blur();
+});
 //hide video url and text field (when not connected to a room)
 function onloadFunction() {
+    roomDialog = new mdc.dialog.MDCDialog(document.querySelector('#room-dialog'));
+    cookieDialog = new mdc.dialog.MDCDialog(document.querySelector('#cookie-dialog'));
+    var curUrl = "" + window.location;
     document.getElementById("url").style.display = 'none';
     document.getElementById("url-button").style.display = 'none';
     document.getElementById("intro-button").style.display = 'none';
@@ -78,6 +88,17 @@ function onloadFunction() {
     document.getElementById("invite-button").style.display = 'none';
     document.getElementById("leave-button").style.display = 'none';
     checkCookie();
+    if(curUrl.indexOf("?") === -1) {
+        if(!socket.opened_) {
+            socket.onopen = makeRoomDialog;
+        } else {
+            makeRoomDialog();
+        }
+    }
+}
+
+function makeRoomDialog() {
+    roomDialog.show();
 }
 
 function hidePlayButtons() {
@@ -144,9 +165,17 @@ $("#url").keypress(function (event) {
     }
 });
 
+$("#cookie-field").keypress(function (event) {
+    if (event.which === 13) {
+        submitCookie();
+    }
+});
+
 $("#name").keypress(function (event) {
     if (event.which === 13) {
+        lastName = document.getElementById("name").value;
         changeName();
+        document.getElementById("name").blur();
     }
 });
 
@@ -213,10 +242,14 @@ function onMessage(event) {
     }
     if (eventJSON.action === "roomID") {
         if (eventJSON.id === "-1") {
+            roomDialog.show();
+            document.getElementById("room-id-in").focus();
+            document.getElementById("room-id-in").value="invalid";
+            document.getElementById("room-id-in").blur();
             roomId = -1;
-            document.getElementById("debug").innerHTML = "invalid Room ID";
             roomJoined = false;
         } else {
+            roomDialog.close();
             if (!isOwner) {
                 hidePlayButtons();
             }
@@ -247,10 +280,14 @@ function skipIntro() {
 }
 
 function changeName() {
+    if(lastName === "") {
+        return;
+    }
     var userAction = {
         action: "changeName",
-        name: document.getElementById("name").value
+        name: lastName
     };
+    document.getElementById("name").value = lastName;
     setCookie("username", userAction.name, 365);
     socket.send(JSON.stringify(userAction));
 }
@@ -336,11 +373,24 @@ function getCookie(cname) {
 function checkCookie() {
     var username = getCookie("username");
     if (username !== "") {
+        document.getElementById("name").focus();
         document.getElementById("name").value = username;
+        document.getElementById("name").blur();
     } else {
-        username = prompt("Enter your name:", "");
-        if (username !== "" && username !== null) {
-            setCookie("username", username, 365);
-        }
+        cookieDialog.show();
+        document.getElementById("cookie-field").focus();
+    }
+}
+
+function submitCookie() {
+    var username = document.getElementById("cookie-field").value;
+    if (username !== "" && username !== null) {
+        setCookie("username", username, 365);
+        document.getElementById("name").focus();
+        document.getElementById("name").value = username;
+        document.getElementById("name").blur();
+        cookieDialog.close();
+    } else {
+        document.getElementById("cookie-field").focus();
     }
 }

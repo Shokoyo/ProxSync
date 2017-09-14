@@ -33,15 +33,6 @@
 </head>
 <body>
 <main>
-
-
-
-
-
-
-
-
-
     <div class="mdc-layout-grid">
         <div class="mdc-layout-grid__inner">
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
@@ -81,9 +72,6 @@
         <div class="col-3">
             <button onclick="createRoom()" id="create-button">Host a room</button>
         </div>
-        <div class="col-3">
-            <input type="text" id="room-id-in">
-        </div>
         <div class="col-2">
             <button onclick="joinRoom()" id="room-join-button">Join room</button>
         </div>
@@ -109,9 +97,66 @@
         </div>
     </div>
 
+    <aside id="room-dialog"
+        class="mdc-dialog"
+        role="alertdialog"
+        aria-labelledby="room-dialog-label"
+        aria-describedby="room-dialog-description">
+        <div class="mdc-dialog__surface">
+            <header class="mdc-dialog__header">
+                <h2 id="room-dialog-label" class="mdc-dialog__header__title">
+                    Create or join a room
+                </h2>
+            </header>
+            <section id="room-dialog-description" class="mdc-dialog__body">
+                <div class="mdc-form-field">
+                    <div class="mdc-textfield" data-mdc-auto-init="MDCTextfield">
+                        <input type="text" id="room-id-in" class="mdc-textfield__input">
+                        <label for="room-id-in" class="mdc-textfield__label">Room Name</label>
+                    </div>
+                </div>
+            </section>
+            <footer class="mdc-dialog__footer">
+                <button onclick="createRoom()"
+                        class="mdc-button mdc-button--raised mdc-button--primary">Create
+                </button>
+                <button onclick="joinRoom()" id="name-button"
+                        class="mdc-button mdc-button--raised mdc-button--primary">Join
+                </button>
+            </footer>
+        </div>
+        <div class="mdc-dialog__backdrop"></div>
+    </aside>
+    <aside id="cookie-dialog"
+           class="mdc-dialog"
+           role="alertdialog"
+           aria-labelledby="room-dialog-label"
+           aria-describedby="room-dialog-description">
+        <div class="mdc-dialog__surface">
+            <header class="mdc-dialog__header">
+                <h2 id="cookie-dialog-label" class="mdc-dialog__header__title">
+                    Enter your name
+                </h2>
+            </header>
+            <section id="cookie-dialog-description" class="mdc-dialog__body">
+                <div class="mdc-form-field">
+                    <div class="mdc-textfield" data-mdc-auto-init="MDCTextfield">
+                        <input type="text" id="cookie-field" class="mdc-textfield__input">
+                        <label for="cookie-field" class="mdc-textfield__label">Name</label>
+                    </div>
+                </div>
+            </section>
+            <footer class="mdc-dialog__footer">
+                <button onclick="submitCookie()"
+                        class="mdc-button mdc-button--raised mdc-button--primary">Submit
+                </button>
+            </footer>
+        </div>
+        <div class="mdc-dialog__backdrop"></div>
+    </aside>
 </main>
-<script src="res/player-script.js?v=0.0.0.4.1"></script>
 <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+<script src="res/player-script.js?v=0.0.0.4.1"></script>
 <script>mdc.autoInit();</script>
 </body>
 </html>
