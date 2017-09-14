@@ -1,15 +1,13 @@
-.room-list-container {
-    width: 300px;
-    float: left;
-    padding-left:15px;
-}
-.left-container {
-    float:left;
-    width:853px;
-}
 .player-wrapper {
     float: left;
 }
-.room-control {
-    padding-top:10px;
+
+.body {
+    background-color: #7b1fa2;
+}
+
+body{
+    min-width:720px; /* suppose you want minimun width of 1000px */
+    width: auto !important;  /* Firefox will set width as auto */
+    width:720px;             /* As IE ignores !important it will set width as 1000px; */
 }

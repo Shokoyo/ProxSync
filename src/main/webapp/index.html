@@ -1,40 +1,85 @@
 <html language="de">
 <head>
     <meta charset="utf-8"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+          integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
     <link href="http://vjs.zencdn.net/6.2.4/video-js.css" rel="stylesheet">
     <link href="res/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
     <script src="http://vjs.zencdn.net/6.2.4/video.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <style>
         .video-js.vjs-playing .vjs-tech {
             pointer-events: none;
         }
+
         .video-js.vjs-paused .vjs-tech {
             pointer-events: none;
         }
     </style>
     <title>Prox-Sync</title>
 </head>
-<body>
-<h3>This is ProxSync Alpha 0.0.0.0.4</h3>
-<div id="left-container" class="left-container">
-    <div id="player-wrapper" class="player-wrapper">
-        <video id="my-player" class="video-js" controls preload="auto" width="853" height="480" data-setup='{}'></video><br>
-        <button onclick="skipIntro()" id="intro-button">Skip OP/ED</button>
+<body id="body">
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <p>
+            <h3 align="center">This is ProxSync Alpha 0.0.0.0.4</h3>
+            </p>
+        </div>
     </div>
-    <div id="room-control" class="room-control">
-        <p id="debug-out"></p>
-        <div><button onclick="createRoom()" id="create-button">Host a room</button></div>
-        <div><input type="text" id="room-id-in"><button onclick="joinRoom()" id="room-join-button">Join room</button></div>
-        <div><input type="text" id="url"><button onclick="loadVideo()" id="url-button">Load Video URL</button></div>
-        <div><p id="invite-link"></p><button id="invite-button" onclick="copyToClipboard('#invite-link')">Copy Invite-Link</button></div></p>
+    <div class="row" id="row-player">
+        <div class="col-8">
+            <video id="my-player" class="video-js" controls preload="auto" data-setup='{}'></video>
+        </div>
+
+        <div class="col-4">
+
+            <div class="row">
+                <div class="col">
+                    <div id="room-list"></div></br>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <input type="text" id="name">
+                </div>
+                <div class="col">
+                    <button onclick="changeName()" id="name-button">Change Name</button>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-<div id="room-list-container" class="room-list-container">
-    <div id="room-list"></div><br>
-    <input type="text" id="name"><button onclick="changeName()" id="name-button">Change Name</button>
-    <div><button onclick="leaveRoom()" id="leave-button">Leave Room</button></div>
+    <div class="row" style="padding-top: 10px">
+        <div class="col-3">
+            <button onclick="createRoom()" id="create-button">Host a room</button>
+        </div>
+        <div class="col-3">
+            <input type="text" id="room-id-in">
+        </div>
+        <div class="col-2">
+            <button onclick="joinRoom()" id="room-join-button">Join room</button>
+        </div>
+    </div>
+    <div class="row"style="padding-top: 10px">
+        <div class="col-2">
+            <button onclick="skipIntro()" id="intro-button">Skip OP/ED</button>
+        </div>
+        <div class="col-2">
+            <button onclick="leaveRoom()" id="leave-button">Leave Room</button>
+        </div>
+    </div>
+    <div class="row"style="padding-top: 10px">
+        <div class="col-2">
+            <input type="text" id="url">
+        </div>
+        <div class="col-2">
+            <button onclick="loadVideo()" id="url-button">Load Video URL</button>
+        </div>
+        <div class="col-2">
+            <div id="invite-link"></div>
+            <button id="invite-button" onclick="copyToClipboard('#invite-link')">Copy Invite-Link</button>
+        </div>
+    </div>
 </div>
 <script src="res/player-script.js?v=0.0.0.4.1"></script>
 </body>

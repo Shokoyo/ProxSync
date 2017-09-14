@@ -38,6 +38,30 @@ var myPlayer = videojs('my-player');
 myPlayer.on('stalled', handleStopEvent);
 myPlayer.on('pause', handleStopEvent);
 myPlayer.on('play', handlePlayEvent);
+
+
+myPlayer.ready(function () {
+    var myPlayer = this;
+    var aspectRatio = 9 / 16;
+    var maxWidth = 1280;
+    var parent = document.getElementById(myPlayer.id()).parentElement;
+    function resizeVideoJS() {
+        var width = parent.getBoundingClientRect().width - 30;
+        if (width > maxWidth) {
+            width = maxWidth;
+        }
+        myPlayer.width(width);
+        myPlayer.height(width * aspectRatio);
+        document.getElementById("row-player").style.height = width*aspectRatio;
+    }
+
+    // Initialize resizeVideoJS()
+    resizeVideoJS();
+    // Then on resize call resizeVideoJS()
+    window.onresize = resizeVideoJS;
+});
+
+
 //hide video url and text field (when not connected to a room)
 function onloadFunction() {
     document.getElementById("url").style.display = 'none';
@@ -68,7 +92,7 @@ function showElement(elementId) {
 }
 
 function createRoom() {
-    myPlayer.on('timeupdate',sendCurrentTime);
+    myPlayer.on('timeupdate', sendCurrentTime);
     if (!roomJoined) {
         isOwner = true;
         roomJoined = true;
@@ -82,6 +106,7 @@ function createRoom() {
         document.getElementById("intro-button").style.display = '';
     }
 }
+
 function joinRoom() {
     if (!roomJoined) {
         document.getElementById("debug-out").innerHTML = "";
@@ -100,19 +125,19 @@ function leaveRoom() {
     window.location = window.location.pathname;
 }
 
-$("#room-id-in").keypress(function(event) {
+$("#room-id-in").keypress(function (event) {
     if (event.which === 13) {
         joinRoom();
     }
 });
 
-$("#url").keypress(function(event) {
+$("#url").keypress(function (event) {
     if (event.which === 13) {
         loadVideo();
     }
 });
 
-$("#name").keypress(function(event) {
+$("#name").keypress(function (event) {
     if (event.which === 13) {
         changeName();
     }
@@ -135,7 +160,7 @@ function onMessage(event) {
         sendBufferedInd();
         syncing = false;
     }
-    if(eventJSON.action === "resync") {
+    if (eventJSON.action === "resync") {
         myPlayer.pause();
         syncing = false;
         var userAction = {
@@ -145,7 +170,7 @@ function onMessage(event) {
         };
         socket.send(JSON.stringify(userAction));
     }
-    if(eventJSON.action === "stop") {
+    if (eventJSON.action === "stop") {
         myPlayer.pause();
         syncing = false;
         sendBufferedInd();
@@ -166,14 +191,14 @@ function onMessage(event) {
         var SourceString = eventJSON.url;
         var SourceObject;
         startTime = eventJSON.current;
-        if(SourceString.indexOf(".mp4") !== -1) {
+        if (SourceString.indexOf(".mp4") !== -1) {
             SourceObject = {src: SourceString, type: 'video/mp4'}
         } else {
             SourceObject = {src: SourceString, type: 'video/webm'}
         }
         myPlayer.src(SourceObject);
         myPlayer.pause();
-        myPlayer.one('canplay',setStartTime);
+        myPlayer.one('canplay', setStartTime);
         //syncing = true;
         //setTimeout(myPlayer.play,20);
         //setTimeout(function() { syncing = false; }, 20);
@@ -182,27 +207,27 @@ function onMessage(event) {
     if (eventJSON.action === "roomID") {
         if (eventJSON.id === "-1") {
             roomId = -1;
-            document.getElementById("debug").innerHTML="invalid Room ID";
+            document.getElementById("debug").innerHTML = "invalid Room ID";
             roomJoined = false;
         } else {
             if (!isOwner) {
                 hidePlayButtons();
             }
-            document.getElementById("room-join-button").style.display='none';
-            document.getElementById("room-id-in").style.display='none';
-            document.getElementById("create-button").style.display='none';
-            document.getElementById("leave-button").style.display='';
+            document.getElementById("room-join-button").style.display = 'none';
+            document.getElementById("room-id-in").style.display = 'none';
+            document.getElementById("create-button").style.display = 'none';
+            document.getElementById("leave-button").style.display = '';
             roomId = eventJSON.id;
-            document.getElementById("invite-link").innerHTML = "http://" + loc.host + loc.pathname + "?r=" + roomId;
             document.getElementById("invite-button").style.display = '';
+            document.getElementById("invite-link").innerHTML = "http://" + loc.host + loc.pathname + "?r=" + roomId;
             roomJoined = true;
         }
     }
-    if(eventJSON.action === "debug") {
+    if (eventJSON.action === "debug") {
         document.getElementById("debug-out").innerHTML = eventJSON.message;
     }
-    if(eventJSON.action === "room-list") {
-        document.getElementById("room-list").innerHTML = "<h4>Room List (ID: " + roomId + ")</h4>" + eventJSON.roomString;
+    if (eventJSON.action === "room-list") {
+        document.getElementById("room-list").innerHTML = "<h4>User List (ID: " + roomId + ")</h4><div class=\"pre-scrollable\">" + eventJSON.roomString + "</div>";
     }
 }
 
@@ -210,8 +235,8 @@ function skipIntro() {
     var currentTime = myPlayer.currentTime();
     myPlayer.currentTime(currentTime + 80);
     myPlayer.pause();
-    setTimeout(handlePlayEvent,500);
-    setTimeout(handlePlayEvent,1000);
+    setTimeout(handlePlayEvent, 500);
+    setTimeout(handlePlayEvent, 1000);
 }
 
 function changeName() {
@@ -275,13 +300,13 @@ function sendCurrentTime() {
 function setStartTime() {
     myPlayer.currentTime(startTime);
     myPlayer.pause();
-    myPlayer.on('canplaythrough',sendBufferedInd);
+    myPlayer.on('canplaythrough', sendBufferedInd);
 }
 
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    var expires = "expires="+ d.toUTCString();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires=" + d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
@@ -289,7 +314,7 @@ function getCookie(cname) {
     var name = cname + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
     var ca = decodedCookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
+    for (var i = 0; i < ca.length; i++) {
         var c = ca[i];
         while (c.charAt(0) === ' ') {
             c = c.substring(1);
@@ -304,7 +329,7 @@ function getCookie(cname) {
 function checkCookie() {
     var username = getCookie("username");
     if (username !== "") {
-        document.getElementById("name").value=username;
+        document.getElementById("name").value = username;
     } else {
         username = prompt("Enter your name:", "");
         if (username !== "" && username !== null) {
