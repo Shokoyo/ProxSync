@@ -78,7 +78,6 @@ $("#name").blur(function() {
 });
 //hide video url and text field (when not connected to a room)
 function onloadFunction() {
-    roomDialog = new mdc.dialog.MDCDialog(document.querySelector('#room-dialog'));
     cookieDialog = new mdc.dialog.MDCDialog(document.querySelector('#cookie-dialog'));
     var curUrl = "" + window.location;
     document.getElementById("url").style.display = 'none';
@@ -98,6 +97,7 @@ function onloadFunction() {
 }
 
 function makeRoomDialog() {
+    roomDialog = new mdc.dialog.MDCDialog(document.querySelector('#room-dialog'));
     roomDialog.show();
 }
 
