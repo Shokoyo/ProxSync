@@ -46,13 +46,12 @@ myPlayer.ready(function () {
     var maxWidth = 1280;
     var parent = document.getElementById(myPlayer.id()).parentElement;
     function resizeVideoJS() {
-        var width = parent.getBoundingClientRect().width - 30;
+        var width = parent.getBoundingClientRect().width;
         if (width > maxWidth) {
             width = maxWidth;
         }
         myPlayer.width(width);
         myPlayer.height(width * aspectRatio);
-        document.getElementById("row-player").style.height = width*aspectRatio;
     }
 
     var y = document.getElementsByClassName("vjs-big-play-button");
@@ -235,7 +234,7 @@ function onMessage(event) {
         document.getElementById("debug-out").innerHTML = eventJSON.message;
     }
     if (eventJSON.action === "room-list") {
-        document.getElementById("room-list").innerHTML = "<h4>User List (ID: " + roomId + ")</h4><div class=\"pre-scrollable\">" + eventJSON.roomString + "</div>";
+        document.getElementById("room-list").innerHTML = "<h4>User List (ID: " + roomId + ")</h4>" + eventJSON.roomString;
     }
 }
 

@@ -107,10 +107,13 @@ public class Room {
 
     private void sendRoomList() {
         StringBuilder builder = new StringBuilder();
+        builder.append("<ul class=\"mdc-list mdc-list--dense\">");
         for(String s: nameMap.values()) {
+            builder.append("<li class=\"mdc-list-item\">");
             builder.append(s);
-            builder.append("<br>");
+            builder.append("</li>");
         }
+        builder.append("</ul>");
         String roomString = builder.toString();
         JsonProvider provider = JsonProvider.provider();
         JsonObject messageJson = provider.createObjectBuilder()

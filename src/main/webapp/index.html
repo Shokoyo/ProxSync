@@ -1,11 +1,23 @@
-<html language="de">
+<html language="de" class="mdc-typography">
 <head>
     <meta charset="utf-8"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
-          integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
+    <style>
+        :root {
+            --mdc-theme-primary: #0e4ead;
+        }
+
+        .mdc-ripple-surface.mdc-ripple-upgraded.mdc-button--primary::before,
+        .mdc-ripple-surface.mdc-ripple-upgraded.mdc-button--primary::after {
+            background-color: rgba(255, 255, 255, .2);
+        }
+    </style>
     <link href="http://vjs.zencdn.net/6.2.4/video-js.css" rel="stylesheet">
     <link href="res/player-style.css" rel="stylesheet">
-    <link href="res/style.css" rel="stylesheet">
+    <link href="res/style.scss" rel="stylesheet">
     <script src="http://vjs.zencdn.net/6.2.4/video.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <style>
@@ -19,33 +31,48 @@
     </style>
     <title>Prox-Sync</title>
 </head>
-<body id="body">
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <p>
-            <h3 align="center">This is ProxSync Alpha 0.0.0.0.4</h3>
-            </p>
-        </div>
-    </div>
-    <div class="row" id="row-player">
-        <div class="col-8">
-            <video id="my-player" class="video-js vjs-default-skin" controls preload="auto" data-setup='{}'></video>
-        </div>
+<body>
+<main>
 
-        <div class="col-4">
 
-            <div class="row">
-                <div class="col">
-                    <div id="room-list"></div></br>
-                </div>
+
+
+
+
+
+
+
+    <div class="mdc-layout-grid">
+        <div class="mdc-layout-grid__inner">
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+                <h3 align="center">This is ProxSync Alpha 0.0.0.0.4</h3>
             </div>
-            <div class="row">
-                <div class="col">
-                    <input type="text" id="name">
+        </div>
+        <div class="mdc-layout-grid__inner">
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
+                <video id="my-player" class="video-js vjs-default-skin" controls preload="auto" data-setup='{}'></video>
+            </div>
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">
+
+                <div class="mdc-layout-grid__inner">
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-bottom">
+                        <div class="mdc-form-field">
+                            <div class="mdc-textfield" data-mdc-auto-init="MDCTextfield">
+                                <input type="text" id="name" class="mdc-textfield__input">
+                                <label for="name" class="mdc-textfield__label">Name</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-bottom">
+                        <button onclick="changeName()" id="name-button"
+                                class="mdc-button mdc-button--raised mdc-button--primary">Change Name
+                        </button>
+                    </div>
                 </div>
-                <div class="col">
-                    <button onclick="changeName()" id="name-button">Change Name</button>
+                <div class="mdc-layout-grid__inner">
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+                        <div id="room-list"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -61,7 +88,7 @@
             <button onclick="joinRoom()" id="room-join-button">Join room</button>
         </div>
     </div>
-    <div class="row"style="padding-top: 10px">
+    <div class="row" style="padding-top: 10px">
         <div class="col-2">
             <button onclick="skipIntro()" id="intro-button">Skip OP/ED</button>
         </div>
@@ -69,7 +96,7 @@
             <button onclick="leaveRoom()" id="leave-button">Leave Room</button>
         </div>
     </div>
-    <div class="row"style="padding-top: 10px">
+    <div class="row" style="padding-top: 10px">
         <div class="col-2">
             <input type="text" id="url">
         </div>
@@ -81,7 +108,10 @@
             <button id="invite-button" onclick="copyToClipboard('#invite-link')">Copy Invite-Link</button>
         </div>
     </div>
-</div>
+
+</main>
 <script src="res/player-script.js?v=0.0.0.4.1"></script>
+<script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+<script>mdc.autoInit();</script>
 </body>
 </html>
