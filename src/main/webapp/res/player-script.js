@@ -55,6 +55,14 @@ myPlayer.ready(function () {
         document.getElementById("row-player").style.height = width*aspectRatio;
     }
 
+    var y = document.getElementsByClassName("vjs-big-play-button");
+    y[0].setAttribute("tabIndex","-1");
+    var x = document.getElementsByClassName("vjs-control");
+    var i;
+    for (i = 0; i < x.length; i++) {
+        x[i].setAttribute("tabIndex", "-1");
+    }
+
     // Initialize resizeVideoJS()
     resizeVideoJS();
     // Then on resize call resizeVideoJS()
