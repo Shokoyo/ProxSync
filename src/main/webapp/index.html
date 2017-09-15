@@ -8,6 +8,8 @@
     <style>
         :root {
             --mdc-theme-primary: #00838f;
+            --mdc-theme-primary-dark: #005662;
+            --mdc-theme-primary-light: #4fb3bf;
             --mdc-theme-background: #F5F5F6;
         }
 
@@ -32,12 +34,12 @@
     </style>
     <title>Prox-Sync</title>
 </head>
-<body>
+<body class="mdc-theme--primary-light-bg">
 <main>
     <div class="mdc-layout-grid">
         <div class="mdc-layout-grid__inner">
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
-                <h3 align="center">This is ProxSync Alpha 0.0.0.0.4</h3>
+                <h3 align="center" class="mdc-theme--primary-dark-bg mdc-theme--text-primary-on-primary">This is ProxSync Alpha 0.0.0.0.4</h3>
             </div>
         </div>
         <div class="mdc-layout-grid__inner">
@@ -66,7 +68,7 @@
                 <div id="room-list"></div>
                 <div class="mdc-layout-grid__inner">
                     <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-top">
-                        <hr>
+                        <hr class="mdc-theme--text-primary-on-light">
                         <div class="mdc-form-field">
                             <div class="mdc-textfield" data-mdc-auto-init="MDCTextfield">
                                 <input type="text" id="name" class="mdc-textfield__input">
@@ -74,7 +76,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-middle" id="name-button-cell">
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-bottom" id="name-button-cell">
                         <button onclick="changeName()" id="name-button"
                                 class="mdc-button mdc-button--raised mdc-button--primary">Change Name
                         </button>
