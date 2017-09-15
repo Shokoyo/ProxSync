@@ -41,9 +41,12 @@ var myPlayer = videojs('my-player');
 myPlayer.on('stalled', handleStopEvent);
 myPlayer.on('pause', handleStopEvent);
 myPlayer.on('play', handlePlayEvent);
-
+myPlayer.on('volumechange', function() {
+    setCookie("volume",myPlayer.volume(),365);
+});
 
 myPlayer.ready(function () {
+
     var myPlayer = this;
     var aspectRatio = 9 / 16;
     var maxWidth = 1280;
@@ -70,7 +73,21 @@ myPlayer.ready(function () {
     resizeVideoJS();
     // Then on resize call resizeVideoJS()
     window.onresize = resizeVideoJS;
+    var volume = getCookie("volume");
+    if(volume==="") {
+        volume=1;
+    }
+    myPlayer.volume(volume);
 });
+
+function disableSeeking() {
+    document.getElementsByClassName("vjs-progress-control")[0].style.pointerEvents = 'none';
+}
+
+function enableSeeking() {
+    document.getElementsByClassName("vjs-progress-control")[0].style.pointerEvents = '';
+}
+
 $("#name").blur(function () {
     lastName = document.getElementById("name").value;
     document.getElementById("name").value = getCookie("username");
@@ -134,7 +151,7 @@ function addSkipButton() {
         // The `init()` method will also work for constructor logic here, but it is
         // deprecated. If you provide an `init()` method, it will override the
         // `constructor()` method!
-        constructor: function() {
+        constructor: function () {
             videoJsButtonClass.call(this, myPlayer);
         }, // notice the comma
         handleClick: skipIntro
@@ -150,17 +167,13 @@ function addSkipButton() {
 
 function showPlayButtons() {
     myPlayer.addChild('BigPlayButton', {}, 3);
-    myPlayer.getChild('ControlBar').addChild('PlayToggle', {},0);
+    myPlayer.getChild('ControlBar').addChild('PlayToggle', {}, 0);
     var playButton = myPlayer.getChild('ControlBar').getChild('PlayToggle');
-    if(!myPlayer.paused()) {
+    if (!myPlayer.paused()) {
         playButton.toggleClass("vjs-playing");
         playButton.toggleClass("vjs-paused");
     }
 }
-
-myPlayer.ready(function () {
-    myPlayer.volume(0.1);
-});
 
 function hideElement(elementId) {
     document.getElementById(elementId).style.disPlay = 'none';
@@ -228,7 +241,7 @@ $("#room-id-in").keypress(function (event) {
 });
 
 function loadVideo() {
-    if(myPlayer.src() !== undefined) {
+    if (myPlayer.src() !== undefined) {
         myPlayer.reset();
         sendCurrentTime();
     }
@@ -269,7 +282,8 @@ function onMessage(event) {
             syncing = true;
         }
     }
-    if(eventJSON.action === "owner") {
+    if (eventJSON.action === "owner") {
+        enableSeeking();
         isOwner = true;
         showPlayButtons();
         showSpecialControl();
@@ -313,7 +327,7 @@ function onMessage(event) {
             roomId = -1;
             roomJoined = false;
             isOwner = false;
-        } else if(eventJSON.id === "-2") {
+        } else if (eventJSON.id === "-2") {
             if (roomDialog == null) {
                 makeRoomDialog();
             } else {
@@ -330,6 +344,7 @@ function onMessage(event) {
                 roomDialog.close();
             }
             if (!isOwner) {
+                disableSeeking();
                 hidePlayButtons();
             } else {
                 document.getElementById("url-field").style.display = '';
@@ -345,11 +360,8 @@ function onMessage(event) {
             roomJoined = true;
         }
     }
-    if (eventJSON.action === "debug") {
-        document.getElementById("debug-out").innerHTML = eventJSON.message;
-    }
     if (eventJSON.action === "room-list") {
-        var roomString = eventJSON.roomString.replace("res/",location.protocol + '//' + location.host + location.pathname + "res/");
+        var roomString = eventJSON.roomString.replace("res/", location.protocol + '//' + location.host + location.pathname + "res/");
         document.getElementById("room-list").innerHTML = "<h4>User List (ID: " + roomId + ")</h4>" + roomString;
     }
 }
@@ -381,6 +393,10 @@ function sendBufferedInd() {
         readyState: myPlayer.readyState()
     };
     socket.send(JSON.stringify(userAction));
+}
+
+function handleSeekEvent() {
+
 }
 
 function handlePlayEvent() {
