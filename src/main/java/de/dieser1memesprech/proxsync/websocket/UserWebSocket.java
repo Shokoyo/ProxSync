@@ -125,6 +125,7 @@ public class UserWebSocket {
         if ("video".equals(jsonMessage.getString("action"))) {
             Room r = RoomHandler.getInstance().getRoomBySession(session);
             if(r != null) {
+                r.reset9anime();
                 r.setVideo(jsonMessage.getString("url"));
             }
         }

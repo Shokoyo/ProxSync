@@ -171,6 +171,7 @@ public class Room {
     }
 
     public void setVideo(String url) {
+        timestamp = null;
         for (Session s : readyStates.keySet()) {
             markReady(s, false);
         }
@@ -437,6 +438,10 @@ public class Room {
         playing = false;
         buffering = false;
         loadNextVideo();
+    }
+
+    public void reset9anime() {
+        _9animeLink = "";
     }
 
     public void loadNextVideo() {

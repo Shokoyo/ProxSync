@@ -22,6 +22,7 @@ var roomDialog;
 var cookieDialog;
 var skipButton;
 var firstVideo = true;
+var timeUpdate = false;
 //add onload function
 if (window.attachEvent) {
     window.attachEvent('onload', onloadFunction);
@@ -47,7 +48,9 @@ myPlayer.on('volumechange', function () {
 });
 
 function initCheckbox() {
-    document.getElementById("auto-next-checkbox").checked = false;
+    if(document.getElementById("auto-next-checkbox").checked === false) {
+        document.getElementById("auto-next-checkbox").click();
+    }
     $('#auto-next-checkbox').click(function () {
         console.log(document.getElementById("auto-next-checkbox").checked);
         var userAction = {
@@ -56,7 +59,9 @@ function initCheckbox() {
         };
         socket.send(JSON.stringify(userAction));
     });
-    document.getElementById("auto-next-checkbox").checked = true;
+    if(document.getElementById("auto-play-checkbox").checked === false) {
+        document.getElementById("auto-play-checkbox").click();
+    }
 }
 
 myPlayer.ready(function () {
@@ -201,7 +206,7 @@ function showElement(elementId) {
 }
 
 function createRoom() {
-    myPlayer.on('timeupdate', sendCurrentTime);
+    bindTimeUpdate();
     if (!roomJoined) {
         isOwner = true;
         roomJoined = true;
@@ -212,6 +217,14 @@ function createRoom() {
         };
         socket.send(JSON.stringify(userAction));
     }
+}
+
+function bindTimeUpdate() {
+    timeUpdate = true;
+}
+
+function unbindTimeUpdate() {
+    timeUpdate = false;
 }
 
 function joinRoom() {
@@ -327,9 +340,11 @@ function onMessage(event) {
         } else {
             SourceObject = {src: SourceString, type: 'video/webm'}
         }
-
+        myPlayer.reset();
         myPlayer.src(SourceObject);
         myPlayer.pause();
+        bindTimeUpdate();
+        bindPauseEvent();
         if(!firstVideo && document.getElementById("auto-play-checkbox").checked) {
             myPlayer.one('canplay', function() {
                 setStartTime();
@@ -340,8 +355,9 @@ function onMessage(event) {
             myPlayer.one('canplay', setStartTime);
         }
         myPlayer.one('ended', function () {
+            unbindPauseEvent();
             if (isOwner) {
-                myPlayer.pause();
+                unbindTimeUpdate();
                 var userAction = {
                     "action": "finished"
                 };
@@ -354,6 +370,17 @@ function onMessage(event) {
         //setTimeout(function() { syncing = false; }, 20);
         //setTimeout(myPlayer.pause,20);
     }
+
+    function bindPauseEvent() {
+        myPlayer.on('pause', handleStopEvent);
+        myPlayer.on('stalled', handleStopEvent);
+    }
+
+    function unbindPauseEvent() {
+        myPlayer.off('pause');
+        myPlayer.off('stalled');
+    }
+
     if (eventJSON.action === "roomID") {
         if (eventJSON.id === "-1") {
             if (roomDialog == null) {
@@ -387,6 +414,11 @@ function onMessage(event) {
                 disableSeeking();
                 hidePlayButtons();
             } else {
+                var userAction = {
+                    "action": "autoNext",
+                    "value": document.getElementById("auto-next-checkbox").checked
+                };
+                socket.send(JSON.stringify(userAction));
                 document.getElementById("url-field").style.display = '';
                 document.getElementById("url-button").style.display = '';
                 document.getElementById("intro-button").style.display = '';
@@ -477,11 +509,13 @@ function copyToClipboard(element) {
 }
 
 function sendCurrentTime() {
-    var userAction = {
-        action: "current",
-        current: myPlayer.currentTime()
-    };
-    socket.send(JSON.stringify(userAction));
+    if(timeUpdate) {
+        var userAction = {
+            action: "current",
+            current: myPlayer.currentTime()
+        };
+        socket.send(JSON.stringify(userAction));
+    }
 }
 
 function setStartTime() {
