@@ -233,7 +233,11 @@ public class Room {
 
     private String get9animeLink() {
         //String content = getWebsiteContent(video, "");
-        return _9animeScraper.getEpisodeOfAnime(video);
+        String res = _9animeScraper.getEpisodeOfAnime(video);
+        if(res==null) {
+            res= "";
+        }
+        return res;
     }
 
     private String getWebsiteContent(String url, String cookie) {

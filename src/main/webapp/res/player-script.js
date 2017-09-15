@@ -297,8 +297,12 @@ function onMessage(event) {
     if (eventJSON.action === "bufferedRequest") {
         sendBufferedInd();
     }
+    if(eventJSON.action === "debug") {
+        console.log(eventJSON.message);
+    }
     if (eventJSON.action === "video") {
         var SourceString = eventJSON.url;
+        console.log("URL: " + SourceString);
         var SourceObject;
         startTime = eventJSON.current;
         if (SourceString.indexOf(".mp4") !== -1) {
