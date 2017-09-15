@@ -59,10 +59,13 @@ public class Main {
             if (server.attr("data-id").equals("30")) {
                 Elements episodes = server.select("li");
                 for (Element elEpisode : episodes) {
-                    Episode episode = parseServerSingleEpisode(elEpisode, ts, update, server.attr("data-id"));
-                    if (url.contains(episode.getId())) {
+                    Element anchor = elEpisode.select("a").first();
+                    String id = anchor.attr("data-id");
+                    if (url.contains(id)) {
+                        Episode episode = parseServerSingleEpisode(elEpisode, ts, update, server.attr("data-id"));
                         return episode;
                     }
+
                 }
             }
         }
