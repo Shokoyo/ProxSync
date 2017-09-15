@@ -273,9 +273,7 @@ function onMessage(event) {
             if (!isOwner) {
                 hidePlayButtons();
             }
-            document.getElementById("room-join-button").style.display = 'none';
             document.getElementById("room-id-in").style.display = 'none';
-            document.getElementById("create-button").style.display = 'none';
             document.getElementById("leave-button").style.display = '';
             roomId = eventJSON.id;
             document.getElementById("invite-button").style.display = '';

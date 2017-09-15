@@ -7,7 +7,8 @@
           href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
     <style>
         :root {
-            --mdc-theme-primary: #0e4ead;
+            --mdc-theme-primary: #00838f;
+            --mdc-theme-background: #F5F5F6;
         }
 
         .mdc-ripple-surface.mdc-ripple-upgraded.mdc-button--primary::before,
@@ -17,7 +18,7 @@
     </style>
     <link href="http://vjs.zencdn.net/6.2.4/video-js.css" rel="stylesheet">
     <link href="res/player-style.css" rel="stylesheet">
-    <link href="res/style.scss" rel="stylesheet">
+    <link href="res/style.css" rel="stylesheet">
     <script src="http://vjs.zencdn.net/6.2.4/video.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <style>
@@ -40,13 +41,32 @@
             </div>
         </div>
         <div class="mdc-layout-grid__inner">
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-bottom mdc-layout-grid__cell--span-6">
+                <button class="mdc-button mdc-button--raised mdc-button--primary" onclick="loadVideo()" id="url-button" style="margin-right: 10px; margin-top: 32px;">
+                    Load Video URL
+                </button>
+                <div class="mdc-form-field">
+                    <div class="mdc-textfield" data-mdc-auto-init="MDCTextfield">
+                        <input type="text" id="url" class="mdc-textfield__input">
+                        <label for="url" class="mdc-textfield__label">URL</label>
+                    </div>
+                </div>
+            </div>
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-bottom mdc-layout-grid__cell--span-2">
+                <button class="mdc-button mdc-button--raised mdc-button--primary" onclick="skipIntro()"
+                        id="intro-button" style="float: right;">Skip OP/ED
+                </button>
+            </div>
+        </div>
+        <div class="mdc-layout-grid__inner">
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
                 <video id="my-player" class="video-js vjs-default-skin" controls preload="auto" data-setup='{}'></video>
             </div>
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">
-
+                <div id="room-list"></div>
                 <div class="mdc-layout-grid__inner">
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-bottom">
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-top">
+                        <hr>
                         <div class="mdc-form-field">
                             <div class="mdc-textfield" data-mdc-auto-init="MDCTextfield">
                                 <input type="text" id="name" class="mdc-textfield__input">
@@ -54,54 +74,35 @@
                             </div>
                         </div>
                     </div>
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-bottom">
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-middle" id="name-button-cell">
                         <button onclick="changeName()" id="name-button"
                                 class="mdc-button mdc-button--raised mdc-button--primary">Change Name
                         </button>
                     </div>
                 </div>
                 <div class="mdc-layout-grid__inner">
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
-                        <div id="room-list"></div>
+                    <div class="mdc-layout-grid__cell">
+                        <button class="mdc-button mdc-button--raised mdc-button--primary" onclick="leaveRoom()"
+                                id="leave-button">Leave Room
+                        </button>
+                    </div>
+                    <div class="mdc-layout-grid__cell">
+                        <button class="mdc-button mdc-button--raised mdc-button--primary" id="invite-button"
+                                onclick="copyToClipboard('#invite-link')">Copy Link
+                        </button>
+                        <div id="invite-link"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row" style="padding-top: 10px">
-        <div class="col-3">
-            <button onclick="createRoom()" id="create-button">Host a room</button>
-        </div>
-        <div class="col-2">
-            <button onclick="joinRoom()" id="room-join-button">Join room</button>
-        </div>
-    </div>
-    <div class="row" style="padding-top: 10px">
-        <div class="col-2">
-            <button onclick="skipIntro()" id="intro-button">Skip OP/ED</button>
-        </div>
-        <div class="col-2">
-            <button onclick="leaveRoom()" id="leave-button">Leave Room</button>
-        </div>
-    </div>
-    <div class="row" style="padding-top: 10px">
-        <div class="col-2">
-            <input type="text" id="url">
-        </div>
-        <div class="col-2">
-            <button onclick="loadVideo()" id="url-button">Load Video URL</button>
-        </div>
-        <div class="col-2">
-            <div id="invite-link"></div>
-            <button id="invite-button" onclick="copyToClipboard('#invite-link')">Copy Invite-Link</button>
-        </div>
-    </div>
+
 
     <aside id="room-dialog"
-        class="mdc-dialog"
-        role="alertdialog"
-        aria-labelledby="room-dialog-label"
-        aria-describedby="room-dialog-description">
+           class="mdc-dialog"
+           role="alertdialog"
+           aria-labelledby="room-dialog-label"
+           aria-describedby="room-dialog-description">
         <div class="mdc-dialog__surface">
             <header class="mdc-dialog__header">
                 <h2 id="room-dialog-label" class="mdc-dialog__header__title">
