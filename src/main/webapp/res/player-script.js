@@ -47,6 +47,7 @@ myPlayer.ready(function () {
     var aspectRatio = 9 / 16;
     var maxWidth = 1280;
     var parent = document.getElementById(myPlayer.id()).parentElement;
+
     function resizeVideoJS() {
         var width = parent.getBoundingClientRect().width;
         if (width > maxWidth) {
@@ -57,7 +58,7 @@ myPlayer.ready(function () {
     }
 
     var y = document.getElementsByClassName("vjs-big-play-button");
-    y[0].setAttribute("tabIndex","-1");
+    y[0].setAttribute("tabIndex", "-1");
     var x = document.getElementsByClassName("vjs-control");
     var i;
     for (i = 0; i < x.length; i++) {
@@ -69,17 +70,13 @@ myPlayer.ready(function () {
     // Then on resize call resizeVideoJS()
     window.onresize = resizeVideoJS;
 });
-$("#name").blur(function() {
-    document.getElementById("name").focus();
+$("#name").blur(function () {
     lastName = document.getElementById("name").value;
-    document.getElementById("name").value=getCookie("username");
-    $("#name").blur(function() {});
-    document.getElementById("name").blur();
+    document.getElementById("name").value = getCookie("username");
 });
 //hide video url and text field (when not connected to a room)
 function onloadFunction() {
     cookieDialog = new mdc.dialog.MDCDialog(document.querySelector('#cookie-dialog'));
-    var curUrl = "" + window.location;
     document.getElementById("url").style.display = 'none';
     document.getElementById("url-button").style.display = 'none';
     document.getElementById("intro-button").style.display = 'none';
@@ -87,12 +84,30 @@ function onloadFunction() {
     document.getElementById("invite-button").style.display = 'none';
     document.getElementById("leave-button").style.display = 'none';
     checkCookie();
-    if(curUrl.indexOf("?") === -1) {
-        if(!socket.opened_) {
-            socket.onopen = makeRoomDialog;
-        } else {
-            makeRoomDialog();
+}
+
+$(document).on('keydown', function (e) {
+    var code = (e.keyCode ? e.keyCode : e.which);
+    if (code === 27) {
+        if (roomDialog != null && roomDialog.open) {
+            e.stopImmediatePropagation();
         }
+        if (cookieDialog != null && cookieDialog.open) {
+            e.stopImmediatePropagation();
+        }
+    }
+});
+
+document.addEventListener("click", handler, true);
+
+function handler(e) {
+    if (roomDialog != null && roomDialog.open && !(e.target.id === "room-id-in" || e.target.id === "create-button-dialog" || e.target.id === "join-button-dialog")) {
+        e.stopPropagation();
+        e.preventDefault();
+    }
+    if (cookieDialog != null && cookieDialog.open && !(e.target.id === "cookie-field" || e.target.id === "cookie-button")) {
+        e.stopPropagation();
+        e.preventDefault();
     }
 }
 
@@ -137,7 +152,6 @@ function createRoom() {
 
 function joinRoom() {
     if (!roomJoined) {
-        document.getElementById("debug-out").innerHTML = "";
         isOwner = false;
         var id = document.getElementById("room-id-in").value;
         var userAction = {
@@ -152,12 +166,6 @@ function joinRoom() {
 function leaveRoom() {
     window.location = window.location.pathname;
 }
-
-$("#room-id-in").keypress(function (event) {
-    if (event.which === 13) {
-        joinRoom();
-    }
-});
 
 $("#url").keypress(function (event) {
     if (event.which === 13) {
@@ -176,6 +184,12 @@ $("#name").keypress(function (event) {
         lastName = document.getElementById("name").value;
         changeName();
         document.getElementById("name").blur();
+    }
+});
+
+$("#room-id-in").keypress(function (event) {
+    if (event.which === 13) {
+        joinRoom();
     }
 });
 
@@ -242,14 +256,20 @@ function onMessage(event) {
     }
     if (eventJSON.action === "roomID") {
         if (eventJSON.id === "-1") {
-            roomDialog.show();
+            if (roomDialog == null) {
+                makeRoomDialog();
+            } else {
+                roomDialog.show();
+            }
             document.getElementById("room-id-in").focus();
-            document.getElementById("room-id-in").value="invalid";
+            document.getElementById("room-id-in").value = "invalid";
             document.getElementById("room-id-in").blur();
             roomId = -1;
             roomJoined = false;
         } else {
-            roomDialog.close();
+            if (roomDialog != null) {
+                roomDialog.close();
+            }
             if (!isOwner) {
                 hidePlayButtons();
             }
@@ -280,7 +300,7 @@ function skipIntro() {
 }
 
 function changeName() {
-    if(lastName === "") {
+    if (lastName === "") {
         return;
     }
     var userAction = {
@@ -376,6 +396,14 @@ function checkCookie() {
         document.getElementById("name").focus();
         document.getElementById("name").value = username;
         document.getElementById("name").blur();
+        var curUrl = "" + window.location;
+        if (curUrl.indexOf("?") === -1) {
+            if (!socket.opened_) {
+                socket.onopen = makeRoomDialog;
+            } else {
+                makeRoomDialog();
+            }
+        }
     } else {
         cookieDialog.show();
         document.getElementById("cookie-field").focus();
@@ -390,6 +418,7 @@ function submitCookie() {
         document.getElementById("name").value = username;
         document.getElementById("name").blur();
         cookieDialog.close();
+        makeRoomDialog();
     } else {
         document.getElementById("cookie-field").focus();
     }
