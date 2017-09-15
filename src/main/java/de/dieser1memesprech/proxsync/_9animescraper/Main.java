@@ -190,7 +190,7 @@ public class Main {
         JsonObject jsonObjectUrls = jsonElementUrls.getAsJsonObject();
         JsonArray jsonArrayUrlsData = jsonObjectUrls.getAsJsonArray("data");
 
-        String episodeUrl = jsonArrayUrlsData.get(0).getAsJsonObject().get("file").getAsString();
+        String episodeUrl = jsonArrayUrlsData.get(jsonArrayUrlsData.size()-1).getAsJsonObject().get("file").getAsString();
 
         return episodeUrl;
     }
