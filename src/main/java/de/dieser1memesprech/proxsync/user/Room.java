@@ -1,6 +1,7 @@
 package de.dieser1memesprech.proxsync.user;
 
 import com.google.gson.Gson;
+import de.dieser1memesprech._9animescrapper.main.Main;
 import de.dieser1memesprech.proxsync.websocket.UserSessionHandler;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -41,6 +42,7 @@ public class Room {
     private CloseableHttpClient httpClient;
     private JsonNumber timestamp;
     private Random random = new Random();
+    private Main _9animeScraper = new Main();
 
     public Room(Session host, String hostname, String roomName) {
         this.host = host;
@@ -231,7 +233,7 @@ public class Room {
 
     private String get9animeLink() {
         //String content = getWebsiteContent(video, "");
-        return "";
+        return _9animeScraper.getEpisodeOfAnime(video);
     }
 
     private String getWebsiteContent(String url, String cookie) {
