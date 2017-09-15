@@ -179,22 +179,23 @@ public class Main {
     }
 
     private String getEpisodeUrl(Episode episode) {
+        String episodeUrl = "";
+        if (episode != null) {
+            String episodeJson = episode.getSources();
+            JsonElement jsonElementSource = new JsonParser().parse(episodeJson);
+            JsonObject jsonObjectSource = jsonElementSource.getAsJsonObject();
+            String grabber = jsonObjectSource.get("grabber").getAsString();
+            JsonObject params = jsonObjectSource.getAsJsonObject("params");
+            String token = params.get("token").getAsString();
+            String url = grabber + "&token=" + token;
+            String episodeUrls = getHtmlContent(url);
 
-        String episodeJson = episode.getSources();
-        JsonElement jsonElementSource = new JsonParser().parse(episodeJson);
-        JsonObject jsonObjectSource = jsonElementSource.getAsJsonObject();
-        String grabber = jsonObjectSource.get("grabber").getAsString();
-        JsonObject params = jsonObjectSource.getAsJsonObject("params");
-        String token = params.get("token").getAsString();
-        String url = grabber + "&token=" + token;
-        String episodeUrls = getHtmlContent(url);
+            JsonElement jsonElementUrls = new JsonParser().parse(episodeUrls);
+            JsonObject jsonObjectUrls = jsonElementUrls.getAsJsonObject();
+            JsonArray jsonArrayUrlsData = jsonObjectUrls.getAsJsonArray("data");
 
-        JsonElement jsonElementUrls = new JsonParser().parse(episodeUrls);
-        JsonObject jsonObjectUrls = jsonElementUrls.getAsJsonObject();
-        JsonArray jsonArrayUrlsData = jsonObjectUrls.getAsJsonArray("data");
-
-        String episodeUrl = jsonArrayUrlsData.get(jsonArrayUrlsData.size()-1).getAsJsonObject().get("file").getAsString();
-
+            episodeUrl = jsonArrayUrlsData.get(jsonArrayUrlsData.size() - 1).getAsJsonObject().get("file").getAsString();
+        }
         return episodeUrl;
     }
 }
