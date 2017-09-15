@@ -77,6 +77,13 @@ public class UserWebSocket {
             RoomHandler.getInstance().mapSession(session, r);
         }
 
+        if("finished".equals(jsonMessage.getString("action"))) {
+            Room r = RoomHandler.getInstance().getRoomBySession(session);
+            if(r != null) {
+                r.videoFinished();
+            }
+        }
+
         if ("join".equals(jsonMessage.getString("action"))) {
             Room old = RoomHandler.getInstance().getRoomBySession(session);
             if(old != null) {

@@ -41,8 +41,17 @@ var myPlayer = videojs('my-player');
 myPlayer.on('stalled', handleStopEvent);
 myPlayer.on('pause', handleStopEvent);
 myPlayer.on('play', handlePlayEvent);
-myPlayer.on('volumechange', function() {
-    setCookie("volume",myPlayer.volume(),365);
+myPlayer.on('volumechange', function () {
+    setCookie("volume", myPlayer.volume(), 365);
+});
+myPlayer.on('ended', function () {
+    if (isOwner) {
+        myPlayer.pause();
+        var userAction = {
+            "action": "finished"
+        };
+        socket.send(JSON.stringify(userAction));
+    }
 });
 
 myPlayer.ready(function () {
@@ -74,8 +83,8 @@ myPlayer.ready(function () {
     // Then on resize call resizeVideoJS()
     window.onresize = resizeVideoJS;
     var volume = getCookie("volume");
-    if(volume==="") {
-        volume=1;
+    if (volume === "") {
+        volume = 1;
     }
     myPlayer.volume(volume);
 });
@@ -297,7 +306,7 @@ function onMessage(event) {
     if (eventJSON.action === "bufferedRequest") {
         sendBufferedInd();
     }
-    if(eventJSON.action === "debug") {
+    if (eventJSON.action === "debug") {
         console.log(eventJSON.message);
     }
     if (eventJSON.action === "video") {
@@ -374,8 +383,10 @@ function skipIntro() {
     var currentTime = myPlayer.currentTime();
     myPlayer.currentTime(currentTime + 80);
     myPlayer.pause();
-    setTimeout(handlePlayEvent, 500);
-    setTimeout(handlePlayEvent, 1000);
+    if (currentTime + 81 < myPlayer.duration()) {
+        setTimeout(handlePlayEvent, 500);
+        setTimeout(handlePlayEvent, 1000);
+    }
 }
 
 function changeName() {
