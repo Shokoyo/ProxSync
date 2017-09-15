@@ -77,7 +77,7 @@ $("#name").blur(function () {
 //hide video url and text field (when not connected to a room)
 function onloadFunction() {
     cookieDialog = new mdc.dialog.MDCDialog(document.querySelector('#cookie-dialog'));
-    document.getElementById("url").style.display = 'none';
+    document.getElementById("url-field").style.display = 'none';
     document.getElementById("url-button").style.display = 'none';
     document.getElementById("intro-button").style.display = 'none';
     document.getElementById("invite-link").style.display = 'none';
@@ -144,7 +144,7 @@ function createRoom() {
             name: getCookie("username")
         };
         socket.send(JSON.stringify(userAction));
-        document.getElementById("url").style.display = '';
+        document.getElementById("url-field").style.display = '';
         document.getElementById("url-button").style.display = '';
         document.getElementById("intro-button").style.display = '';
     }
