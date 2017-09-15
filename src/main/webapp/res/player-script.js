@@ -21,6 +21,7 @@ var lastName;
 var roomDialog;
 var cookieDialog;
 var skipButton;
+var firstVideo = true;
 //add onload function
 if (window.attachEvent) {
     window.attachEvent('onload', onloadFunction);
@@ -44,15 +45,19 @@ myPlayer.on('play', handlePlayEvent);
 myPlayer.on('volumechange', function () {
     setCookie("volume", myPlayer.volume(), 365);
 });
-myPlayer.on('ended', function () {
-    if (isOwner) {
-        myPlayer.pause();
+
+function initCheckbox() {
+    document.getElementById("auto-next-checkbox").checked = false;
+    $('#auto-next-checkbox').click(function () {
+        console.log(document.getElementById("auto-next-checkbox").checked);
         var userAction = {
-            "action": "finished"
+            "action": "autoNext",
+            "value": document.getElementById("auto-next-checkbox").checked
         };
         socket.send(JSON.stringify(userAction));
-    }
-});
+    });
+    document.getElementById("auto-next-checkbox").checked = true;
+}
 
 myPlayer.ready(function () {
 
@@ -103,6 +108,7 @@ $("#name").blur(function () {
 });
 //hide video url and text field (when not connected to a room)
 function onloadFunction() {
+    initCheckbox();
     cookieDialog = new mdc.dialog.MDCDialog(document.querySelector('#cookie-dialog'));
     document.getElementById("url-field").style.display = 'none';
     document.getElementById("url-button").style.display = 'none';
@@ -110,6 +116,8 @@ function onloadFunction() {
     document.getElementById("invite-link").style.display = 'none';
     document.getElementById("invite-button").style.display = 'none';
     document.getElementById("leave-button").style.display = 'none';
+    document.getElementById("auto-next-container").style.display = 'none';
+    document.getElementById("auto-play-container").style.display = 'none';
     checkCookie();
 }
 
@@ -319,9 +327,28 @@ function onMessage(event) {
         } else {
             SourceObject = {src: SourceString, type: 'video/webm'}
         }
+
         myPlayer.src(SourceObject);
         myPlayer.pause();
-        myPlayer.one('canplay', setStartTime);
+        if(!firstVideo && document.getElementById("auto-play-checkbox").checked) {
+            myPlayer.one('canplay', function() {
+                setStartTime();
+                setTimeout(function() {
+                myPlayer.play();
+            }, 1000)});
+        } else {
+            myPlayer.one('canplay', setStartTime);
+        }
+        myPlayer.one('ended', function () {
+            if (isOwner) {
+                myPlayer.pause();
+                var userAction = {
+                    "action": "finished"
+                };
+                socket.send(JSON.stringify(userAction));
+            }
+        });
+        firstVideo = false;
         //syncing = true;
         //setTimeout(myPlayer.play,20);
         //setTimeout(function() { syncing = false; }, 20);
@@ -363,6 +390,8 @@ function onMessage(event) {
                 document.getElementById("url-field").style.display = '';
                 document.getElementById("url-button").style.display = '';
                 document.getElementById("intro-button").style.display = '';
+                document.getElementById("auto-next-container").style.display = '';
+                document.getElementById("auto-play-container").style.display = '';
                 showSpecialControl();
             }
             document.getElementById("room-id-in").style.display = 'none';
@@ -383,7 +412,7 @@ function skipIntro() {
     var currentTime = myPlayer.currentTime();
     myPlayer.currentTime(currentTime + 80);
     myPlayer.pause();
-    if (currentTime + 81 < myPlayer.duration()) {
+    if (currentTime + 83 < myPlayer.duration()) {
         setTimeout(handlePlayEvent, 500);
         setTimeout(handlePlayEvent, 1000);
     }

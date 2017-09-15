@@ -84,6 +84,13 @@ public class UserWebSocket {
             }
         }
 
+        if("autoNext".equals(jsonMessage.getString("action"))) {
+            Room r = RoomHandler.getInstance().getRoomBySession(session);
+            if(r != null) {
+                r.setAutoNext(jsonMessage.getBoolean("value"));
+            }
+        }
+
         if ("join".equals(jsonMessage.getString("action"))) {
             Room old = RoomHandler.getInstance().getRoomBySession(session);
             if(old != null) {

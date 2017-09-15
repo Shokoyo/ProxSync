@@ -76,7 +76,7 @@ public class Main {
         return null;
     }
 
-    private Episode getEpisodeObjectFromUrlAndNum(String url, int episodeNum) {
+    public Episode getEpisodeObjectFromUrlAndNum(String url, int episodeNum) {
         String content = getHtmlContent(url);
         Document doc = Jsoup.parse(content);
         Elements servers = doc.select("div[class=server row");

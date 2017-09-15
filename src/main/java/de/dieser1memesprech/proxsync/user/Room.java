@@ -1,6 +1,7 @@
 package de.dieser1memesprech.proxsync.user;
 
 import com.google.gson.Gson;
+import de.dieser1memesprech.proxsync._9animescraper.Episode;
 import de.dieser1memesprech.proxsync._9animescraper.Main;
 import de.dieser1memesprech.proxsync.websocket.UserSessionHandler;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -27,18 +28,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Room {
-    private Queue<Video> playList;
+    private int episode;
+    private Queue<Video> playlist;
     private static final String USER_AGENT = "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.13) Gecko/20101206 Ubuntu/10.10 (maverick) Firefox/3.6.13";
     private static final String ripLink = "http://i.imgur.com/eKmmyv1.mp4";
     private HashMap<Session, Boolean> readyStates = new HashMap<Session, Boolean>();
     private HashMap<Session, String> nameMap = new HashMap<Session, String>();
     private List<Session> sessions;
     private String video = "";
+    private String _9animeLink = "";
     private Session host;
     private String id;
     private boolean playing = false;
     private boolean buffering = false;
     private boolean isDirectLink = false;
+    private boolean autoNext = false;
     private String lastCookie = "";
     private CloseableHttpClient httpClient;
     private JsonNumber timestamp;
@@ -46,6 +50,7 @@ public class Room {
     private Main _9animeScraper = new Main();
 
     public Room(Session host, String hostname, String roomName) {
+        playlist = new LinkedList<Video>();
         this.host = host;
         if (roomName != null && !roomName.equals("")) {
             id = roomName;
@@ -62,6 +67,10 @@ public class Room {
 
     public boolean isPlaying() {
         return playing;
+    }
+
+    public void setAutoNext(boolean value) {
+        autoNext = value;
     }
 
     public void pause(JsonNumber current, Session session, boolean intended) {
@@ -220,6 +229,7 @@ public class Room {
                     sendDebugToHost("Couldn't find video URL. May be my fault or your fault");
                 }
             } else if (url.getHost().equals("9anime.to")) {
+                episode = 0;
                 website = get9animeLink();
             } else {
                 sendDebugToHost("Host not supported (yet?)");
@@ -234,11 +244,22 @@ public class Room {
 
     private String get9animeLink() {
         //String content = getWebsiteContent(video, "");
-        String res = _9animeScraper.getEpisodeOfAnime(video);
-        if(res==null) {
-            res= "";
+        if(episode == 0) {
+            _9animeLink = video;
+            Episode episode = _9animeScraper.getEpisodeObjectFromUrl(video);
+            if(episode == null) {
+                return "";
+            }
+            this.episode = episode.getEpNumInt();
+            return _9animeScraper.getEpisodeUrlFromEpisodeObject(episode);
+        } else {
+            Episode episode = _9animeScraper.getEpisodeObjectFromUrlAndNum(_9animeLink, this.episode);
+            if(episode != null) {
+                return _9animeScraper.getEpisodeUrlFromEpisodeObject(episode);
+            } else {
+                return "";
+            }
         }
-        return res;
     }
 
     private String getWebsiteContent(String url, String cookie) {
@@ -419,7 +440,13 @@ public class Room {
     }
 
     public void loadNextVideo() {
-
+        timestamp = null;
+        if(playlist.isEmpty() && autoNext) {
+            episode++;
+            setVideo(get9animeLink());
+        } else {
+            //TODO play playlist
+        }
     }
 
     public void markReady(Session s, boolean status) {
