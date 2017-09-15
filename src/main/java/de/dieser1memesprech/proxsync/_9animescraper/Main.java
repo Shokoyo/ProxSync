@@ -35,7 +35,7 @@ public class Main {
      * @return The video URL
      */
     public String getEpisodeOfAnime(String animeUrl, int episodeNum) {
-        return getEpisodeUrlFromList(scrapeAllShowSources(animeUrl), episodeNum);
+        return getEpisodeUrl(getEpisodeObjectFromUrlAndNum(animeUrl, episodeNum));
     }
 
     /**
@@ -48,7 +48,11 @@ public class Main {
         return getEpisodeUrl(getEpisodeObjectFromUrl(episodeUrl));
     }
 
-    private Episode getEpisodeObjectFromUrl(String url) {
+    public String getEpisodeUrlFromEpisodeObject(Episode episode) {
+        return getEpisodeUrl(episode);
+    }
+
+    public Episode getEpisodeObjectFromUrl(String url) {
         String content = getHtmlContent(url);
         Document doc = Jsoup.parse(content);
         Elements servers = doc.select("div[class=server row");
@@ -62,6 +66,30 @@ public class Main {
                     Element anchor = elEpisode.select("a").first();
                     String id = anchor.attr("data-id");
                     if (url.contains(id)) {
+                        Episode episode = parseServerSingleEpisode(elEpisode, ts, update, server.attr("data-id"));
+                        return episode;
+                    }
+
+                }
+            }
+        }
+        return null;
+    }
+
+    private Episode getEpisodeObjectFromUrlAndNum(String url, int episodeNum) {
+        String content = getHtmlContent(url);
+        Document doc = Jsoup.parse(content);
+        Elements servers = doc.select("div[class=server row");
+        Element body = doc.select("body").first();
+        String ts = body.attr("data-ts");
+        String update = "0";
+        for (Element server : servers) {
+            if (server.attr("data-id").equals("30")) {
+                Elements episodes = server.select("li");
+                for (Element elEpisode : episodes) {
+                    Element anchor = elEpisode.select("a").first();
+                    int epNum = Integer.parseInt(anchor.text());
+                    if (epNum == episodeNum) {
                         Episode episode = parseServerSingleEpisode(elEpisode, ts, update, server.attr("data-id"));
                         return episode;
                     }
@@ -182,6 +210,7 @@ public class Main {
         String episodeUrl = "";
         if (episode != null) {
             String episodeJson = episode.getSources();
+            System.out.println(episodeJson);
             JsonElement jsonElementSource = new JsonParser().parse(episodeJson);
             JsonObject jsonObjectSource = jsonElementSource.getAsJsonObject();
             String grabber = jsonObjectSource.get("grabber").getAsString();
@@ -196,6 +225,7 @@ public class Main {
 
             episodeUrl = jsonArrayUrlsData.get(jsonArrayUrlsData.size() - 1).getAsJsonObject().get("file").getAsString();
         }
+        System.out.println(episodeUrl);
         return episodeUrl;
     }
 }
