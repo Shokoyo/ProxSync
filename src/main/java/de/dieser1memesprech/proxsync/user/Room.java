@@ -1,7 +1,7 @@
 package de.dieser1memesprech.proxsync.user;
 
 import com.google.gson.Gson;
-import de.dieser1memesprech._9animescrapper.main.Main;
+import de.dieser1memesprech.proxsync._9animescraper.Main;
 import de.dieser1memesprech.proxsync.websocket.UserSessionHandler;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
