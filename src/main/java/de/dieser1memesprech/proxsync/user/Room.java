@@ -33,7 +33,7 @@ public class Room {
     private List<Session> sessions;
     private String video = "";
     private Session host;
-    private int id;
+    private String id;
     private boolean playing = false;
     private boolean buffering = false;
     private boolean isDirectLink = false;
@@ -42,11 +42,15 @@ public class Room {
     private JsonNumber timestamp;
     private Random random = new Random();
 
-    public Room(Session host, String hostname) {
+    public Room(Session host, String hostname, String roomName) {
         this.host = host;
-        do {
-            id = random.nextInt(999);
-        } while (!RoomHandler.getInstance().checkId(id));
+        if (roomName != null && !roomName.equals("")) {
+            id = roomName;
+        } else {
+            do {
+                id = Long.toHexString(Double.doubleToLongBits(Math.random()));
+            } while (!RoomHandler.getInstance().checkId(id));
+        }
         sessions = new LinkedList<Session>();
         this.addSession(host, hostname);
         RoomHandler.getInstance().addRoom(this);
@@ -67,7 +71,7 @@ public class Room {
                     .add("action", "pause")
                     .add("current", current)
                     .build();
-            if(!intended) {
+            if (!intended) {
                 this.markReady(session, false);
             }
             UserSessionHandler.getInstance().sendToRoom(messageJson, this);
@@ -83,7 +87,7 @@ public class Room {
     }
 
     public void addSession(Session session, String name) {
-        setName(session,name);
+        setName(session, name);
         readyStates.put(session, false);
         sessions.add(session);
         JsonProvider provider = JsonProvider.provider();
@@ -102,15 +106,31 @@ public class Room {
         readyStates.remove(session);
         nameMap.remove(session);
         sessions.remove(session);
+        if (session == host) {
+            if (sessions.isEmpty()) {
+                RoomHandler.getInstance().removeRoom(this);
+                return;
+            } else {
+                host = sessions.get(0);
+                JsonProvider provider = JsonProvider.provider();
+                JsonObject messageJson = provider.createObjectBuilder()
+                        .add("action", "owner")
+                        .build();
+                UserSessionHandler.getInstance().sendToSession(host, messageJson);
+            }
+        }
         sendRoomList();
     }
 
     private void sendRoomList() {
         StringBuilder builder = new StringBuilder();
         builder.append("<ul class=\"mdc-list mdc-list--dense\">");
-        for(String s: nameMap.values()) {
+        for (Session s : sessions) {
             builder.append("<li class=\"mdc-list-item\">");
-            builder.append(s);
+            builder.append(nameMap.get(s));
+            if (s == host) {
+                builder.append("&nbsp;<img class=\"mdc-list-item__start-detail\" src=\"res/crown.svg\" alt=\"Crown\" height=\"15\" width=\"15\"> ");
+            }
             builder.append("</li>");
         }
         builder.append("</ul>");
@@ -120,26 +140,26 @@ public class Room {
                 .add("action", "room-list")
                 .add("roomString", roomString)
                 .build();
-        UserSessionHandler.getInstance().sendToRoom(messageJson,this);
+        UserSessionHandler.getInstance().sendToRoom(messageJson, this);
     }
 
     public void changeName(Session s, String name) {
         String old = nameMap.get(s);
-        if(!name.equals(old)) {
-            setName(s,name);
+        if (!name.equals(old)) {
+            setName(s, name);
             sendRoomList();
         }
     }
 
     private void setName(Session s, String name) {
-        if(name.contains("<")) {
+        if (name.contains("<")) {
             name = "User " + random.nextInt(10000);
         }
-        nameMap.put(s,name);
+        nameMap.put(s, name);
     }
 
     public void setVideo(String url) {
-        for(Session s : readyStates.keySet()) {
+        for (Session s : readyStates.keySet()) {
             markReady(s, false);
         }
         video = url;
@@ -159,8 +179,8 @@ public class Room {
     }
 
     private void sendVideoToSession(Session s, boolean newJoin) {
-        if(newJoin) {
-            if(timestamp != null) {
+        if (newJoin) {
+            if (timestamp != null) {
                 System.out.println("pause");
                 pause(timestamp, s, false);
             }
@@ -168,7 +188,7 @@ public class Room {
         String url = createDirectLink();
         JsonProvider provider = JsonProvider.provider();
         JsonObject messageJson;
-        if(timestamp == null) {
+        if (timestamp == null) {
             messageJson = provider.createObjectBuilder()
                     .add("action", "video")
                     .add("url", url)
@@ -191,17 +211,17 @@ public class Room {
         String website = "";
         try {
             URL url = new URL(video);
-            if(url.getHost().equals("proxer.me")) {
+            if (url.getHost().equals("proxer.me")) {
                 website = getProxerLink();
-                if(website == null || website.equals("")) {
+                if (website == null || website.equals("")) {
                     sendDebugToHost("Couldn't find video URL. May be my fault or your fault");
                 }
-            } else if(url.getHost().equals("9anime.to")) {
+            } else if (url.getHost().equals("9anime.to")) {
                 website = get9animeLink();
             } else {
                 sendDebugToHost("Host not supported (yet?)");
             }
-        } catch(MalformedURLException e) {
+        } catch (MalformedURLException e) {
             sendDebugToHost("invalid URL");
         }
         video = website;
@@ -241,7 +261,7 @@ public class Room {
             e.printStackTrace();
         }*/
         String website = "";
-        if(url.contains("proxer") && !UserSessionHandler.getInstance().proxRequest()) {
+        if (url.contains("proxer") && !UserSessionHandler.getInstance().proxRequest()) {
             sendDebugToHost("Too many Proxer requests");
             return ripLink;
         }
@@ -251,9 +271,9 @@ public class Room {
             URL urlT = new URL(url);
             HttpURLConnection conn = (HttpURLConnection) urlT.openConnection();
             conn.setRequestMethod("GET");
-            if(cookie!=null && !cookie.equals("")) {
-                if(url.contains("proxer")) {
-                    conn.addRequestProperty("Cookie","chatactivate=false; _pk_ref.1.0e5d=%5B%22%22%2C%22%22%2C1494012577%2C%22https%3A%2F%2Fwww.google.de%2F%22%5D; wiki_db_wiki_UserID=67335; wiki_db_wiki_UserName=Schoki-; __cfduid=d5051858a3acb8b0e349ee61defdc30551498418460; cookieconsent_dismissed=yes; stream_choose=mp4upload; joomla_remember_me_d125cc75d135b0170a7c24322ab2c4c5=y3BrUANeyZGxJfac.jh3fkcL2pDiXrljRs1gK; proxer_loggedin=true; style=gray; default_design=gray; tmode=ht; MW57ac91865e5064f231cf620988223590=U2Nob2tpLXw2Y2RmOTYxODZmNjNkODFlMjYzN2JkMDEyNTZlNDQ5OQ%3D%3D; e0da4f913f5f05ed7a3f6dc5f0488c7b=n8vucfkmr2o3bv995bphgdo3n3; joomla_user_state=logged_in");
+            if (cookie != null && !cookie.equals("")) {
+                if (url.contains("proxer")) {
+                    conn.addRequestProperty("Cookie", "chatactivate=false; _pk_ref.1.0e5d=%5B%22%22%2C%22%22%2C1494012577%2C%22https%3A%2F%2Fwww.google.de%2F%22%5D; wiki_db_wiki_UserID=67335; wiki_db_wiki_UserName=Schoki-; __cfduid=d5051858a3acb8b0e349ee61defdc30551498418460; cookieconsent_dismissed=yes; stream_choose=mp4upload; joomla_remember_me_d125cc75d135b0170a7c24322ab2c4c5=y3BrUANeyZGxJfac.jh3fkcL2pDiXrljRs1gK; proxer_loggedin=true; style=gray; default_design=gray; tmode=ht; MW57ac91865e5064f231cf620988223590=U2Nob2tpLXw2Y2RmOTYxODZmNjNkODFlMjYzN2JkMDEyNTZlNDQ5OQ%3D%3D; e0da4f913f5f05ed7a3f6dc5f0488c7b=n8vucfkmr2o3bv995bphgdo3n3; joomla_user_state=logged_in");
                 } else {
                     conn.addRequestProperty("Cookie", cookie);
                 }
@@ -267,7 +287,7 @@ public class Room {
             }
             rd.close();
             website = result.toString();
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             sendDebugToHost("Something went wrong");
         }
@@ -289,10 +309,10 @@ public class Room {
             }
             Gson gson = new Gson();
             Stream[] streams = gson.fromJson(streamString, Stream[].class);
-                res = parseMp4(streams);
-        } catch(IndexOutOfBoundsException e) {
+            res = parseMp4(streams);
+        } catch (IndexOutOfBoundsException e) {
             sendDebugToHost("Couldn't parse Proxer stream link");
-        } catch(NullPointerException e) {
+        } catch (NullPointerException e) {
             sendDebugToHost("Couldn't parse Proxer stream link");
         }
         return res;
@@ -301,23 +321,23 @@ public class Room {
     private String parseMp4(Stream[] streams) {
         String res = "";
         Stream stream = null;
-        for(Stream s: streams) {
-            if(s.type.equals("mp4upload")) {
+        for (Stream s : streams) {
+            if (s.type.equals("mp4upload")) {
                 stream = s;
             }
         }
-        if(stream != null) {
-            stream.replace = stream.replace.replace("#",stream.code);
+        if (stream != null) {
+            stream.replace = stream.replace.replace("#", stream.code);
             String content = getWebsiteContent("https:" + stream.replace, lastCookie);
             Pattern MP4_PATTERN = Pattern.compile("\\|var\\|com\\|(.*?)\\|url");
             //System.out.println(content);
             Matcher m = MP4_PATTERN.matcher(content);
-            if(m.find()) {
+            if (m.find()) {
                 String raw = m.group(1);
                 String[] parts = raw.split("\\|");
                 String token = "";
-                for(String s: parts) {
-                    if(s.length()>=25) {
+                for (String s : parts) {
+                    if (s.length() >= 25) {
                         token = s;
                     }
                 }
@@ -336,12 +356,12 @@ public class Room {
 
     private String parseProxer(Stream[] streams) {
         Stream s = null;
-        for(Stream stream : streams) {
-            if(stream.type.equals("proxer-stream")) {
+        for (Stream stream : streams) {
+            if (stream.type.equals("proxer-stream")) {
                 s = stream;
             }
         }
-        if(s == null) {
+        if (s == null) {
             return "";
         }
         s.replace = s.replace.replace("#", s.code);
@@ -350,7 +370,7 @@ public class Room {
         Element vid = doc.select("video").first();
         Pattern VIDEO_LINK_PATTERN = Pattern.compile("src=\"(.*?)\"");
         Matcher m = VIDEO_LINK_PATTERN.matcher(vid.html());
-        if(m.find()) {
+        if (m.find()) {
             return m.group(1);
         }
         return "";
@@ -387,7 +407,7 @@ public class Room {
 
     public void markReady(Session s, boolean status) {
         readyStates.put(s, status);
-        if(!playing && buffering) {
+        if (!playing && buffering) {
             play();
         }
     }
@@ -417,10 +437,10 @@ public class Room {
         JsonObject messageJson = provider.createObjectBuilder()
                 .add("action", "bufferedRequest")
                 .build();
-        UserSessionHandler.getInstance().sendToSession(s,messageJson);
+        UserSessionHandler.getInstance().sendToSession(s, messageJson);
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

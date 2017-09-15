@@ -58,7 +58,22 @@ public class UserWebSocket {
             if(old != null) {
                 old.removeSession(session);
             }
-            Room r = new Room(session, jsonMessage.getString("name"));
+            String s = jsonMessage.getString("roomName");
+            if(s==null) {
+                s = "";
+            } else if (!s.equals("")) {
+                if(!RoomHandler.getInstance().checkId(s)) {
+                    System.out.println("ALARM");
+                    JsonProvider provider = JsonProvider.provider();
+                    JsonObject messageJson = provider.createObjectBuilder()
+                            .add("action", "roomID")
+                            .add("id", "-2")
+                            .build();
+                    UserSessionHandler.getInstance().sendToSession(session, messageJson);
+                    return;
+                }
+            }
+            Room r = new Room(session, jsonMessage.getString("name"),s);
             RoomHandler.getInstance().mapSession(session, r);
         }
 
@@ -68,22 +83,18 @@ public class UserWebSocket {
                 old.removeSession(session);
             }
             try {
-                int id = Integer.parseInt(jsonMessage.getString("id"));
-                boolean found = false;
-                for (Room r : RoomHandler.getInstance().getRooms()) {
-                    if (r.getId() == id) {
-                        found = true;
-                        r.addSession(session, jsonMessage.getString("name"));
-                        RoomHandler.getInstance().mapSession(session, r);
-                    }
-                }
-                if(!found) {
+                String id = jsonMessage.getString("id");
+                Room r = RoomHandler.getInstance().getRoomById(id);
+                if(r==null) {
                     JsonProvider provider = JsonProvider.provider();
                     JsonObject messageJson = provider.createObjectBuilder()
                             .add("action", "roomID")
                             .add("id", "-1")
                             .build();
                     UserSessionHandler.getInstance().sendToSession(session, messageJson);
+                } else {
+                    r.addSession(session, jsonMessage.getString("name"));
+                    RoomHandler.getInstance().mapSession(session, r);
                 }
             } catch (NumberFormatException e) {
 

@@ -20,6 +20,7 @@ var roomId;
 var lastName;
 var roomDialog;
 var cookieDialog;
+var skipButton;
 //add onload function
 if (window.attachEvent) {
     window.attachEvent('onload', onloadFunction);
@@ -122,6 +123,41 @@ function hidePlayButtons() {
     children[5].removeChild('PlayToggle');
 }
 
+function showSpecialControl() {
+    addSkipButton();
+}
+
+function addSkipButton() {
+    var videoJsButtonClass = videojs.getComponent('Button');
+    var concreteButtonClass = videojs.extend(videoJsButtonClass, {
+
+        // The `init()` method will also work for constructor logic here, but it is
+        // deprecated. If you provide an `init()` method, it will override the
+        // `constructor()` method!
+        constructor: function() {
+            videoJsButtonClass.call(this, myPlayer);
+        }, // notice the comma
+        handleClick: skipIntro
+    });
+
+    skipButton = myPlayer.controlBar.addChild(new concreteButtonClass(), {}, myPlayer.controlBar.children().length - 2);
+    skipButton.addClass("vjs-skip-button");
+    var buttonDOM = document.getElementsByClassName("vjs-skip-button");
+    buttonDOM[0].setAttribute("title", "Skip OP/ED");
+    var loc = location.protocol + '//' + location.host + location.pathname;
+    buttonDOM[0].firstChild.innerHTML = "<img src=\"" + loc + "res/skip.png\" height='14' align='middle'></img>";
+}
+
+function showPlayButtons() {
+    myPlayer.addChild('BigPlayButton', {}, 3);
+    myPlayer.getChild('ControlBar').addChild('PlayToggle', {},0);
+    var playButton = myPlayer.getChild('ControlBar').getChild('PlayToggle');
+    if(!myPlayer.paused()) {
+        playButton.toggleClass("vjs-playing");
+        playButton.toggleClass("vjs-paused");
+    }
+}
+
 myPlayer.ready(function () {
     myPlayer.volume(0.1);
 });
@@ -141,12 +177,10 @@ function createRoom() {
         roomJoined = true;
         var userAction = {
             action: "create",
+            roomName: "" + document.getElementById("room-id-in").value,
             name: getCookie("username")
         };
         socket.send(JSON.stringify(userAction));
-        document.getElementById("url-field").style.display = '';
-        document.getElementById("url-button").style.display = '';
-        document.getElementById("intro-button").style.display = '';
     }
 }
 
@@ -189,11 +223,15 @@ $("#name").keypress(function (event) {
 
 $("#room-id-in").keypress(function (event) {
     if (event.which === 13) {
-        joinRoom();
+        createRoom();
     }
 });
 
 function loadVideo() {
+    if(myPlayer.src() !== undefined) {
+        myPlayer.reset();
+        sendCurrentTime();
+    }
     var url = document.getElementById("url").value;
     var userAction = {
         action: "video",
@@ -231,6 +269,14 @@ function onMessage(event) {
             syncing = true;
         }
     }
+    if(eventJSON.action === "owner") {
+        isOwner = true;
+        showPlayButtons();
+        showSpecialControl();
+        document.getElementById("url-field").style.display = '';
+        document.getElementById("url-button").style.display = '';
+        document.getElementById("intro-button").style.display = '';
+    }
     if (eventJSON.action === "jump") {
         myPlayer.currentTime(eventJSON.time);
     }
@@ -266,12 +312,30 @@ function onMessage(event) {
             document.getElementById("room-id-in").blur();
             roomId = -1;
             roomJoined = false;
+            isOwner = false;
+        } else if(eventJSON.id === "-2") {
+            if (roomDialog == null) {
+                makeRoomDialog();
+            } else {
+                roomDialog.show();
+            }
+            document.getElementById("room-id-in").focus();
+            document.getElementById("room-id-in").value = "already taken";
+            document.getElementById("room-id-in").blur();
+            roomId = -2;
+            roomJoined = false;
+            isOwner = false;
         } else {
             if (roomDialog != null) {
                 roomDialog.close();
             }
             if (!isOwner) {
                 hidePlayButtons();
+            } else {
+                document.getElementById("url-field").style.display = '';
+                document.getElementById("url-button").style.display = '';
+                document.getElementById("intro-button").style.display = '';
+                showSpecialControl();
             }
             document.getElementById("room-id-in").style.display = 'none';
             document.getElementById("leave-button").style.display = '';
@@ -285,7 +349,8 @@ function onMessage(event) {
         document.getElementById("debug-out").innerHTML = eventJSON.message;
     }
     if (eventJSON.action === "room-list") {
-        document.getElementById("room-list").innerHTML = "<h4>User List (ID: " + roomId + ")</h4>" + eventJSON.roomString;
+        var roomString = eventJSON.roomString.replace("res/",location.protocol + '//' + location.host + location.pathname + "res/");
+        document.getElementById("room-list").innerHTML = "<h4>User List (ID: " + roomId + ")</h4>" + roomString;
     }
 }
 

@@ -35,9 +35,9 @@ public class RoomHandler {
         return rooms;
     }
 
-    public Room getRoomById(int id) {
+    public Room getRoomById(String id) {
         for(Room r: rooms) {
-            if(r.getId() == id) {
+            if(r.getId().equals(id)) {
                 return r;
             }
         }
@@ -53,12 +53,12 @@ public class RoomHandler {
     }
 
     public void removeRoom(Room room) {
-        rooms.add(room);
+        rooms.remove(room);
     }
 
-    public boolean checkId(int id) {
+    public boolean checkId(String id) {
         for(Room r: rooms) {
-            if(r.getId() == id) {
+            if(r.getId().equals(id)) {
                 return false;
             }
         }
