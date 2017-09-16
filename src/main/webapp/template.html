@@ -10,6 +10,7 @@
         :root {
             --mdc-theme-primary: #263238;
             --mdc-theme-secondary: #7b1fa2;
+            --mdc-theme-secondary-light: #ae52d4;
             --mdc-theme-primary-dark: #000a12;
             --mdc-theme-primary-light: #4f5b62;
             --mdc-theme-background: #F5F5F6;
@@ -33,7 +34,7 @@
         <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
             <button class="mdc-button mdc-button--raised mdc-theme--secondary-bg"
                     onclick="register()"
-                    id="register-button" style="margin-left: 10px;">New Room
+                    id="register-button" style="margin-left: 16px;">New Room
             </button>
         </section>
         <section class="mdc-toolbar__section mdc-toolbar__section--align-middle">
@@ -41,7 +42,7 @@
         </section>
         <section class="mdc-toolbar__section mdc-toolbar__section--align-end">
             <span class="mdc-toolbar__title">Welcome User!</span>
-            <a href="#" class="material-icons mdc-toolbar__icon mdc-theme--secondary" aria-label="Download"
+            <a href="#" class="material-icons mdc-toolbar__icon mdc-theme--secondary-light" aria-label="Download"
                alt="Download" style="font-size: 36px;">account_circle</a>
         </section>
     </div>
@@ -53,7 +54,7 @@
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
                 <video id="my-player" class="video-js vjs-default-skin" controls preload="auto" data-setup='{}'></video>
             </div>
-            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">
+            <div class="mdc-layout-grid__cell">
                 <div class="mdc-layout-grid__inner">
                     <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
                         <header class="mdc-toolbar">
@@ -63,13 +64,14 @@
                                 </section>
                                 <section class="mdc-toolbar__section mdc-toolbar__section--align-end">
                                     <button class="mdc-button mdc-button--raised mdc-theme--secondary-bg"
-                                            style="margin-right: 10px;"
+                                            style="margin-right: 16px;"
                                             onclick="register()"
                                             id="invite-link-button" style="">Invite Link
                                     </button>
                                 </section>
                             </div>
                             <div class="mdc-toolbar__row">
+                                <section class="mdc-toolbar__section mdc-toolbar__section--align-middle">
                                 <nav id="basic-tab-bar" class="mdc-tab-bar mdc-tab-bar--indicator-accent">
                                     <a class="mdc-tab mdc-tab--active" id="tab-users" href="#one"
                                        onclick="usersTab();">Users</a>
@@ -77,6 +79,7 @@
                                        onclick="playlistTab();">Playlist</a>
                                     <span class="mdc-tab-bar__indicator"></span>
                                 </nav>
+                                </section>
                             </div>
                         </header>
                     </div>
