@@ -1,5 +1,3 @@
-.small-margin-grid {
-    --mdc-layout-grid-margin-desktop: 12px;
-    --mdc-layout-grid-gutter-tablet: 12px;
-    --mdc-layout-grid-gutter-phone: 8px;
+.mdc-toolbar__section {
+
 }

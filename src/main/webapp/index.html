@@ -88,10 +88,10 @@
                     <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
                         <header class="mdc-toolbar">
                             <div class="mdc-toolbar__row">
-                                <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
+                                <section class="mdc-toolbar__section mdc-toolbar__section--align-start" style="height:0;">
                                     <span class="mdc-toolbar__title" id="room-id-out">Room ID:</span>
                                 </section>
-                                <section class="mdc-toolbar__section mdc-toolbar__section--align-end">
+                                <section class="mdc-toolbar__section mdc-toolbar__section--align-end" style="height:0;">
                                     <button class="mdc-button mdc-button--raised mdc-theme--secondary-bg"
                                             style="margin-right: 10px;align-self: center;"
                                             onclick="copyInviteLink();"
@@ -102,8 +102,8 @@
                             <div class="mdc-toolbar__row">
                                 <nav id="dynamic-tab-bar" class="mdc-tab-bar mdc-tab-bar--indicator-accent"
                                      role="tablist">
-                                    <a role="tab" aria-controls="tab-users" href="#one" class="mdc-tab">Users</a>
-                                    <a role="tab" aria-controls="tab-playlist" href="#two" class="mdc-tab">Playlist</a>
+                                    <a role="tab" aria-controls="tab-users" href="#one" onclick="return false;" class="mdc-tab">Users</a>
+                                    <a role="tab" aria-controls="tab-playlist" href="#two" onclick="return false;" class="mdc-tab">Playlist</a>
                                     <span class="mdc-tab-bar__indicator"></span>
                                 </nav>
                             </div>
