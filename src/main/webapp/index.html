@@ -61,6 +61,9 @@
                     ProxSync Alpha 0.0.0.0.5</h3>
             </div>
         </div>
+        <div class="mdc-layout-grid-inner">
+            <h4 align="left" id="anime-title" style="display:block">&nbsp;</h4>
+        </div>
         <div class="mdc-layout-grid__inner">
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-bottom mdc-layout-grid__cell--span-6">
                 <button class="mdc-button mdc-button--raised mdc-button--primary" onclick="loadVideo()" id="url-button"
@@ -136,26 +139,6 @@
             </div>
         </div>
     </div>
-
-
-    <aside id="register-dialog"
-           class="mdc-dialog"
-           role="alertdialog"
-           aria-labelledby="room-dialog-label"
-           aria-describedby="room-dialog-description">
-        <div class="mdc-dialog__surface">
-            <header class="mdc-dialog__header">
-                <h2 id="register-dialog-label" class="mdc-dialog__header__title">
-                    Register
-                </h2>
-            </header>
-            <section id="register-dialog-description" class="mdc-dialog__body">
-            </section>
-            <footer class="mdc-dialog__footer">
-            </footer>
-        </div>
-        <div class="mdc-dialog__backdrop"></div>
-    </aside>
     <aside id="room-dialog"
            class="mdc-dialog"
            role="alertdialog"
@@ -233,7 +216,7 @@
 <script src="res/firebase.js"></script>
 <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 <script src="res/videojs.disableProgress.js"></script>
-<script src="res/player-script.js?v=0.0.0.4.9"></script>
+<script src="res/player-script.js?v=0.0.0.4.10"></script>
 <script>mdc.autoInit();</script>
 </body>
 </html>

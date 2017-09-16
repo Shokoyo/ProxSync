@@ -24,6 +24,7 @@ var skipButton;
 var firstVideo = true;
 var timeUpdate = false;
 var pauseFlag = true;
+var finishedFlag = false;
 //add onload function
 if (window.attachEvent) {
     window.attachEvent('onload', onloadFunction);
@@ -46,6 +47,10 @@ myPlayer.on('pause', handleStopEvent);
 myPlayer.on('play', handlePlayEvent);
 myPlayer.on('volumechange', function () {
     setCookie("volume", myPlayer.volume(), 365);
+});
+myPlayer.on('error', function() {
+    unbindFinishedEvent();
+    myPlayer.off('canplay');
 });
 
 function initCheckbox() {
@@ -273,6 +278,7 @@ $("#room-id-in").keypress(function (event) {
 });
 
 function loadVideo() {
+    document.getElementById("anime-title").innerHTML = "&nbsp;";
     if (myPlayer.src() !== undefined) {
         myPlayer.reset();
         sendCurrentTime();
@@ -353,32 +359,14 @@ function onMessage(event) {
         if(!firstVideo && document.getElementById("auto-play-checkbox").checked) {
             myPlayer.one('canplay', function() {
                 setStartTime();
-                myPlayer.one('ended', function () {
-                    unbindPauseEvent();
-                    if (isOwner) {
-                        unbindTimeUpdate();
-                        var userAction = {
-                            "action": "finished"
-                        };
-                        socket.send(JSON.stringify(userAction));
-                    }
-                });
+                bindFinishedEvent();
                 setTimeout(function() {
                 myPlayer.play();
             }, 1000)});
         } else {
             myPlayer.one('canplay', function() {
+                bindFinishedEvent();
                 setStartTime();
-            });
-            myPlayer.one('ended', function () {
-                unbindPauseEvent();
-                if (isOwner) {
-                    unbindTimeUpdate();
-                    var userAction = {
-                        "action": "finished"
-                    };
-                    socket.send(JSON.stringify(userAction));
-                }
             });
         }
         firstVideo = false;
@@ -388,13 +376,10 @@ function onMessage(event) {
         //setTimeout(myPlayer.pause,20);
     }
 
-    function bindPauseEvent() {
-        pauseFlag = true;
-    }
-
-    function unbindPauseEvent() {
-        pauseFlag = false;
-    }
+    if(eventJSON.action === "animeInfo") {
+        document.getElementById("anime-title").innerHTML = "" + eventJSON.title + ", Episode: " + eventJSON.episode
+            + "/" + eventJSON.episodeCount;
+    };
 
     if (eventJSON.action === "roomID") {
         if (eventJSON.id === "-1") {
@@ -463,6 +448,37 @@ function skipIntro() {
         setTimeout(handlePlayEvent, 500);
         setTimeout(handlePlayEvent, 1000);
     }
+}
+
+
+function bindFinishedEvent() {
+    finishedFlag = true;
+}
+
+function unbindFinishedEvent() {
+    finishedFlag = false;
+}
+
+myPlayer.on('ended', function () {
+    if(finishedFlag) {
+        unbindPauseEvent();
+        if (isOwner) {
+            unbindTimeUpdate();
+            var userAction = {
+                "action": "finished"
+            };
+            socket.send(JSON.stringify(userAction));
+        }
+        unbindFinishedEvent();
+    }
+});
+
+function bindPauseEvent() {
+    pauseFlag = true;
+}
+
+function unbindPauseEvent() {
+    pauseFlag = false;
 }
 
 function changeName() {

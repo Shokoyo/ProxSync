@@ -220,6 +220,7 @@ public class Room {
         if (isDirectLink) {
             return video;
         }
+        //String website = ripLink;
         String website = "";
         try {
             URL url = new URL(video);
@@ -274,6 +275,10 @@ public class Room {
                 return "";
             }
         }
+    }
+
+    public int getEpisodeNumber() {
+        return episode;
     }
 
     private String getWebsiteContent(String url, String cookie) {
@@ -455,6 +460,7 @@ public class Room {
 
     public void reset9anime() {
         episode = 0;
+        anime = null;
         _9animeLink = "";
     }
 
