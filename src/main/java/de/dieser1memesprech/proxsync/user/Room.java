@@ -245,8 +245,6 @@ public class Room {
     }
 
     private String get9animeLink() {
-        //TODO REMOVE THIS AFTER FIXING EPISODE STUFF
-        episode = 1;
         //String content = getWebsiteContent(video, "");
         if(_9animeLink.equals("")) {
             return "";
