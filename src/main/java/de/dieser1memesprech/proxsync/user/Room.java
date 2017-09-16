@@ -462,7 +462,12 @@ public class Room {
         timestamp = null;
         if(playlist.isEmpty() && autoNext && !_9animeLink.equals("")) {
             episode++;
-            setVideo(get9animeLink());
+            String newUrl = get9animeLink();
+            if(!"".equals(newUrl)) {
+                setVideo(newUrl);
+            } else {
+                sendDebugToHost("failed to load next Video");
+            }
         } else if(!playlist.isEmpty()) {
             //TODO play playlist
         }

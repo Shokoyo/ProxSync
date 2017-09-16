@@ -334,6 +334,9 @@ function onMessage(event) {
     if (eventJSON.action === "video") {
         var SourceString = eventJSON.url;
         console.log("URL: " + SourceString);
+        if(url === "") {
+            return;
+        }
         var SourceObject;
         startTime = eventJSON.current;
         if (SourceString.indexOf(".mp4") !== -1) {
