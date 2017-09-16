@@ -124,7 +124,6 @@ function onloadFunction() {
     cookieDialog = new mdc.dialog.MDCDialog(document.querySelector('#cookie-dialog'));
     document.getElementById("url-field").style.display = 'none';
     document.getElementById("url-button").style.display = 'none';
-    document.getElementById("intro-button").style.display = 'none';
     document.getElementById("invite-link").style.display = 'none';
     document.getElementById("invite-button").style.display = 'none';
     document.getElementById("leave-button").style.display = 'none';
@@ -328,7 +327,6 @@ function onMessage(event) {
         showSpecialControl();
         document.getElementById("url-field").style.display = '';
         document.getElementById("url-button").style.display = '';
-        document.getElementById("intro-button").style.display = '';
     }
     if (eventJSON.action === "jump") {
         myPlayer.currentTime(eventJSON.time);
@@ -422,7 +420,6 @@ function onMessage(event) {
                 socket.send(JSON.stringify(userAction));
                 document.getElementById("url-field").style.display = '';
                 document.getElementById("url-button").style.display = '';
-                document.getElementById("intro-button").style.display = '';
                 document.getElementById("auto-next-container").style.display = '';
                 document.getElementById("auto-play-container").style.display = '';
                 showSpecialControl();
@@ -430,6 +427,7 @@ function onMessage(event) {
             document.getElementById("room-id-in").style.display = 'none';
             document.getElementById("leave-button").style.display = 'block';
             roomId = eventJSON.id;
+            document.getElementById("room-id-out").innerHTML = "Room ID: " + roomId;
             document.getElementById("invite-button").style.display = '';
             document.getElementById("invite-link").innerHTML = "http://" + loc.host + loc.pathname + "?r=" + roomId;
             roomJoined = true;
@@ -437,8 +435,12 @@ function onMessage(event) {
     }
     if (eventJSON.action === "room-list") {
         var roomString = eventJSON.roomString.replace("res/", location.protocol + '//' + location.host + location.pathname + "res/");
-        document.getElementById("room-list").innerHTML = "<h4>User List (ID: " + roomId + ")</h4>" + roomString;
+        document.getElementById("room-list").innerHTML = "" + roomString;
     }
+}
+
+function copyInviteLink() {
+    copyToClipboard(document.getElementById('invite-link'));
 }
 
 function skipIntro() {

@@ -5,9 +5,12 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet"
           href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
+    <link rel="stylesheet" href="res/template.css">
     <style>
         :root {
             --mdc-theme-primary: #263238;
+            --mdc-theme-secondary: #7b1fa2;
+            --mdc-theme-secondary-light: #ae52d4;
             --mdc-theme-primary-dark: #000a12;
             --mdc-theme-primary-light: #4f5b62;
             --mdc-theme-background: #F5F5F6;
@@ -39,10 +42,10 @@
         class="mdc-toolbar mdc-toolbar--fixed">
     <div class="mdc-toolbar__row">
         <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
-            <button class="mdc-button mdc-button--raised mdc-theme--secondary-bg mdc-theme--primary toolbar-button"
+            <button class="mdc-button mdc-button--raised mdc-theme--secondary-bg"
                     onclick="leaveRoom()"
                     id="leave-button"
-                    style="font-weight: bold;align-self: center;margin-left:10px;">New Room
+                    style="align-self: center;margin-left:16px;">New Room
             </button>
         </section>
         <section class="mdc-toolbar__section mdc-toolbar__section--align-middle">
@@ -59,12 +62,13 @@
                                     margin-left:10px;">Sign in
                     </button>
                 </div>
-                <div id="signout-row" style="align-self: center; margin-right: 10px; margin-left: auto;">
-                    <div style="float:right;"><a href="#" onclick="signout();" class="material-icons mdc-toolbar__icon mdc-theme--secondary"
+                <div id="signout-row" style="align-self: center; margin-right: 16px; margin-left: auto;">
+                    <div style="float:right;"><a href="#" onclick="signout();"
+                                                 class="material-icons mdc-toolbar__icon mdc-theme--secondary"
                                                  aria-label="Download" alt="Download" style="font-size: 32px;">account_circle</a>
                     </div>
                     <span id="welcome-msg" class="mdc-toolbar__title"
-                         style="margin-left:auto;margin-right:10px;float:right;align-self:center;"></span>
+                          style="margin-top:4px;float:right;align-self:center;"></span>
                 </div>
             </section>
         </section>
@@ -76,70 +80,110 @@
             <h4 align="left" id="anime-title" style="display:block">&nbsp;</h4>
         </div>
         <div class="mdc-layout-grid__inner">
-            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-bottom mdc-layout-grid__cell--span-6">
-                <button class="mdc-button mdc-button--raised mdc-button--primary" onclick="loadVideo()" id="url-button"
-                        style="margin-right: 10px; margin-top: 32px;">
-                    Load Video URL
-                </button>
-                <div class="mdc-form-field">
-                    <div id="url-field" class="mdc-textfield" data-mdc-auto-init="MDCTextfield">
-                        <input type="text" id="url" class="mdc-textfield__input" onclick="this.focus();this.select()">
-                        <label for="url" class="mdc-textfield__label">URL</label>
-                    </div>
-                </div>
-                <div class="mdc-form-field" id="auto-next-container" style="margin-right: 10px; margin-top: 32px;">
-                    <div class="mdc-switch">
-                        <input type="checkbox" id="auto-next-checkbox" class="mdc-switch__native-control"/>
-                        <div class="mdc-switch__background">
-                            <div class="mdc-switch__knob"></div>
-                        </div>
-                    </div>
-                    <label for="auto-next-checkbox" class="mdc-switch-label">Auto next episode</label>
-                </div>
-                <div class="mdc-form-field" id="auto-play-container" style="margin-right: 10px; margin-top: 32px;">
-                    <div class="mdc-switch">
-                        <input type="checkbox" id="auto-play-checkbox" class="mdc-switch__native-control"/>
-                        <div class="mdc-switch__background">
-                            <div class="mdc-switch__knob"></div>
-                        </div>
-                    </div>
-                    <label for="auto-play-checkbox" class="mdc-switch-label">Auto-Play</label>
-                </div>
-            </div>
-            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-bottom mdc-layout-grid__cell--span-2">
-                <button class="mdc-button mdc-button--raised mdc-button--primary" onclick="skipIntro()"
-                        id="intro-button" style="float: right;">Skip OP/ED
-                </button>
-            </div>
-        </div>
-        <div class="mdc-layout-grid__inner">
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
                 <video id="my-player" class="video-js vjs-default-skin" controls preload="auto" data-setup='{}'></video>
             </div>
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">
-                <div id="room-list"></div>
                 <div class="mdc-layout-grid__inner">
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-top">
-                        <hr class="mdc-theme--text-primary-on-light">
-                        <div class="mdc-form-field">
-                            <div class="mdc-textfield" data-mdc-auto-init="MDCTextfield">
-                                <input type="text" id="name" class="mdc-textfield__input">
-                                <label for="name" class="mdc-textfield__label">Name</label>
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+                        <header class="mdc-toolbar">
+                            <div class="mdc-toolbar__row">
+                                <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
+                                    <span class="mdc-toolbar__title" id="room-id-out">Room ID:</span>
+                                </section>
+                                <section class="mdc-toolbar__section mdc-toolbar__section--align-end">
+                                    <button class="mdc-button mdc-button--raised mdc-theme--secondary-bg"
+                                            style="margin-right: 10px;align-self: center;"
+                                            onclick="copyInviteLink();"
+                                            id="invite-button">Invite Link
+                                    </button>
+                                </section>
                             </div>
-                        </div>
-                    </div>
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-bottom" id="name-button-cell">
-                        <button onclick="changeName()" id="name-button"
-                                class="mdc-button mdc-button--raised mdc-button--primary">Change Name
-                        </button>
+                            <div class="mdc-toolbar__row">
+                                <nav id="dynamic-tab-bar" class="mdc-tab-bar mdc-tab-bar--indicator-accent"
+                                     role="tablist">
+                                    <a role="tab" aria-controls="tab-users" href="#one" class="mdc-tab">Users</a>
+                                    <a role="tab" aria-controls="tab-playlist" href="#two" class="mdc-tab">Playlist</a>
+                                    <span class="mdc-tab-bar__indicator"></span>
+                                </nav>
+                            </div>
+                        </header>
                     </div>
                 </div>
                 <div class="mdc-layout-grid__inner">
-                    <div class="mdc-layout-grid__cell">
-                        <button class="mdc-button mdc-button--raised mdc-button--primary" id="invite-button"
-                                onclick="copyToClipboard('#invite-link')">Copy Link
-                        </button>
-                        <div id="invite-link"></div>
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+                        <section>
+                            <div class="panels" id="panels">
+                                <div class="panel active" id="panel-users" role="tabpanel" aria-hidden="false">
+                                    <div style="margin-left:12px;">
+                                        <div id="room-list"></div>
+                                        <div class="mdc-layout-grid__inner">
+                                            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-top">
+                                                <hr class="mdc-theme--text-primary-on-light">
+                                                <div class="mdc-form-field">
+                                                    <div class="mdc-textfield" data-mdc-auto-init="MDCTextfield">
+                                                        <input type="text" id="name" class="mdc-textfield__input">
+                                                        <label for="name" class="mdc-textfield__label">Name</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-bottom"
+                                                 id="name-button-cell">
+                                                <button onclick="changeName()" id="name-button"
+                                                        class="mdc-button mdc-button--raised mdc-button--primary">Change
+                                                    Name
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel" id="panel-playlist" role="tabpanel" aria-hidden="true">
+                                    <div class="mdc-layout-grid__inner">
+                                        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
+                                            <button class="mdc-button mdc-button--raised mdc-button--primary"
+                                                    onclick="loadVideo()" id="url-button"
+                                                    style="margin-right: 16px; margin-top: 32px;margin-left:16px;">
+                                                Load Video URL
+                                            </button>
+                                            <div class="mdc-form-field">
+                                                <div id="url-field" class="mdc-textfield"
+                                                     data-mdc-auto-init="MDCTextfield">
+                                                    <input type="text" id="url" class="mdc-textfield__input"
+                                                           onclick="this.focus();this.select()">
+                                                    <label for="url" class="mdc-textfield__label">URL</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">
+                                            <div class="mdc-form-field" id="auto-next-container"
+                                                 style="margin-right: 10px; margin-top: 20px;">
+                                                <div class="mdc-switch">
+                                                    <input type="checkbox" id="auto-next-checkbox"
+                                                           class="mdc-switch__native-control"/>
+                                                    <div class="mdc-switch__background">
+                                                        <div class="mdc-switch__knob"></div>
+                                                    </div>
+                                                </div>
+                                                <label for="auto-next-checkbox" class="mdc-switch-label">Auto next
+                                                    episode</label>
+                                            </div>
+                                            <div class="mdc-form-field" id="auto-play-container"
+                                                 style="margin-right: 10px; margin-top: 10px;">
+                                                <div class="mdc-switch">
+                                                    <input type="checkbox" id="auto-play-checkbox"
+                                                           class="mdc-switch__native-control"/>
+                                                    <div class="mdc-switch__background">
+                                                        <div class="mdc-switch__knob"></div>
+                                                    </div>
+                                                </div>
+                                                <label for="auto-play-checkbox"
+                                                       class="mdc-switch-label">Auto-Play</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
                     </div>
                 </div>
             </div>
@@ -204,6 +248,7 @@
         <div class="mdc-dialog__backdrop"></div>
     </aside>
 </main>
+<p id="invite-link"></p>
 <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-auth.js"></script>
@@ -223,6 +268,7 @@
 <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 <script src="res/videojs.disableProgress.js"></script>
 <script src="res/player-script.js?v=0.0.0.4.10"></script>
+<script src="res/tab-switch.js?v=0.1"></script>
 <script>mdc.autoInit();</script>
 </body>
 </html>
