@@ -94,8 +94,10 @@ public class Anime {
                                 if (episodeId.equals(id)) {
                                     Episode episode = parseServerSingleEpisode(elEpisode, ts, update, server.attr("data-id"));
                                     episodeMap.put(episodeId, episode);
+                                    break;
                                 }
                             }
+                            break;
                         }
                     }
                 }
@@ -114,8 +116,10 @@ public class Anime {
                             id = anchor.attr("data-id");
                             Episode episode = parseServerSingleEpisode(elEpisode, ts, update, server.attr("data-id"));
                             episodeMap.put(id, episode);
+                            break;
                         }
                     }
+                    break;
                 }
             }
             return episodeMap.get(id);

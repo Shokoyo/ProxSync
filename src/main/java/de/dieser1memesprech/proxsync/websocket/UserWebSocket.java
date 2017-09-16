@@ -1,5 +1,6 @@
 package de.dieser1memesprech.proxsync.websocket;
 
+import com.google.gson.JsonParser;
 import de.dieser1memesprech.proxsync.user.Room;
 import de.dieser1memesprech.proxsync.user.RoomHandler;
 
@@ -29,7 +30,7 @@ public class UserWebSocket {
     @OnClose
     public void close(Session session) {
         Room r = RoomHandler.getInstance().getRoomBySession(session);
-        if(r != null) {
+        if (r != null) {
             r.removeSession(session);
         }
         UserSessionHandler.getInstance().removeSession(session);
@@ -45,24 +46,24 @@ public class UserWebSocket {
         JsonReader reader = Json.createReader(new StringReader(message));
         JsonObject jsonMessage = reader.readObject();
 
-        if("changeName".equals(jsonMessage.getString("action"))) {
+        if ("changeName".equals(jsonMessage.getString("action"))) {
             Room old = RoomHandler.getInstance().getRoomBySession(session);
             String name = jsonMessage.getString("name");
-            if(name != null && !name.equals("") && old != null) {
+            if (name != null && !name.equals("") && old != null) {
                 old.changeName(session, name);
             }
         }
 
         if ("create".equals(jsonMessage.getString("action"))) {
             Room old = RoomHandler.getInstance().getRoomBySession(session);
-            if(old != null) {
+            if (old != null) {
                 old.removeSession(session);
             }
             String s = jsonMessage.getString("roomName");
-            if(s==null) {
+            if (s == null) {
                 s = "";
             } else if (!s.equals("")) {
-                if(!RoomHandler.getInstance().checkId(s)) {
+                if (!RoomHandler.getInstance().checkId(s)) {
                     System.out.println("ALARM");
                     JsonProvider provider = JsonProvider.provider();
                     JsonObject messageJson = provider.createObjectBuilder()
@@ -73,33 +74,33 @@ public class UserWebSocket {
                     return;
                 }
             }
-            Room r = new Room(session, jsonMessage.getString("name"),s);
+            Room r = new Room(session, jsonMessage.getString("name"), s);
             RoomHandler.getInstance().mapSession(session, r);
         }
 
-        if("finished".equals(jsonMessage.getString("action"))) {
+        if ("finished".equals(jsonMessage.getString("action"))) {
             Room r = RoomHandler.getInstance().getRoomBySession(session);
-            if(r != null) {
+            if (r != null) {
                 r.videoFinished();
             }
         }
 
-        if("autoNext".equals(jsonMessage.getString("action"))) {
+        if ("autoNext".equals(jsonMessage.getString("action"))) {
             Room r = RoomHandler.getInstance().getRoomBySession(session);
-            if(r != null) {
+            if (r != null) {
                 r.setAutoNext(jsonMessage.getBoolean("value"));
             }
         }
 
         if ("join".equals(jsonMessage.getString("action"))) {
             Room old = RoomHandler.getInstance().getRoomBySession(session);
-            if(old != null) {
+            if (old != null) {
                 old.removeSession(session);
             }
             try {
                 String id = jsonMessage.getString("id");
                 Room r = RoomHandler.getInstance().getRoomById(id);
-                if(r==null) {
+                if (r == null) {
                     JsonProvider provider = JsonProvider.provider();
                     JsonObject messageJson = provider.createObjectBuilder()
                             .add("action", "roomID")
@@ -115,31 +116,38 @@ public class UserWebSocket {
             }
         }
 
-        if("resync".equals(jsonMessage.getString("action"))) {
+        if ("resync".equals(jsonMessage.getString("action"))) {
             Room r = RoomHandler.getInstance().getRoomBySession(session);
-            if(r != null) {
+            if (r != null) {
                 r.pause(jsonMessage.getJsonNumber("current"), session, false);
             }
         }
 
         if ("video".equals(jsonMessage.getString("action"))) {
             Room r = RoomHandler.getInstance().getRoomBySession(session);
-            if(r != null) {
+            if (r != null) {
                 r.reset9anime();
                 r.setVideo(jsonMessage.getString("url"));
+
             }
+            JsonProvider provider = JsonProvider.provider();
+            JsonObject messageJson = provider.createObjectBuilder()
+                    .add("action", "animeInfo")
+                    .add("title", RoomHandler.getInstance().getRoomBySession(session).getAnime().getTitle())
+                    .build();
+            UserSessionHandler.getInstance().sendToRoom(messageJson, RoomHandler.getInstance().getRoomBySession(session));
         }
 
         if ("play".equals(jsonMessage.getString("action"))) {
             Room r = RoomHandler.getInstance().getRoomBySession(session);
-            if(r != null) {
+            if (r != null) {
                 r.play();
             }
         }
 
         if ("stopped".equals(jsonMessage.getString("action"))) {
             Room r = RoomHandler.getInstance().getRoomBySession(session);
-            if(r != null) {
+            if (r != null) {
                 boolean intended = jsonMessage.getBoolean("intended");
                 r.pause(jsonMessage.getJsonNumber("current"), session, intended);
             }
@@ -147,24 +155,24 @@ public class UserWebSocket {
 
         if ("bufferedIndication".equals(jsonMessage.getString("action"))) {
             JsonNumber readyState = jsonMessage.getJsonNumber("readyState");
-            if(readyState.intValue() == 4) {
+            if (readyState.intValue() == 4) {
                 Room r = RoomHandler.getInstance().getRoomBySession(session);
-                if(r!=null) {
+                if (r != null) {
                     r.markReady(session, true);
                 }
             }
         }
 
-        if("leave".equals(jsonMessage.getString("action"))) {
+        if ("leave".equals(jsonMessage.getString("action"))) {
             Room old = RoomHandler.getInstance().getRoomBySession(session);
-            if(old != null) {
+            if (old != null) {
                 old.removeSession(session);
             }
         }
 
-        if("current".equals(jsonMessage.getString("action"))) {
+        if ("current".equals(jsonMessage.getString("action"))) {
             Room r = RoomHandler.getInstance().getRoomBySession(session);
-            if(r != null) {
+            if (r != null) {
                 r.setCurrent(jsonMessage.getJsonNumber("current"));
             }
         }

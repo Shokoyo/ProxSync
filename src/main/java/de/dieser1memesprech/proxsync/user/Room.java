@@ -460,7 +460,7 @@ public class Room {
 
     public void loadNextVideo() {
         timestamp = null;
-        if(playlist.isEmpty() && autoNext && !_9animeLink.equals("")) {
+        if(playlist.isEmpty() && autoNext) {
             episode++;
             String newUrl = get9animeLink();
             if(!"".equals(newUrl)) {
@@ -514,5 +514,9 @@ public class Room {
 
     public String getUrl() {
         return video;
+    }
+
+    public Anime getAnime() {
+        return this.anime;
     }
 }
