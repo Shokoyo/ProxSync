@@ -2,14 +2,14 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet"
           href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
     <style>
         :root {
-            --mdc-theme-primary: #00838f;
-            --mdc-theme-primary-dark: #005662;
-            --mdc-theme-primary-light: #4fb3bf;
+            --mdc-theme-primary: #263238;
+            --mdc-theme-primary-dark: #000a12;
+            --mdc-theme-primary-light: #4f5b62;
             --mdc-theme-background: #F5F5F6;
         }
 
@@ -34,33 +34,44 @@
     </style>
     <title>Prox-Sync</title>
 </head>
-<body class="mdc-theme--primary-light-bg">
-<main>
+<body class="mdc-theme--background">
+<header id="page-header"
+        class="mdc-toolbar mdc-toolbar--fixed">
+    <div class="mdc-toolbar__row">
+        <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
+            <button class="mdc-button mdc-button--raised mdc-theme--secondary-bg mdc-theme--primary toolbar-button"
+                    onclick="leaveRoom()"
+                    id="leave-button"
+                    style="font-weight: bold;align-self: center;margin-left:10px;">New Room
+            </button>
+        </section>
+        <section class="mdc-toolbar__section mdc-toolbar__section--align-middle">
+            <span class="mdc-toolbar__title">ProxSync</span>
+        </section>
+        <section class="mdc-toolbar__section mdc-toolbar__section--align-end">
+            <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
+                <div id="register-row" style="align-self:center;float:right;margin-right:10px;margin-left:auto;">
+                    <button class="mdc-button mdc-button--raised mdc-button--accent mdc-button--align-middle"
+                            onclick="register()"
+                            id="register-button"
+                            style="
+                                    align-self: center;
+                                    margin-left:10px;">Sign in
+                    </button>
+                </div>
+                <div id="signout-row" style="align-self: center; margin-right: 10px; margin-left: auto;">
+                    <div style="float:right;"><a href="#" class="material-icons mdc-toolbar__icon mdc-theme--secondary"
+                                                 aria-label="Download" alt="Download" style="font-size: 36px;">account_circle</a>
+                    </div>
+                    <span id="welcome-msg" class="mdc-toolbar__title"
+                         style="margin-left:auto;margin-right:10px;float:right;align-self:center;"></span>
+                </div>
+            </section>
+        </section>
+    </div>
+</header>
+<main class="mdc-toolbar-fixed-adjust">
     <div class="mdc-layout-grid">
-        <div class="mdc-layout-grid__inner" id="register-row">
-            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
-                <button class="mdc-button mdc-button--raised mdc-button--primary" onclick="register()"
-                        id="register-button">Sign in
-                </button>
-            </div>
-        </div>
-
-        <div class="mdc-layout-grid__inner" id="signout-row">
-            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
-                <div id="welcome-msg"></div>
-            </div>
-            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">
-                <button class="mdc-button mdc-button--raised mdc-button--primary" onclick="signout()"
-                        id="signout-button">Sign out
-                </button>
-            </div>
-        </div>
-        <div class="mdc-layout-grid__inner">
-            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
-                <h3 align="center" class="mdc-theme--primary-dark-bg mdc-theme--text-primary-on-primary">This is
-                    ProxSync Alpha 0.0.0.0.5</h3>
-            </div>
-        </div>
         <div class="mdc-layout-grid-inner">
             <h4 align="left" id="anime-title" style="display:block">&nbsp;</h4>
         </div>
@@ -124,11 +135,6 @@
                     </div>
                 </div>
                 <div class="mdc-layout-grid__inner">
-                    <div class="mdc-layout-grid__cell">
-                        <button class="mdc-button mdc-button--raised mdc-button--primary" onclick="leaveRoom()"
-                                id="leave-button">Leave Room
-                        </button>
-                    </div>
                     <div class="mdc-layout-grid__cell">
                         <button class="mdc-button mdc-button--raised mdc-button--primary" id="invite-button"
                                 onclick="copyToClipboard('#invite-link')">Copy Link

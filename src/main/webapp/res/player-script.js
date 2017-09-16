@@ -427,7 +427,7 @@ function onMessage(event) {
                 showSpecialControl();
             }
             document.getElementById("room-id-in").style.display = 'none';
-            document.getElementById("leave-button").style.display = '';
+            document.getElementById("leave-button").style.display = 'block';
             roomId = eventJSON.id;
             document.getElementById("invite-button").style.display = '';
             document.getElementById("invite-link").innerHTML = "http://" + loc.host + loc.pathname + "?r=" + roomId;
