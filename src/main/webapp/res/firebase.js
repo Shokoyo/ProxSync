@@ -31,15 +31,15 @@ function updateAuthButtons() {
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             console.log("signed in");
-            document.getElementById("register-row").setAttribute("style", "display: none;");
-            document.getElementById("signout-row").setAttribute("style", "display: block;");
+            document.getElementById("register-row").style.display='none';
+            document.getElementById("signout-row").style.display='';
             name = user.displayName;
             console.log(name);
             document.getElementById("welcome-msg").textContent = "Welcome " + name + "!";
         } else {
             console.log("not signed in");
-            document.getElementById("register-row").setAttribute("style", "display: block;");
-            document.getElementById("signout-row").setAttribute("style", "display: none;");
+            document.getElementById("register-row").style.display='';
+            document.getElementById("signout-row").style.display='none';
         }
     });
 }
