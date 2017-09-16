@@ -1,15 +1,14 @@
 package de.dieser1memesprech.proxsync.user;
 
 import com.google.gson.Gson;
+import de.dieser1memesprech.proxsync._9animescraper.Anime;
 import de.dieser1memesprech.proxsync._9animescraper.Episode;
-import de.dieser1memesprech.proxsync._9animescraper.Main;
+import de.dieser1memesprech.proxsync._9animescraper.Exceptions.NoEpisodeUrlException;
 import de.dieser1memesprech.proxsync.websocket.UserSessionHandler;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -22,7 +21,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,7 +45,7 @@ public class Room {
     private CloseableHttpClient httpClient;
     private JsonNumber timestamp;
     private Random random = new Random();
-    private Main _9animeScraper = new Main();
+    private Anime anime;
 
     public Room(Session host, String hostname, String roomName) {
         playlist = new LinkedList<Video>();
@@ -247,16 +245,23 @@ public class Room {
         //String content = getWebsiteContent(video, "");
         if(episode == 0) {
             _9animeLink = video;
-            Episode episode = _9animeScraper.getEpisodeObjectFromUrl(video);
+            anime = new Anime(video);
+            System.out.println(anime.getAnimeSearchObject().getLink());
+            Episode episode = null;
+            try {
+                episode = anime.getEpisodeObject(video);
+            } catch (NoEpisodeUrlException e) {
+                e.printStackTrace();
+            }
             if(episode == null) {
                 return "";
             }
             this.episode = episode.getEpNumInt();
-            return _9animeScraper.getEpisodeUrlFromEpisodeObject(episode);
+            return episode.getEpisodeUrl();
         } else {
-            Episode episode = _9animeScraper.getEpisodeObjectFromUrlAndNum(_9animeLink, this.episode);
+            Episode episode = anime.getEpisodeObject(_9animeLink, this.episode);
             if(episode != null) {
-                return _9animeScraper.getEpisodeUrlFromEpisodeObject(episode);
+                return episode.getEpisodeUrl();
             } else {
                 return "";
             }

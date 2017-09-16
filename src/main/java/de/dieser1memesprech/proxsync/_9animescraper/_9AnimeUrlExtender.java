@@ -14,7 +14,6 @@ public class _9AnimeUrlExtender {
         for (int i = 0; i < params.length; i++) {
             o += _s(_a(DD + paramNames[i], params[i]));
         }
-        System.out.println(o - 33);
         return Integer.toString(o - 33);
     }
 
@@ -22,7 +21,6 @@ public class _9AnimeUrlExtender {
         int i = 0;
         for (int j = 0; j < t.length(); j++) {
             i+= (int) t.charAt(j) *j + j;
-            System.out.println(i);
         }
         return i;
     }
@@ -33,7 +31,6 @@ public class _9AnimeUrlExtender {
             n += i < e.length() ? (int) e.charAt(i) : 0;
             n += i < t.length() ? (int) t.charAt(i) : 0;
         }
-        System.out.println(Integer.toHexString(n));
         return Integer.toHexString(n);
     }
 }
