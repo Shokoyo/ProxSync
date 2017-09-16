@@ -460,10 +460,10 @@ public class Room {
 
     public void loadNextVideo() {
         timestamp = null;
-        if(playlist.isEmpty() && autoNext) {
+        if(playlist.isEmpty() && autoNext && !_9animeLink.equals("")) {
             episode++;
             setVideo(get9animeLink());
-        } else {
+        } else if(!playlist.isEmpty()) {
             //TODO play playlist
         }
     }
