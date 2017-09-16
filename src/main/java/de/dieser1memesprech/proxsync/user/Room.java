@@ -3,7 +3,7 @@ package de.dieser1memesprech.proxsync.user;
 import com.google.gson.Gson;
 import de.dieser1memesprech.proxsync._9animescraper.Anime;
 import de.dieser1memesprech.proxsync._9animescraper.Episode;
-import de.dieser1memesprech.proxsync._9animescraper.Exceptions.NoEpisodeUrlException;
+import de.dieser1memesprech.proxsync._9animescraper.Exceptions.No9AnimeUrlException;
 import de.dieser1memesprech.proxsync.websocket.UserSessionHandler;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpHead;
@@ -257,7 +257,7 @@ public class Room {
             Episode episode = null;
             try {
                 episode = anime.getEpisodeObject(video);
-            } catch (NoEpisodeUrlException e) {
+            } catch (No9AnimeUrlException e) {
                 e.printStackTrace();
             }
             if(episode == null) {

@@ -1,6 +1,6 @@
 package de.dieser1memesprech.proxsync._9animescraper;
 
-import de.dieser1memesprech.proxsync._9animescraper.Exceptions.NoEpisodeUrlException;
+import de.dieser1memesprech.proxsync._9animescraper.Exceptions.No9AnimeUrlException;
 import de.dieser1memesprech.proxsync._9animescraper.config.Configuration;
 import de.dieser1memesprech.proxsync._9animescraper.util.HtmlUtils;
 import org.jsoup.Jsoup;
@@ -74,13 +74,34 @@ public class Anime {
         return count;
     }
 
-    public Episode getEpisodeObject(String url) throws NoEpisodeUrlException {
-        System.out.println(url);
-        System.out.println(Configuration.instance.BASE_URL + "/watch/(.*[/])(.*[/])");
-        if (Pattern.matches(Configuration.instance.BASE_URL + "/watch/(.*[/])(.*)", url)) {
-            System.out.println("pattern matches");
-            String episodeId = url.substring(url.lastIndexOf('/') + 1);
-            if (!episodeMap.containsKey(episodeId)) {
+    public Episode getEpisodeObject(String url) throws No9AnimeUrlException {
+        String id = "";
+        if (Pattern.matches(Configuration.instance.BASE_URL + "/watch/(.*)", url)) {
+            if (isEpisodeLink(url)) {
+                String episodeId = url.substring(url.lastIndexOf('/') + 1);
+                System.out.println("Episode url provided: " + episodeId);
+                if (!episodeMap.containsKey(episodeId)) {
+                    Elements servers = document.select("div[class=server row");
+                    Element body = document.select("body").first();
+                    String ts = body.attr("data-ts");
+                    String update = "0";
+                    for (Element server : servers) {
+                        if (server.attr("data-id").equals("30")) {
+                            Elements episodes = server.select("li");
+                            for (Element elEpisode : episodes) {
+                                Element anchor = elEpisode.select("a").first();
+                                id = anchor.attr("data-id");
+                                if (episodeId.equals(id)) {
+                                    Episode episode = parseServerSingleEpisode(elEpisode, ts, update, server.attr("data-id"));
+                                    episodeMap.put(episodeId, episode);
+                                }
+                            }
+                        }
+                    }
+                }
+                return episodeMap.get(episodeId);
+            } else {
+                System.out.println("Anime url provided");
                 Elements servers = document.select("div[class=server row");
                 Element body = document.select("body").first();
                 String ts = body.attr("data-ts");
@@ -90,18 +111,16 @@ public class Anime {
                         Elements episodes = server.select("li");
                         for (Element elEpisode : episodes) {
                             Element anchor = elEpisode.select("a").first();
-                            String id = anchor.attr("data-id");
-                            if (episodeId.equals(id)) {
-                                Episode episode = parseServerSingleEpisode(elEpisode, ts, update, server.attr("data-id"));
-                                episodeMap.put(episodeId, episode);
-                            }
+                            id = anchor.attr("data-id");
+                            Episode episode = parseServerSingleEpisode(elEpisode, ts, update, server.attr("data-id"));
+                            episodeMap.put(id, episode);
                         }
                     }
                 }
             }
-            return episodeMap.get(episodeId);
+            return episodeMap.get(id);
         }
-        throw new NoEpisodeUrlException();
+        throw new No9AnimeUrlException();
     }
 
     public Episode getEpisodeObject(String url, int episodeNum) {
@@ -161,5 +180,9 @@ public class Anime {
 
     public int getEpisodeCount() {
         return episodeCount;
+    }
+
+    public boolean isEpisodeLink(String url) {
+        return Pattern.matches(Configuration.instance.BASE_URL + "/watch/(.*[/])(.*)", url);
     }
 }
