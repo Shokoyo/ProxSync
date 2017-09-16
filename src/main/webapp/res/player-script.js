@@ -125,6 +125,7 @@ function onloadFunction() {
     document.getElementById("auto-next-container").style.display = 'none';
     document.getElementById("auto-play-container").style.display = 'none';
     checkCookie();
+    updateAuthButtons();
 }
 
 $(document).on('keydown', function (e) {

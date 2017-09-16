@@ -37,6 +37,24 @@
 <body class="mdc-theme--primary-light-bg">
 <main>
     <div class="mdc-layout-grid">
+        <div class="mdc-layout-grid__inner" id="register-row">
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+                <button class="mdc-button mdc-button--raised mdc-button--primary" onclick="register()"
+                        id="register-button">Sign in
+                </button>
+            </div>
+        </div>
+
+        <div class="mdc-layout-grid__inner" id="signout-row">
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
+                <div id="welcome-msg"></div>
+            </div>
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">
+                <button class="mdc-button mdc-button--raised mdc-button--primary" onclick="signout()"
+                        id="signout-button">Sign out
+                </button>
+            </div>
+        </div>
         <div class="mdc-layout-grid__inner">
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
                 <h3 align="center" class="mdc-theme--primary-dark-bg mdc-theme--text-primary-on-primary">This is
@@ -120,6 +138,24 @@
     </div>
 
 
+    <aside id="register-dialog"
+           class="mdc-dialog"
+           role="alertdialog"
+           aria-labelledby="room-dialog-label"
+           aria-describedby="room-dialog-description">
+        <div class="mdc-dialog__surface">
+            <header class="mdc-dialog__header">
+                <h2 id="register-dialog-label" class="mdc-dialog__header__title">
+                    Register
+                </h2>
+            </header>
+            <section id="register-dialog-description" class="mdc-dialog__body">
+            </section>
+            <footer class="mdc-dialog__footer">
+            </footer>
+        </div>
+        <div class="mdc-dialog__backdrop"></div>
+    </aside>
     <aside id="room-dialog"
            class="mdc-dialog"
            role="alertdialog"
@@ -179,6 +215,22 @@
         <div class="mdc-dialog__backdrop"></div>
     </aside>
 </main>
+<script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-auth.js"></script>
+<script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyDDD68tM8V5yNi3aiZco8FnK6IiXTOAhi8",
+        authDomain: "proxsync.firebaseapp.com",
+        databaseURL: "https://proxsync.firebaseio.com",
+        projectId: "proxsync",
+        storageBucket: "",
+        messagingSenderId: "424948078611"
+    };
+    firebase.initializeApp(config);
+</script>
+<script src="res/firebase.js"></script>
 <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 <script src="res/videojs.disableProgress.js"></script>
 <script src="res/player-script.js?v=0.0.0.4.9"></script>

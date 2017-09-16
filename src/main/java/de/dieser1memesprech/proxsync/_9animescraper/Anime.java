@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class Anime {
-
     private String title;
     private String source;
     private Document document;

@@ -128,7 +128,6 @@ public class UserWebSocket {
             if (r != null) {
                 r.reset9anime();
                 r.setVideo(jsonMessage.getString("url"));
-
             }
             JsonProvider provider = JsonProvider.provider();
             JsonObject messageJson = provider.createObjectBuilder()
