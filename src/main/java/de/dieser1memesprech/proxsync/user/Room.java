@@ -216,6 +216,7 @@ public class Room {
     }
 
     private String createDirectLink() {
+        System.out.println(video);
         if (isDirectLink) {
             return video;
         }
@@ -229,6 +230,8 @@ public class Room {
                 }
             } else if (url.getHost().equals("9anime.to")) {
                 episode = 0;
+                _9animeLink = video;
+                System.out.println("getting 9anime link");
                 website = get9animeLink();
             } else {
                 sendDebugToHost("Host not supported (yet?)");
@@ -242,8 +245,14 @@ public class Room {
     }
 
     private String get9animeLink() {
+        //TODO REMOVE THIS AFTER FIXING EPISODE STUFF
+        episode = 1;
         //String content = getWebsiteContent(video, "");
+        if(_9animeLink.equals("")) {
+            return "";
+        }
         if(episode == 0) {
+            System.out.println("Episode is 0. creating episode element from url " + video);
             _9animeLink = video;
             anime = new Anime(video);
             System.out.println(anime.getAnimeSearchObject().getLink());
@@ -254,6 +263,7 @@ public class Room {
                 e.printStackTrace();
             }
             if(episode == null) {
+                System.out.println("ERROR: episode element is null");
                 return "";
             }
             this.episode = episode.getEpNumInt();
@@ -446,6 +456,7 @@ public class Room {
     }
 
     public void reset9anime() {
+        episode = 0;
         _9animeLink = "";
     }
 

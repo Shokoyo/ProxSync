@@ -78,6 +78,7 @@ public class Anime {
         System.out.println(url);
         System.out.println(Configuration.instance.BASE_URL + "/watch/(.*[/])(.*[/])");
         if (Pattern.matches(Configuration.instance.BASE_URL + "/watch/(.*[/])(.*)", url)) {
+            System.out.println("pattern matches");
             String episodeId = url.substring(url.lastIndexOf('/') + 1);
             if (!episodeMap.containsKey(episodeId)) {
                 Elements servers = document.select("div[class=server row");

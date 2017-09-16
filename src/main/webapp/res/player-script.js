@@ -23,6 +23,7 @@ var cookieDialog;
 var skipButton;
 var firstVideo = true;
 var timeUpdate = false;
+var pauseFlag = true;
 //add onload function
 if (window.attachEvent) {
     window.attachEvent('onload', onloadFunction);
@@ -348,22 +349,34 @@ function onMessage(event) {
         if(!firstVideo && document.getElementById("auto-play-checkbox").checked) {
             myPlayer.one('canplay', function() {
                 setStartTime();
+                myPlayer.one('ended', function () {
+                    unbindPauseEvent();
+                    if (isOwner) {
+                        unbindTimeUpdate();
+                        var userAction = {
+                            "action": "finished"
+                        };
+                        socket.send(JSON.stringify(userAction));
+                    }
+                });
                 setTimeout(function() {
                 myPlayer.play();
             }, 1000)});
         } else {
-            myPlayer.one('canplay', setStartTime);
+            myPlayer.one('canplay', function() {
+                setStartTime();
+            });
+            myPlayer.one('ended', function () {
+                unbindPauseEvent();
+                if (isOwner) {
+                    unbindTimeUpdate();
+                    var userAction = {
+                        "action": "finished"
+                    };
+                    socket.send(JSON.stringify(userAction));
+                }
+            });
         }
-        myPlayer.one('ended', function () {
-            unbindPauseEvent();
-            if (isOwner) {
-                unbindTimeUpdate();
-                var userAction = {
-                    "action": "finished"
-                };
-                socket.send(JSON.stringify(userAction));
-            }
-        });
         firstVideo = false;
         //syncing = true;
         //setTimeout(myPlayer.play,20);
@@ -372,13 +385,11 @@ function onMessage(event) {
     }
 
     function bindPauseEvent() {
-        myPlayer.on('pause', handleStopEvent);
-        myPlayer.on('stalled', handleStopEvent);
+        pauseFlag = true;
     }
 
     function unbindPauseEvent() {
-        myPlayer.off('pause');
-        myPlayer.off('stalled');
+        pauseFlag = false;
     }
 
     if (eventJSON.action === "roomID") {
@@ -486,7 +497,7 @@ function handlePlayEvent() {
 }
 
 function handleStopEvent() {
-    if (syncing) {
+    if (syncing && pauseFlag) {
         var buffered = myPlayer.readyState();
         var intended = (buffered === 4);
         var userAction = {
