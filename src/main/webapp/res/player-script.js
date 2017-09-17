@@ -360,6 +360,9 @@ function onMessage(event) {
         sendBufferedInd();
     }
     if (eventJSON.action === "debug") {
+        if(eventJSON.message === "invalid URL") {
+            document.getElementById("url").value = "invalid";
+        }
         console.log(eventJSON.message);
     }
     if (eventJSON.action === "video") {

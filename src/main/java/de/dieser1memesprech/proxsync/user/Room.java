@@ -135,7 +135,9 @@ public class Room {
         playlist.add(new Video(url));
         if (playlist.size() == 1) {
             updatePlaylistInfo(playlist.peek());
-            setVideo(playlist.peek().url);
+            if(!playlist.isEmpty()) {
+                setVideo(playlist.peek().url);
+            }
         }
         sendPlaylist();
     }
@@ -171,7 +173,10 @@ public class Room {
             System.out.println("fetching info for video with url " + v.url);
             isDirectLink = checkDirectLink(v.url);
             v.url = createDirectLink(v.url);
-            if (anime != null) {
+            if(v.url.equals("")) {
+                playlist.remove(v);
+                sendDebugToHost("invalid URL");
+            } else if (anime != null) {
                 v.animeTitle = anime.getTitle();
                 v.episodeCount = anime.getEpisodeCount();
                 v.episode = episode;
