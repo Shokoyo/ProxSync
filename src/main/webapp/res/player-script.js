@@ -434,9 +434,28 @@ function onMessage(event) {
         }
     }
     if (eventJSON.action === "room-list") {
-        var roomString = eventJSON.roomString.replace("res/", location.protocol + '//' + location.host + location.pathname + "res/");
-        document.getElementById("room-list").innerHTML = "" + roomString;
+        var roomString = buildHtmlList(eventJSON.userList);
+        document.getElementById("user-list").innerHTML = "" + roomString;
     }
+}
+
+function buildHtmlList(userList) {
+    var res = "";
+    for(var i = 0; i < userList.length; i++) {
+        res = res + "<li class=\"mdc-list-item\">" +
+        "<img class=\"mdc-list-item__start-detail grey-bg\" src=\"" + userList[i].avatar + "\"" +
+        "width=\"56\" height=\"56\" alt=\"Brown Bear\">" +
+            userList[i].name;
+        if(userList[i].isOwner) {
+            res = res + "<span class=\"mdc-list-item__end-detail material-icons\">" +
+            "star" +
+            "</span>";
+        }
+        if(i != userList.length - 1) {
+            res = res + "</li><hr class=\"mdc-list-divider\">";
+        }
+    }
+    return res;
 }
 
 function copyInviteLink() {

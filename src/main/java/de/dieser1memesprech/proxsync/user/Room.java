@@ -13,8 +13,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
+import javax.json.*;
 import javax.json.spi.JsonProvider;
 import javax.websocket.Session;
 import java.io.*;
@@ -129,22 +128,18 @@ public class Room {
     }
 
     private void sendRoomList() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("<ul class=\"mdc-list mdc-list--dense\">");
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         for (Session s : sessions) {
-            builder.append("<li class=\"mdc-list-item\">");
-            builder.append(nameMap.get(s));
-            if (s == host) {
-                builder.append("&nbsp;<img class=\"mdc-list-item__start-detail\" src=\"res/crown.svg\" alt=\"Crown\" height=\"15\" width=\"15\"> ");
-            }
-            builder.append("</li>");
+            arrayBuilder.add(Json.createObjectBuilder()
+                .add("name", nameMap.get(s))
+                .add("avatar", "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/panda.svg?alt=media&token=6f4d5bf1-af69-4211-994d-66655456d91a")
+                .add("isOwner", s==host)
+                    .build());
         }
-        builder.append("</ul>");
-        String roomString = builder.toString();
         JsonProvider provider = JsonProvider.provider();
         JsonObject messageJson = provider.createObjectBuilder()
                 .add("action", "room-list")
-                .add("roomString", roomString)
+                .add("userList", arrayBuilder.build())
                 .build();
         UserSessionHandler.getInstance().sendToRoom(messageJson, this);
     }
