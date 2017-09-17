@@ -21,7 +21,7 @@ function register() {
 }
 function signout() {
     firebase.auth().signOut().then(function() {
-        
+
     }).catch(function(error) {// Sign-out successful.
         // An error happened.
     });
@@ -48,10 +48,8 @@ firebase.auth().onAuthStateChanged(function(user) {
         }
         // ...
     } else {
-        loginAnonimously();
         updateAuthButtons(user)
     }
-    // ...
 });
 
 function updateAuthButtons(user) {
@@ -59,11 +57,15 @@ function updateAuthButtons(user) {
             console.log("signed in");
             document.getElementById("register-row").style.display='none';
             document.getElementById("signout-row").style.display='';
-            name = user.displayName;
+            var name = user.displayName;
             console.log(name);
             document.getElementById("welcome-msg").textContent = "Welcome " + name + "!";
         } else {
             console.log("not signed in");
+            console.log("login in anonymously");
+            if (!user) {
+                loginAnonimously();
+            }
             document.getElementById("register-row").style.display = '';
             document.getElementById("signout-row").style.display = 'none';
         }
