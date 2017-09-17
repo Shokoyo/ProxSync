@@ -59,7 +59,8 @@
         </section>
         <section class="mdc-toolbar__section mdc-toolbar__section--align-end">
             <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
-                <div id="register-row" style="align-self:center;float:right;margin-right:16px;margin-left:auto;">
+                <div id="register-row"
+                     style="align-self:center;float:right;margin-right:16px;margin-left:auto;">
                     <button class="mdc-button mdc-button--raised mdc-button--accent mdc-button--align-middle"
                             onclick="register()"
                             id="register-button"
@@ -87,7 +88,8 @@
         </div>
         <div class="mdc-layout-grid__inner">
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
-                <video id="my-player" class="video-js vjs-default-skin" controls preload="auto" data-setup='{}'></video>
+                <video id="my-player" class="video-js vjs-default-skin" controls preload="auto"
+                       data-setup='{}'></video>
             </div>
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">
                 <div class="mdc-layout-grid__inner">
@@ -98,7 +100,8 @@
                                          style="height:0;">
                                     <span class="mdc-toolbar__title" id="room-id-out">Room ID:</span>
                                 </section>
-                                <section class="mdc-toolbar__section mdc-toolbar__section--align-end" style="height:0;">
+                                <section class="mdc-toolbar__section mdc-toolbar__section--align-end"
+                                         style="height:0;">
                                     <button class="mdc-button mdc-button--raised mdc-theme--secondary-bg"
                                             style="margin-right: 16px;align-self: center;"
                                             onclick="copyInviteLink();"
@@ -111,7 +114,8 @@
                                      role="tablist">
                                     <a role="tab" aria-controls="tab-users" href="#one" onclick="return false;"
                                        class="mdc-tab">Users</a>
-                                    <a role="tab" aria-controls="tab-playlist" href="#two" onclick="return false;"
+                                    <a role="tab" aria-controls="tab-playlist" href="#two"
+                                       onclick="return false;"
                                        class="mdc-tab">Playlist</a>
                                     <span class="mdc-tab-bar__indicator"></span>
                                 </nav>
@@ -160,8 +164,9 @@
                                                         <div class="mdc-switch__knob"></div>
                                                     </div>
                                                 </div>
-                                                <label for="auto-next-checkbox" class="mdc-switch-label">Auto next
-                                                    episode</label>
+                                                <label for="auto-next-checkbox" class="mdc-switch-label">Auto
+                                                                                                         next
+                                                                                                         episode</label>
                                             </div>
                                             <div class="mdc-form-field" id="auto-play-container"
                                                  style="margin-right: 10px; margin-top: 10px;">
@@ -177,6 +182,13 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <section id="playlist-list-section"
+                                             class="mdc-dialog__body mdc-dialog__body--scrollable"
+                                             style="max-height: 100px">
+                                        <ul id="playlist-list"
+                                            class="mdc-list mdc-list--two-line mdc-list--avatar-list two-line-avatar-text-icon-demo">
+                                        </ul>
+                                    </section>
                                 </div>
                             </div>
                         </section>

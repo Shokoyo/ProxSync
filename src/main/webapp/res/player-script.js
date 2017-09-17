@@ -88,6 +88,7 @@ myPlayer.ready(function () {
         var marginCellPanelUsers = $('#cell-panel-users').outerHeight(true) - $('#cell-panel-users').outerHeight();
         var marginCellToolbar = $('#cell-toolbar').outerHeight(true) - $('#cell-toolbar').outerHeight();
         document.getElementById("mdc-users-list").style.maxHeight = ((width * aspectRatio) - $('#cell-toolbar').outerHeight(false) - marginCellToolbar - marginCellPanelUsers) + "px";
+        document.getElementById("playlist-list-section").style.maxHeight = ((width * aspectRatio) - $('#cell-toolbar').outerHeight(false) - marginCellToolbar - marginCellPanelUsers) + "px";
     }
 
     var y = document.getElementsByClassName("vjs-big-play-button");
@@ -161,6 +162,31 @@ function handler(e) {
         e.preventDefault();
     }
 }
+
+$('#url-button').on('keyup', function(e) {
+    if (e.keyCode === 32 || e.which === 32) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+});
+
+$(document).on('keydown', function (e) {
+    var nodeName = e.target.nodeName;
+    console.log(e.target);
+    if ('INPUT' == nodeName || 'TEXTAREA' == nodeName || e.target.title === "Play" || e.target.title === 'Pause') {
+
+        return;
+    }
+    if (e.keyCode === 32 || e.which === 32 && isOwner) {
+        if (myPlayer.paused()) {
+            myPlayer.play();
+        } else {
+            myPlayer.pause();
+        }
+        e.preventDefault();
+        e.stopPropagation();
+    }
+});
 
 function makeRoomDialog() {
     roomDialog = new mdc.dialog.MDCDialog(document.querySelector('#room-dialog'));
@@ -282,11 +308,6 @@ $("#user-name").keypress(function (event) {
 });
 
 function loadVideo() {
-    document.getElementById("anime-title").innerHTML = "&nbsp;";
-    if (myPlayer.src() !== undefined) {
-        myPlayer.reset();
-        sendCurrentTime();
-    }
     var url = document.getElementById("url").value;
     var userAction = {
         action: "video",
@@ -416,6 +437,10 @@ function onMessage(event) {
             roomJoined = true;
         }
     }
+    if(eventJSON.action === "playlist") {
+        var playListString = buildHtmlPlaylist(eventJSON.playlist);
+        document.getElementById("playlist-list").innerHTML = playListString;
+    }
     if (eventJSON.action === "room-list") {
         var roomString = buildHtmlList(eventJSON.userList);
         document.getElementById("user-list").innerHTML = "" + roomString;
@@ -436,12 +461,44 @@ $(document).on("keypress", "#name", function (e) {
     }
 });
 
+function buildHtmlPlaylist(playList) {
+    var res = "";
+    for(var i = 0; i < playList.length; i++) {
+        res+="<li class='mdc-list-item'>" +
+        "<img style='height:78px;padding-right:14px;' src='" + playList[i].episodePoster + "' role='presentation'></img>";
+        res += "<span class='mdc-list-item__text'>" + playList[i].title;
+        if(playList[i].episode !== 0) {
+            res += ", " + playList[i].episode + "/" + playList[i].episodeCount;
+        }
+        res += "<span class='mdc-list-item__text__secondary'>" + playList[i].episodeTitle + "</span></span>";
+        res += "<a href='#' class='mdc-list-item__end-detail material-icons' " +
+        "aria-label='Play now' title='Play now'" +
+        "onclick='playNow(" + i + ");' >play_arrow</a>";
+        res += "<a href='#' class='mdc-list-item__end-detail material-icons' " +
+            "aria-label='Delete' title='Delete'" +
+            "onclick='deleteFromPlaylist(" + i + ");' >delete</a>";
+        res += "</li>";
+        if (i != playList.length - 1) {
+            res += "</li><hr class=\"mdc-list-divider\">";
+        }
+    }
+    return res;
+}
+
+function playNow(i) {
+
+}
+
+function deleteFromPlaylist(i) {
+
+}
+
 function buildHtmlList(userList) {
     var res = "";
     for (var i = 0; i < userList.length; i++) {
         res = res + "<li class=\"mdc-list-item\">" +
             "<img class=\"mdc-list-item__start-detail grey-bg\" src=\"" + userList[i].avatar + "\"" +
-            "width=\"56\" height=\"56\" alt=\"Brown Bear\">"
+            "width=\"56\" height=\"56\" alt=\"Brown Bear\">";
         if (userList[i].uid === uid) {
             res += "<span id='user-self' style=\"display: block; margin-right: 16px\">" + userList[i].name + "</span>";
             res += "<div id='user-self-field' class=\"mdc-form-field\" style='display: none'>" +
@@ -449,7 +506,7 @@ function buildHtmlList(userList) {
                 "<input onfocus=\"this.select();\" onblur=\"enterName();\" type=\"text\" id=\"name\" class=\"mdc-textfield__input\" value='" + userList[i].name + "'>" +
                 "<label for=\"name\" class=\"mdc-textfield__label\"></label>" +
                 "</div>" +
-                "</div>"
+                "</div>";
             res += "<a href='#' onclick='editName()' class=\"material-icons mdc-toolbar__icon mdc-theme--secondary\">create</a>";
         } else {
             res += "<span>" + userList[i].name + "</span>";

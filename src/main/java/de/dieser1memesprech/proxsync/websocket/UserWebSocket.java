@@ -120,17 +120,7 @@ public class UserWebSocket {
             Room r = RoomHandler.getInstance().getRoomBySession(session);
             if (r != null) {
                 r.reset9anime();
-                r.setVideo(jsonMessage.getString("url"));
-                if (r.getAnime() != null) {
-                    JsonProvider provider = JsonProvider.provider();
-                    JsonObject messageJson = provider.createObjectBuilder()
-                            .add("action", "animeInfo")
-                            .add("title", r.getAnime().getTitle())
-                            .add("episode", r.getEpisodeNumber())
-                            .add("episodeCount", r.getAnime().getEpisodeCount())
-                            .build();
-                    UserSessionHandler.getInstance().sendToRoom(messageJson, RoomHandler.getInstance().getRoomBySession(session));
-                }
+                r.addVideo(jsonMessage.getString("url"));
             }
         }
 

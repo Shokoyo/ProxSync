@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import de.dieser1memesprech.proxsync._9animescraper.Anime;
 import de.dieser1memesprech.proxsync._9animescraper.Episode;
 import de.dieser1memesprech.proxsync._9animescraper.Exceptions.No9AnimeUrlException;
+import de.dieser1memesprech.proxsync.util.RandomString;
 import de.dieser1memesprech.proxsync.websocket.UserSessionHandler;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpHead;
@@ -45,12 +46,13 @@ public class Room {
     private JsonNumber timestamp;
     private Random random = new Random();
     private Anime anime;
+    private static RandomString randomString = new RandomString(10);
 
     public Room(Session host, String hostname, String hostuid) {
         playlist = new LinkedList<Video>();
         this.host = host;
         do {
-            id = Long.toHexString(Double.doubleToLongBits(Math.random()));
+            id = randomString.nextString();
         } while (!RoomHandler.getInstance().checkId(id));
         sessions = new LinkedList<Session>();
         this.addSession(host, hostname, hostuid);
@@ -129,6 +131,61 @@ public class Room {
         sendRoomList();
     }
 
+    public void addVideo(String url) {
+        playlist.add(new Video(url));
+        if (playlist.size() == 1) {
+            updatePlaylistInfo(playlist.peek());
+            setVideo(playlist.peek().url);
+        }
+        sendPlaylist();
+    }
+
+    private void sendPlaylist() {
+        updatePlaylistInfo();
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        for (Video v : playlist) {
+            arrayBuilder.add(Json.createObjectBuilder()
+                    .add("title", v.animeTitle)
+                    .add("episodeTitle", v.episodeTitle)
+                    .add("episodePoster", v.episodePoster)
+                    .add("episode", v.episode)
+                    .add("episodeCount", v.episodeCount)
+                    .build());
+        }
+        JsonProvider provider = JsonProvider.provider();
+        JsonObject messageJson = provider.createObjectBuilder()
+                .add("action", "playlist")
+                .add("playlist", arrayBuilder.build())
+                .build();
+        UserSessionHandler.getInstance().sendToRoom(messageJson, this);
+    }
+
+    private void updatePlaylistInfo() {
+        for(Video v: playlist) {
+            updatePlaylistInfo(v);
+        }
+    }
+
+    private void updatePlaylistInfo(Video v) {
+        if (!v.infoGot) {
+            System.out.println("fetching info for video with url " + v.url);
+            isDirectLink = checkDirectLink(v.url);
+            v.url = createDirectLink(v.url);
+            if (anime != null) {
+                v.animeTitle = anime.getTitle();
+                v.episodeCount = anime.getEpisodeCount();
+                v.episode = episode;
+                v.episodePoster = anime.getAnimeSearchObject().getPoster();
+                v.episodeTitle = getEpisodeTitle(v.animeTitle, v.episode);
+            }
+            v.infoGot = true;
+        }
+    }
+
+    private String getEpisodeTitle(String animeTitle, int episode) {
+        return "Richtig geile Episode";
+    }
+
     private void sendRoomList() {
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         for (Session s : sessions) {
@@ -169,8 +226,17 @@ public class Room {
         }
         video = url;
         playing = false;
-        isDirectLink = checkDirectLink(url);
         sendVideoToRoom();
+        if (anime != null) {
+            JsonProvider provider = JsonProvider.provider();
+            JsonObject messageJson = provider.createObjectBuilder()
+                    .add("action", "animeInfo")
+                    .add("title", getAnime().getTitle())
+                    .add("episode", getEpisodeNumber())
+                    .add("episodeCount", getAnime().getEpisodeCount())
+                    .build();
+            UserSessionHandler.getInstance().sendToRoom(messageJson, this);
+        }
     }
 
     private void sendVideoToRoom() {
@@ -190,7 +256,7 @@ public class Room {
                 pause(timestamp, s, false);
             }
         }
-        String url = createDirectLink();
+        String url = createDirectLink(playlist.peek().url);
         JsonProvider provider = JsonProvider.provider();
         JsonObject messageJson;
         if (timestamp == null) {
@@ -209,7 +275,7 @@ public class Room {
         UserSessionHandler.getInstance().sendToSession(s, messageJson);
     }
 
-    private String createDirectLink() {
+    private String createDirectLink(String video) {
         System.out.println(video);
         if (isDirectLink) {
             return video;
@@ -227,19 +293,18 @@ public class Room {
                 episode = 0;
                 _9animeLink = video;
                 System.out.println("getting 9anime link");
-                website = get9animeLink();
+                website = get9animeLink(video);
             } else {
                 sendDebugToHost("Host not supported (yet?)");
             }
         } catch (MalformedURLException e) {
             sendDebugToHost("invalid URL");
         }
-        video = website;
         isDirectLink = true;
         return website;
     }
 
-    private String get9animeLink() {
+    private String get9animeLink(String video) {
         //String content = getWebsiteContent(video, "");
         if (_9animeLink.equals("")) {
             return "";
@@ -459,17 +524,16 @@ public class Room {
     }
 
     public void loadNextVideo() {
+        Video v = playlist.poll();
         timestamp = null;
         if (playlist.isEmpty() && autoNext) {
             episode++;
-            String newUrl = get9animeLink();
-            if (!"".equals(newUrl)) {
-                setVideo(newUrl);
-            } else {
-                sendDebugToHost("failed to load next Video");
+            if(v != null) {
+                addVideo(get9animeLink(_9animeLink));
             }
         } else if (!playlist.isEmpty()) {
-            //TODO play playlist
+            sendPlaylist();
+            setVideo(playlist.peek().getUrl());
         }
     }
 
