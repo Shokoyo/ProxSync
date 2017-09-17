@@ -554,7 +554,7 @@ function buildHtmlListSearch(resultList) {
                     "</b></a>";
             }
         } else {
-            res += "<a href='#' class='text square-box mdc-toolbar__icon' " +
+            res += "<a href='#' class='text square-box mdc-toolbar__icon  mdc-theme--secondary-bg' " +
                 "onclick='addSearchResultToPlaylist(\"" + resultList[i].link + "\");'>" +
                 "<b>" +
                 "load" +
