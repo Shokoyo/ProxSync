@@ -8,6 +8,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 
 public class HtmlUtils {
 
@@ -19,7 +20,7 @@ public class HtmlUtils {
             CloseableHttpResponse response = httpclient.execute(httpget);
             try {
                 HttpEntity entity = response.getEntity();
-                content = EntityUtils.toString(entity, "UTF-8");
+                content = EntityUtils.toString(entity, "US-ASCII");
             } catch (NullPointerException e) {
                 e.printStackTrace();
             } finally {

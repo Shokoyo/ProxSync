@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import de.dieser1memesprech.proxsync._9animescraper.Anime;
 import de.dieser1memesprech.proxsync._9animescraper.Episode;
 import de.dieser1memesprech.proxsync._9animescraper.Exceptions.No9AnimeUrlException;
+import de.dieser1memesprech.proxsync._9animescraper.util.HtmlUtils;
+import de.dieser1memesprech.proxsync.util.NamespaceContextMap;
 import de.dieser1memesprech.proxsync.util.RandomString;
 import de.dieser1memesprech.proxsync.websocket.UserSessionHandler;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -13,14 +15,20 @@ import org.apache.http.impl.client.HttpClients;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.xml.sax.InputSource;
 
 import javax.json.*;
 import javax.json.spi.JsonProvider;
 import javax.websocket.Session;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -135,7 +143,7 @@ public class Room {
         playlist.add(new Video(url));
         if (playlist.size() == 1) {
             updatePlaylistInfo(playlist.peek());
-            if(!playlist.isEmpty()) {
+            if (!playlist.isEmpty()) {
                 setVideo(playlist.peek().url);
             }
         }
@@ -163,14 +171,14 @@ public class Room {
     }
 
     private void updatePlaylistInfo() {
-        for(Video v: playlist) {
+        for (Video v : playlist) {
             updatePlaylistInfo(v);
         }
     }
 
     public void playNow(int episode) {
-        if(episode > 0) {
-            for(int i = 0; i < episode - 1; i++) {
+        if (episode > 0) {
+            for (int i = 0; i < episode - 1; i++) {
                 playlist.poll();
             }
             loadNextVideo();
@@ -178,8 +186,8 @@ public class Room {
     }
 
     public void delete(int episode) {
-        if(episode == 0) {
-            if(playlist.size() != 1) {
+        if (episode == 0) {
+            if (playlist.size() != 1) {
                 loadNextVideo();
             }
         } else {
@@ -193,7 +201,7 @@ public class Room {
             System.out.println("fetching info for video with url " + v.url);
             isDirectLink = checkDirectLink(v.url);
             v.url = createDirectLink(v.url);
-            if(v.url.equals("")) {
+            if (v.url.equals("")) {
                 playlist.remove(v);
                 sendDebugToHost("invalid URL");
             } else if (anime != null) {
@@ -207,8 +215,37 @@ public class Room {
         }
     }
 
+    private String evaluateXPath(String xml, String expr) {
+        String res = "";
+        try {
+            NamespaceContext nsContext = new NamespaceContextMap(
+                    "xml", "http://www.w3.org/XML/1998/namespace");
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            xPath.setNamespaceContext(nsContext);
+            return xPath.evaluate(expr, new InputSource(new StringReader(xml)));
+        } catch (XPathExpressionException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
     private String getEpisodeTitle(String animeTitle, int episode) {
-        return "Richtig geile Episode";
+        String res = "";
+        try {
+            String content = HtmlUtils.getHtmlContent("http://anisearch.outrance.pl/?task=search&query="
+                    + URLEncoder.encode("\\" + animeTitle, "UTF-8"));
+            String aid = evaluateXPath(content, "//anime/@aid");
+            System.out.println("Anime ID: " + aid);
+            if(aid != "") {
+                content = HtmlUtils.getHtmlContent("http://api.anidb.net:9001/httpapi?request=anime&" +
+                        "client=anisync&clientver=1&protover=1&aid=" + aid);
+                res = evaluateXPath(content, "//episode[epno=\"" + episode + "\"]/title[@xml:lang=\"en\"]/text()");
+                System.out.println(res);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return res;
     }
 
     private void sendRoomList() {
@@ -553,7 +590,7 @@ public class Room {
         timestamp = null;
         if (playlist.isEmpty() && autoNext && !_9animeLink.equals("")) {
             episode++;
-            if(v != null) {
+            if (v != null) {
                 addVideo(get9animeLink(_9animeLink));
             }
         } else if (!playlist.isEmpty()) {

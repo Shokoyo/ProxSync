@@ -47,6 +47,12 @@
     <orderEntry type="library" name="jquery" level="application" />
     <orderEntry type="library" name="video" level="application" />
     <orderEntry type="library" name="_9animescrapper" level="project" />
+    <orderEntry type="library" name="firebase" level="application" />
+    <orderEntry type="library" name="firebase-app" level="application" />
+    <orderEntry type="library" name="firebase-auth" level="application" />
+    <orderEntry type="library" name="material-components-web" level="application" />
+    <orderEntry type="library" name="video" level="application" />
+    <orderEntry type="library" name="jquery" level="application" />
     <orderEntry type="library" name="Maven: org.glassfish:javax.json:1.0.4" level="project" />
     <orderEntry type="library" name="Maven: javax:javaee-api:7.0" level="project" />
     <orderEntry type="library" name="Maven: com.sun.mail:javax.mail:1.5.0" level="project" />
@@ -59,11 +65,5 @@
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.tomcat:tomcat-servlet-api:7.0.21" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.5" level="project" />
-    <orderEntry type="library" name="firebase" level="application" />
-    <orderEntry type="library" name="firebase-app" level="application" />
-    <orderEntry type="library" name="firebase-auth" level="application" />
-    <orderEntry type="library" name="material-components-web" level="application" />
-    <orderEntry type="library" name="video" level="application" />
-    <orderEntry type="library" name="jquery" level="application" />
   </component>
 </module>
