@@ -125,6 +125,7 @@ $("#name").blur(function () {
 //hide video url and text field (when not connected to a room)
 function onloadFunction() {
     initCheckbox();
+    mdc.textfield.MDCTextfield.attachTo(document.querySelector('.mdc-textfield'));
     cookieDialog = new mdc.dialog.MDCDialog(document.querySelector('#cookie-dialog'));
     document.getElementById("url-field").style.display = 'none';
     document.getElementById("url-button").style.display = 'none';
