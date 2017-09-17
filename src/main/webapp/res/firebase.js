@@ -22,6 +22,7 @@ function register() {
         // ...
     });
 }
+
 function signout() {
     firebase.auth().signOut().then(function () {
 
@@ -30,25 +31,13 @@ function signout() {
     });
 }
 
-function loginAnonimously() {
-    firebase.auth().signInAnonymously().catch(function (error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        // ...
-    });
-}
-
-firebase.auth().onAuthStateChanged(function (user) {
-    if (user) {
-        // User is signed in.
-        var isAnonymous = user.isAnonymous;
-        uid = user.uid;
-        console.log(isAnonymous);
-        console.log(uid);
-        if (!isAnonymous) {
-            updateAuthButtons(user);
-        }
+var currentUser;
+var uid;
+firebase.auth().onAuthStateChanged(function (authData) {
+    if (authData) {
+        console.log("Logged in as:", authData.uid);
+        currentUser = authData.currentUser;
+        uid = authData.uid;
         if (!roomCreated) {
             roomCreated = true;
             var url = "" + window.location;
@@ -66,15 +55,21 @@ firebase.auth().onAuthStateChanged(function (user) {
                 }
             }
         } else {
+            console.log(uid);
             var userAction = {
                 action: "uid",
                 value: uid
             };
             socket.send(JSON.stringify(userAction));
         }
-        // ...
-    } else {
-        updateAuthButtons(user)
+        updateAuthButtons(authData);
+    }
+    else {
+        console.log("Not logged in; going to log in as anonymous");
+        currentUser = null;
+        firebase.auth().signInAnonymously().catch(function (error) {
+            console.error("Anonymous authentication failed:", error);
+        });
     }
 });
 
@@ -102,19 +97,14 @@ function getQueryVariable(variable) {
 }
 
 function updateAuthButtons(user) {
+    console.log(user.isAnonymous);
     if (user && !user.isAnonymous) {
-        console.log("signed in");
         document.getElementById("register-row").style.display = 'none';
         document.getElementById("signout-row").style.display = '';
         var name = user.displayName;
         console.log(name);
         document.getElementById("welcome-msg").textContent = "Welcome " + name + "!";
     } else {
-        console.log("not signed in");
-        console.log("login in anonymously");
-        if (!user) {
-            loginAnonimously();
-        }
         document.getElementById("register-row").style.display = '';
         document.getElementById("signout-row").style.display = 'none';
     }
