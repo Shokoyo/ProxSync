@@ -68,19 +68,21 @@ public class Anime {
         int episodeCount = 0;
         if(status != null && !"".equals(status)) {
             String[] statusArray = status.text().split("/");
-            if (!isInteger(statusArray[0]) && !isInteger(statusArray[1])) {
-                statusArray[0] = "0";
-                statusArray[1] = "1";
-            } else if (!isInteger(statusArray[0])) {
-                statusArray[0] = statusArray[1];
-            } else if (!isInteger(statusArray[1])) {
-                statusArray[1] = statusArray[0];
-            }
-            try {
-                lastEpisode = Integer.parseInt(statusArray[0]);
-                episodeCount = Integer.parseInt(statusArray[1]);
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
+            if(statusArray.length == 2) {
+                if (!isInteger(statusArray[0]) && !isInteger(statusArray[1])) {
+                    statusArray[0] = "0";
+                    statusArray[1] = "1";
+                } else if (!isInteger(statusArray[0])) {
+                    statusArray[0] = statusArray[1];
+                } else if (!isInteger(statusArray[1])) {
+                    statusArray[1] = statusArray[0];
+                }
+                try {
+                    lastEpisode = Integer.parseInt(statusArray[0]);
+                    episodeCount = Integer.parseInt(statusArray[1]);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
             }
         }
         String langStr = lang == null ? "sub" : lang.text();
