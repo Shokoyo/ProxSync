@@ -85,6 +85,9 @@ myPlayer.ready(function () {
         }
         myPlayer.width(width);
         myPlayer.height(width * aspectRatio);
+        var marginCellPanelUsers = $('#cell-panel-users').outerHeight(true) - $('#cell-panel-users').outerHeight();
+        var marginCellToolbar = $('#cell-toolbar').outerHeight(true) - $('#cell-toolbar').outerHeight();
+        document.getElementById("mdc-users-list").style.maxHeight = ((width * aspectRatio) - $('#cell-toolbar').outerHeight(false) - marginCellToolbar - marginCellPanelUsers) + "px";
     }
 
     var y = document.getElementsByClassName("vjs-big-play-button");
