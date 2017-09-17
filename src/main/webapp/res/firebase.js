@@ -21,15 +21,41 @@ function register() {
 }
 function signout() {
     firebase.auth().signOut().then(function() {
-        // Sign-out successful.
-    }).catch(function(error) {
+        
+    }).catch(function(error) {// Sign-out successful.
         // An error happened.
     });
 }
 
-function updateAuthButtons() {
-    firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
+function loginAnonimously() {
+    firebase.auth().signInAnonymously().catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // ...
+    });
+}
+
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+        // User is signed in.
+        var isAnonymous = user.isAnonymous;
+        var uid = user.uid;
+        console.log(isAnonymous);
+        console.log(uid);
+        if (!isAnonymous) {
+            updateAuthButtons(user);
+        }
+        // ...
+    } else {
+        loginAnonimously();
+        updateAuthButtons(user)
+    }
+    // ...
+});
+
+function updateAuthButtons(user) {
+        if (user && !user.isAnonymous) {
             console.log("signed in");
             document.getElementById("register-row").style.display='none';
             document.getElementById("signout-row").style.display='';
@@ -38,8 +64,7 @@ function updateAuthButtons() {
             document.getElementById("welcome-msg").textContent = "Welcome " + name + "!";
         } else {
             console.log("not signed in");
-            document.getElementById("register-row").style.display='';
-            document.getElementById("signout-row").style.display='none';
+            document.getElementById("register-row").style.display = '';
+            document.getElementById("signout-row").style.display = 'none';
         }
-    });
 }
