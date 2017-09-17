@@ -60,7 +60,7 @@ public class UserWebSocket {
                 old.removeSession(session);
             }
             System.out.println(jsonMessage.getString("uid"));
-            Room r = new Room(session, jsonMessage.getString("name"));
+            Room r = new Room(session, jsonMessage.getString("name"), jsonMessage.getString("uid"));
             RoomHandler.getInstance().mapSession(session, r);
         }
 
@@ -99,7 +99,7 @@ public class UserWebSocket {
                             .build();
                     UserSessionHandler.getInstance().sendToSession(session, messageJson);
                 } else {
-                    r.addSession(session, jsonMessage.getString("name"));
+                    r.addSession(session, jsonMessage.getString("name"), jsonMessage.getString("uid"));
                     RoomHandler.getInstance().mapSession(session, r);
                 }
             } catch (NumberFormatException e) {

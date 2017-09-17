@@ -121,6 +121,7 @@ $("#name").blur(function () {
     lastName = document.getElementById("name").value;
     document.getElementById("name").value = getCookie("username");
 });
+
 //hide video url and text field (when not connected to a room)
 function onloadFunction() {
     initCheckbox();
@@ -266,17 +267,16 @@ $("#cookie-field").keypress(function (event) {
     }
 });
 
-$("#name").keypress(function (event) {
-    if (event.which === 13) {
-        lastName = document.getElementById("name").value;
-        changeName();
-        document.getElementById("name").blur();
-    }
-});
-
 $("#room-id-in").keypress(function (event) {
     if (event.which === 13) {
         createRoom();
+    }
+});
+
+$("#user-name").keypress(function (event) {
+    if (event.which === 13) {
+        console.log("test");
+        changeName();
     }
 });
 
@@ -421,18 +421,42 @@ function onMessage(event) {
     }
 }
 
+function editName() {
+    document.getElementById("user-self").style.display = "none";
+    document.getElementById("user-self-field").style.display = "block";
+    document.getElementById("name").focus();
+}
+
+$(document).on("keypress", "#name", function (e) {
+    if (e.keyCode == 13 || e.which == '13') {
+        lastName = document.getElementById("name").value;
+        changeName();
+        document.getElementById("name").blur();
+    }
+});
+
 function buildHtmlList(userList) {
     var res = "";
     for (var i = 0; i < userList.length; i++) {
         res = res + "<li class=\"mdc-list-item\">" +
             "<img class=\"mdc-list-item__start-detail grey-bg\" src=\"" + userList[i].avatar + "\"" +
-            "width=\"56\" height=\"56\" alt=\"Brown Bear\">" +
-            userList[i].name;
-        if (userList[i].isOwner) {
-            res = res + "<span class=\"mdc-list-item__end-detail material-icons\">" +
-                "star" +
-                "</span>";
+            "width=\"56\" height=\"56\" alt=\"Brown Bear\">"
+        if (userList[i].uid === uid) {
+            res += "<span id='user-self' style=\"display: block; margin-right: 16px\">" + userList[i].name + "</span>";
+            res += "<div id='user-self-field' class=\"mdc-form-field\" style='display: none'>" +
+                "<div class=\"mdc-textfield\" data-mdc-auto-init=\"MDCTextfield\">" +
+                "<input onfocus=\"this.select();\" type=\"text\" id=\"name\" class=\"mdc-textfield__input\" value='" + userList[i].name + "'>" +
+                "<label for=\"name\" class=\"mdc-textfield__label\"></label>" +
+                "</div>" +
+                "</div>"
+            res += "<a href='#' onclick='editName()' class=\"material-icons mdc-toolbar__icon mdc-theme--secondary\">create</a>";
+        } else {
+            res += "<span>" + userList[i].name + "</span>";
         }
+        if (userList[i].isOwner) {
+            res += "<i class=\"mdc-list-item__end-detail material-icons mdc-theme--secondary\">star</i>";
+        }
+        res += "</i>";
         if (i != userList.length - 1) {
             res = res + "</li><hr class=\"mdc-list-divider\">";
         }
@@ -494,6 +518,9 @@ function changeName() {
         name: lastName
     };
     document.getElementById("name").value = lastName;
+    document.getElementById("user-self").style.display = "block";
+    document.getElementById("user-self").value = lastName;
+    document.getElementById("user-self-field").style.display = "none";
     setCookie("username", userAction.name, 365);
     socket.send(JSON.stringify(userAction));
 }
@@ -585,25 +612,13 @@ function getCookie(cname) {
 function checkCookie() {
     var username = getCookie("username");
     if (username !== "") {
-        document.getElementById("name").focus();
-        document.getElementById("name").value = username;
-        document.getElementById("name").blur();
+        if (document.getElementById("name") != null) {
+            document.getElementById("name").focus();
+            document.getElementById("name").value = username;
+            document.getElementById("name").blur();
+        }
     } else {
         cookieDialog.show();
-        document.getElementById("cookie-field").focus();
-    }
-}
-
-function submitCookie() {
-    var username = document.getElementById("cookie-field").value;
-    if (username !== "" && username !== null) {
-        setCookie("username", username, 365);
-        document.getElementById("name").focus();
-        document.getElementById("name").value = username;
-        document.getElementById("name").blur();
-        cookieDialog.close();
-        makeRoomDialog();
-    } else {
         document.getElementById("cookie-field").focus();
     }
 }

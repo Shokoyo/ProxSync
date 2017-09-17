@@ -30,7 +30,7 @@ public class Room {
     private static final String USER_AGENT = "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.13) Gecko/20101206 Ubuntu/10.10 (maverick) Firefox/3.6.13";
     private static final String ripLink = "http://i.imgur.com/eKmmyv1.mp4";
     private HashMap<Session, Boolean> readyStates = new HashMap<Session, Boolean>();
-    private HashMap<Session, String> nameMap = new HashMap<Session, String>();
+    private HashMap<Session, User> nameMap = new HashMap<Session, User>();
     private List<Session> sessions;
     private String video = "";
     private String _9animeLink = "";
@@ -46,14 +46,14 @@ public class Room {
     private Random random = new Random();
     private Anime anime;
 
-    public Room(Session host, String hostname) {
+    public Room(Session host, String hostname, String hostuid) {
         playlist = new LinkedList<Video>();
         this.host = host;
         do {
             id = Long.toHexString(Double.doubleToLongBits(Math.random()));
         } while (!RoomHandler.getInstance().checkId(id));
         sessions = new LinkedList<Session>();
-        this.addSession(host, hostname);
+        this.addSession(host, hostname, hostuid);
         RoomHandler.getInstance().addRoom(this);
         httpClient = HttpClients.createDefault();
     }
@@ -91,7 +91,9 @@ public class Room {
         return new LinkedList<Session>(sessions);
     }
 
-    public void addSession(Session session, String name) {
+    public void addSession(Session session, String name, String uid) {
+        User user = new User(uid, name, "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/panda.svg?alt=media&token=6f4d5bf1-af69-4211-994d-66655456d91a");
+        nameMap.put(session, user);
         setName(session, name);
         readyStates.put(session, false);
         sessions.add(session);
@@ -131,9 +133,10 @@ public class Room {
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         for (Session s : sessions) {
             arrayBuilder.add(Json.createObjectBuilder()
-                .add("name", nameMap.get(s))
-                .add("avatar", "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/panda.svg?alt=media&token=6f4d5bf1-af69-4211-994d-66655456d91a")
-                .add("isOwner", s==host)
+                    .add("uid", nameMap.get(s).getUid())
+                    .add("name", nameMap.get(s).getName())
+                    .add("avatar", nameMap.get(s).getAvatarUrl())
+                    .add("isOwner", s == host)
                     .build());
         }
         JsonProvider provider = JsonProvider.provider();
@@ -145,7 +148,7 @@ public class Room {
     }
 
     public void changeName(Session s, String name) {
-        String old = nameMap.get(s);
+        String old = nameMap.get(s).getName();
         if (!name.equals(old)) {
             setName(s, name);
             sendRoomList();
@@ -156,7 +159,7 @@ public class Room {
         if (name.contains("<")) {
             name = "User " + random.nextInt(10000);
         }
-        nameMap.put(s, name);
+        nameMap.get(s).setName(name);
     }
 
     public void setVideo(String url) {

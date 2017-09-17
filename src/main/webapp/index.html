@@ -88,7 +88,8 @@
                     <div id="cell-toolbar" class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
                         <header class="mdc-toolbar">
                             <div class="mdc-toolbar__row">
-                                <section class="mdc-toolbar__section mdc-toolbar__section--align-start" style="height:0;">
+                                <section class="mdc-toolbar__section mdc-toolbar__section--align-start"
+                                         style="height:0;">
                                     <span class="mdc-toolbar__title" id="room-id-out">Room ID:</span>
                                 </section>
                                 <section class="mdc-toolbar__section mdc-toolbar__section--align-end" style="height:0;">
@@ -102,8 +103,10 @@
                             <div class="mdc-toolbar__row">
                                 <nav id="dynamic-tab-bar" class="mdc-tab-bar mdc-tab-bar--indicator-accent"
                                      role="tablist">
-                                    <a role="tab" aria-controls="tab-users" href="#one" onclick="return false;" class="mdc-tab">Users</a>
-                                    <a role="tab" aria-controls="tab-playlist" href="#two" onclick="return false;" class="mdc-tab">Playlist</a>
+                                    <a role="tab" aria-controls="tab-users" href="#one" onclick="return false;"
+                                       class="mdc-tab">Users</a>
+                                    <a role="tab" aria-controls="tab-playlist" href="#two" onclick="return false;"
+                                       class="mdc-tab">Playlist</a>
                                     <span class="mdc-tab-bar__indicator"></span>
                                 </nav>
                             </div>
@@ -116,27 +119,12 @@
                             <div class="panels" id="panels">
                                 <div class="panel active" id="panel-users" role="tabpanel" aria-hidden="false">
                                     <div style="margin-left:12px;">
-                                        <section id="mdc-users-list" class="mdc-dialog__body mdc-dialog__body--scrollable" style="max-height: 100px">
+                                        <section id="mdc-users-list"
+                                                 class="mdc-dialog__body mdc-dialog__body--scrollable"
+                                                 style="max-height: 100px">
                                             <ul class="mdc-list mdc-list--avatar-list" id="user-list">
                                             </ul>
                                         </section>
-                                        <div class="mdc-layout-grid__inner">
-                                            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-top">
-                                                <div class="mdc-form-field">
-                                                    <div class="mdc-textfield" data-mdc-auto-init="MDCTextfield">
-                                                        <input type="text" id="name" class="mdc-textfield__input">
-                                                        <label for="name" class="mdc-textfield__label">Name</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--align-bottom"
-                                                 id="name-button-cell">
-                                                <button onclick="changeName()" id="name-button"
-                                                        class="mdc-button mdc-button--raised mdc-button--primary">Change
-                                                    Name
-                                                </button>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="panel" id="panel-playlist" role="tabpanel" aria-hidden="true">
