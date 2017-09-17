@@ -177,7 +177,7 @@ $(document).on('keydown', function (e) {
 
         return;
     }
-    if (e.keyCode === 32 || e.which === 32 && isOwner) {
+    if ((e.keyCode === 32 || e.which === 32) && isOwner) {
         if (myPlayer.paused()) {
             myPlayer.play();
         } else {
@@ -528,8 +528,8 @@ function buildHtmlListSearch(resultList) {
         res += "<span class='mdc-list-item__text'>" + resultList[i].title + "";
         res += "<span class='mdc-list-item__text__secondary'>";
         for(var j = 1; j <= resultList[i].episodeCount; j++) {
-            res+="<a href='#'";
-            res += "onclick='addSearchEpisodeToPlaylist(event,\"" + resultList[i].link + "\"," + j + ");'> " + j + " </a>";
+            res+="&nbsp;<a href='#'";
+            res += "onclick='addSearchEpisodeToPlaylist(event,\"" + resultList[i].link + "\"," + j + ");'>&nbsp;" + j + "&nbsp;</a>";
         }
         res += "</span></span>";
         res += "</i>";
