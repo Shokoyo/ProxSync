@@ -287,6 +287,7 @@ function searchRequest(keyword, old) {
         };
         socket.send(JSON.stringify(userAction));
     } else {
+        $("#mdc-search-list").animate({ scrollTop: 0 }, "fast");
         $('#mdc-search-list').addClass("hidden");
     }
 }
@@ -566,11 +567,13 @@ function buildHtmlListSearch(resultList) {
         }
     }
     if (res === "") {
+        $("#mdc-search-list").animate({ scrollTop: 0 }, "fast");
         $('#mdc-search-list').addClass("hidden");
     } else {
         $('#mdc-search-list').removeClass("hidden");
     }
     if (document.getElementById("tf-box-search-field").value === "") {
+        $("#mdc-search-list").animate({ scrollTop: 0 }, "fast");
         $('#mdc-search-list').addClass("hidden");
     }
     return res;
