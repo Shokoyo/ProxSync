@@ -6,6 +6,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.dieser1memesprech.proxsync._9animescraper.util.HtmlUtils;
 
+import java.io.UnsupportedEncodingException;
+
 public class Episode {
     private String id;
     private String epNum;
@@ -17,7 +19,11 @@ public class Episode {
         this.id = id;
         this.epNum = epNum;
         this.sources = sources;
-        this.epNumInt = Integer.parseInt(epNum);
+        if (Anime.isInteger(epNum)) {
+            this.epNumInt = Integer.parseInt(epNum);
+        } else {
+            this.epNumInt = 0;
+        }
     }
 
     public String getSources() {
