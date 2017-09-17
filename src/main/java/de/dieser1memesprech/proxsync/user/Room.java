@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 public class Room {
     private int episode;
-    private Queue<Video> playlist;
+    private LinkedList<Video> playlist;
     private static final String USER_AGENT = "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.13) Gecko/20101206 Ubuntu/10.10 (maverick) Firefox/3.6.13";
     private static final String ripLink = "http://i.imgur.com/eKmmyv1.mp4";
     private HashMap<Session, Boolean> readyStates = new HashMap<Session, Boolean>();
@@ -165,6 +165,25 @@ public class Room {
     private void updatePlaylistInfo() {
         for(Video v: playlist) {
             updatePlaylistInfo(v);
+        }
+    }
+
+    public void playNow(int episode) {
+        if(episode > 0) {
+            for(int i = 0; i < episode - 1; i++) {
+                playlist.poll();
+            }
+            loadNextVideo();
+        }
+    }
+
+    public void delete(int episode) {
+        if(episode == 0) {
+            if(playlist.size() != 1) {
+                loadNextVideo();
+            }
+        } else {
+            playlist.remove(playlist.get(episode));
         }
     }
 
@@ -531,7 +550,7 @@ public class Room {
     public void loadNextVideo() {
         Video v = playlist.poll();
         timestamp = null;
-        if (playlist.isEmpty() && autoNext) {
+        if (playlist.isEmpty() && autoNext && !_9animeLink.equals("")) {
             episode++;
             if(v != null) {
                 addVideo(get9animeLink(_9animeLink));
@@ -539,6 +558,8 @@ public class Room {
         } else if (!playlist.isEmpty()) {
             sendPlaylist();
             setVideo(playlist.peek().getUrl());
+        } else {
+            sendPlaylist();
         }
     }
 

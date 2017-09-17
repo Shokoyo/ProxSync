@@ -489,11 +489,19 @@ function buildHtmlPlaylist(playList) {
 }
 
 function playNow(i) {
-
+    var userAction = {
+        action: "playNow",
+        episode: i
+    };
+    socket.send(JSON.stringify(userAction));
 }
 
 function deleteFromPlaylist(i) {
-
+    var userAction = {
+        action: "delete",
+        episode: i
+    };
+    socket.send(JSON.stringify(userAction));
 }
 
 function buildHtmlList(userList) {
