@@ -117,6 +117,7 @@ public class Room {
         UserSessionHandler.getInstance().sendToSession(session, messageJson);
         if (!video.equals("")) {
             sendVideoToSession(session, true);
+            sendPlaylist();
         }
         sendRoomList();
     }
@@ -146,6 +147,7 @@ public class Room {
         if (playlist.size() == 1) {
             updatePlaylistInfo(playlist.peek());
             if (!playlist.isEmpty()) {
+                System.out.println(playlist.peek().episode);
                 setVideo(playlist.peek().url, playlist.peek().episode);
             }
         }
@@ -155,6 +157,7 @@ public class Room {
     public void addVideo(String url, int episode) {
         System.out.println(episode);
         playlist.add(new Video(url, episode));
+        this.episode = episode;
         if (playlist.size() == 1) {
             updatePlaylistInfo(playlist.peek());
             if (!playlist.isEmpty()) {
@@ -418,6 +421,9 @@ public class Room {
             this.episode = episode.getEpNumInt();
             return episode.getEpisodeUrl();
         } else {
+            if(anime == null) {
+                anime = new Anime(video);
+            }
             Episode episode = anime.getEpisodeObject(_9animeLink, this.episode);
             if (episode != null) {
                 return episode.getEpisodeUrl();

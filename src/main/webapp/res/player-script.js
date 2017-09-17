@@ -660,6 +660,8 @@ function unbindFinishedEvent() {
     finishedFlag = false;
 }
 
+myPlayer.on('timeupdate',sendCurrentTime);
+
 myPlayer.on('ended', function () {
     if (finishedFlag) {
         unbindPauseEvent();
