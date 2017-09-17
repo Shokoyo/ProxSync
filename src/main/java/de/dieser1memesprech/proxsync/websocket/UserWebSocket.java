@@ -141,6 +141,20 @@ public class UserWebSocket {
             }
         }
 
+        if("playNow".equals(jsonMessage.getString("action"))) {
+            Room r = RoomHandler.getInstance().getRoomBySession(session);
+            if (r != null) {
+                r.playNow(jsonMessage.getInt("episode"));
+            }
+        }
+
+        if("delete".equals(jsonMessage.getString("action"))) {
+            Room r = RoomHandler.getInstance().getRoomBySession(session);
+            if (r != null) {
+                r.delete(jsonMessage.getInt("episode"));
+            }
+        }
+
         if ("play".equals(jsonMessage.getString("action"))) {
             Room r = RoomHandler.getInstance().getRoomBySession(session);
             if (r != null) {

@@ -85,6 +85,7 @@ function joinParamRoom() {
         uid: uid,
         name: getCookie("username")
     };
+    isOwner = false;
     socket.send(JSON.stringify(userAction));
 }
 
