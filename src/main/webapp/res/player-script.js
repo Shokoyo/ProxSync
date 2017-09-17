@@ -445,7 +445,7 @@ function buildHtmlList(userList) {
             res += "<span id='user-self' style=\"display: block; margin-right: 16px\">" + userList[i].name + "</span>";
             res += "<div id='user-self-field' class=\"mdc-form-field\" style='display: none'>" +
                 "<div class=\"mdc-textfield\" data-mdc-auto-init=\"MDCTextfield\">" +
-                "<input onfocus=\"this.select();\" type=\"text\" id=\"name\" class=\"mdc-textfield__input\" value='" + userList[i].name + "'>" +
+                "<input onfocus=\"this.select();\" onblur=\"enterName();\" type=\"text\" id=\"name\" class=\"mdc-textfield__input\" value='" + userList[i].name + "'>" +
                 "<label for=\"name\" class=\"mdc-textfield__label\"></label>" +
                 "</div>" +
                 "</div>"
@@ -462,6 +462,12 @@ function buildHtmlList(userList) {
         }
     }
     return res;
+}
+
+function enterName() {
+    lastName = document.getElementById("name").value;
+    changeName();
+    document.getElementById("name").blur();
 }
 
 function copyInviteLink() {
