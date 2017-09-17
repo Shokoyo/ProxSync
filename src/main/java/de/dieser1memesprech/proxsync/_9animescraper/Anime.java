@@ -34,14 +34,14 @@ public class Anime {
         return document.select("h1[class=title]").first().text();
     }
 
-    public List<AnimeSearchObject> search(String keyword) {
+    public static List<AnimeSearchObject> search(String keyword) {
         keyword = keyword.replaceAll(" ", "%20");
         String url = Configuration.instance.BASE_URL + "/search?keyword=" + keyword;
         String content = HtmlUtils.getHtmlContent(url);
         return parseSearchMulti(content);
     }
 
-    private List<AnimeSearchObject> parseSearchMulti(String data) {
+    private static List<AnimeSearchObject> parseSearchMulti(String data) {
         List<AnimeSearchObject> animeList = new ArrayList<AnimeSearchObject>();
         Document doc = Jsoup.parse(data);
 
@@ -53,7 +53,7 @@ public class Anime {
         return animeList;
     }
 
-    private AnimeSearchObject parseSearchSingle(Element item) {
+    private static AnimeSearchObject parseSearchSingle(Element item) {
         Element img = item.select("img").first();
         Element nameAnchor = item.select("a[class=name]").first();
         Element lang = item.select("div[class=lang]").first();

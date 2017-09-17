@@ -163,7 +163,7 @@ function handler(e) {
     }
 }
 
-$('#url-button').on('keyup', function(e) {
+$('#url-button').on('keyup', function (e) {
     if (e.keyCode === 32 || e.which === 32) {
         e.preventDefault();
         e.stopPropagation();
@@ -172,7 +172,6 @@ $('#url-button').on('keyup', function(e) {
 
 $(document).on('keydown', function (e) {
     var nodeName = e.target.nodeName;
-    console.log(e.target);
     if ('INPUT' == nodeName || 'TEXTAREA' == nodeName || e.target.title === "Play" || e.target.title === 'Pause') {
 
         return;
@@ -278,6 +277,26 @@ function joinRoom() {
     }
 }
 
+function searchRequest(keyword, old) {
+    console.log(keyword === old);
+    if (keyword === old && keyword != "") {
+        var userAction = {
+            action: "search",
+            keyword: keyword
+        };
+        socket.send(JSON.stringify(userAction));
+    } else {
+        $('#mdc-search-list').addClass("hidden");
+    }
+}
+
+$('#tf-box-search-field').on('input', function () {
+    var old = document.getElementById("tf-box-search-field").value;
+    setTimeout(function () {
+        searchRequest(document.getElementById("tf-box-search-field").value, old);
+    }, 400);
+});
+
 function leaveRoom() {
     window.location = window.location.pathname;
 }
@@ -315,6 +334,7 @@ function loadVideo() {
     };
     socket.send(JSON.stringify(userAction));
 }
+
 
 function onMessage(event) {
     var eventJSON = JSON.parse(event.data);
@@ -405,7 +425,6 @@ function onMessage(event) {
         document.getElementById("anime-title").innerHTML = "" + eventJSON.title + ", Episode: " + eventJSON.episode
             + "/" + eventJSON.episodeCount;
     }
-    ;
 
     if (eventJSON.action === "roomID") {
         if (eventJSON.id === "-1") {
@@ -437,13 +456,17 @@ function onMessage(event) {
             roomJoined = true;
         }
     }
-    if(eventJSON.action === "playlist") {
+    if (eventJSON.action === "playlist") {
         var playListString = buildHtmlPlaylist(eventJSON.playlist);
         document.getElementById("playlist-list").innerHTML = playListString;
     }
     if (eventJSON.action === "room-list") {
         var roomString = buildHtmlList(eventJSON.userList);
         document.getElementById("user-list").innerHTML = "" + roomString;
+    }
+    if (eventJSON.action === "search-result") {
+        var resultSearchString = buildHtmlListSearch(eventJSON.result);
+        document.getElementById("mdc-search-list").innerHTML = resultSearchString;
     }
 }
 
@@ -461,20 +484,57 @@ $(document).on("keypress", "#name", function (e) {
     }
 });
 
+function addSearchResultToPlaylist(url) {
+    var userAction = {
+        action: "video",
+        url: url
+    };
+    socket.send(JSON.stringify(userAction));
+}
+
+$(document).on('click', function (e) {
+    if ($(e.target).closest("#mdc-search-list").length === 0) {
+        $("#mdc-search-list").addClass("hidden");
+    }
+});
+
+function buildHtmlListSearch(resultList) {
+    var res = "";
+    for (var i = 0; i < resultList.length; i++) {
+        res = res + "<a href='#' onclick='addSearchResultToPlaylist(\"" + resultList[i].link + "\");' class=\"mdc-list-item\" style='height:96px;'>" +
+            "<img style='height:78px;padding-right:14px;' src='" + resultList[i].image + "' role='presentation'></img>";
+        res += "<span class='mdc-list-item__text'>" + resultList[i].title + "";
+        res += "<span class='mdc-list-item__text__secondary'>" + "1 2 3 4 5 6 7 8 9 10 11 12" + "</span></span>";
+        res += "</i>";
+        if (i != resultList.length - 1) {
+            res = res + "</a><hr class=\"mdc-list-divider\">";
+        }
+    }
+    if (res === "") {
+        $('#mdc-search-list').addClass("hidden");
+    } else {
+        $('#mdc-search-list').removeClass("hidden");
+    }
+    if (document.getElementById("tf-box-search-field").value === "") {
+        $('#mdc-search-list').addClass("hidden");
+    }
+    return res;
+}
+
 function buildHtmlPlaylist(playList) {
     var res = "";
-    for(var i = 0; i < playList.length; i++) {
-        res+="<li class='mdc-list-item'>" +
-        "<img style='height:78px;padding-right:14px;' src='" + playList[i].episodePoster + "' role='presentation'></img>";
+    for (var i = 0; i < playList.length; i++) {
+        res += "<li class='mdc-list-item'>" +
+            "<img style='height:78px;padding-right:14px;' src='" + playList[i].episodePoster + "' role='presentation'></img>";
         res += "<span class='mdc-list-item__text'>" + playList[i].title;
-        if(playList[i].episode !== 0) {
+        if (playList[i].episode !== 0) {
             res += ", " + playList[i].episode + "/" + playList[i].episodeCount;
         }
         res += "<span class='mdc-list-item__text__secondary'>" + playList[i].episodeTitle + "</span></span>";
         res += "<a href='#' class='mdc-list-item__end-detail material-icons' " +
-        "aria-label='Play now' title='Play now'" +
-        "onclick='playNow(" + i + ");' >play_arrow</a>";
-        res += "<a href='#' class='mdc-list-item__end-detail material-icons' " +
+            "aria-label='Play now' title='Play now'" +
+            "onclick='playNow(" + i + ");' >play_arrow</a>";
+        res += "<a href='#' class='mdc-list-item__end-detail material-icons' style='margin-left: 8px' " +
             "aria-label='Delete' title='Delete'" +
             "onclick='deleteFromPlaylist(" + i + ");' >delete</a>";
         res += "</li>";

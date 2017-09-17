@@ -1,18 +1,19 @@
 package de.dieser1memesprech.proxsync.websocket;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+import de.dieser1memesprech.proxsync._9animescraper.Anime;
+import de.dieser1memesprech.proxsync._9animescraper.AnimeSearchObject;
 import de.dieser1memesprech.proxsync.user.Room;
 import de.dieser1memesprech.proxsync.user.RoomHandler;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.json.Json;
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import javax.json.*;
 import javax.json.spi.JsonProvider;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.StringReader;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -78,10 +79,26 @@ public class UserWebSocket {
             }
         }
 
-        if("uid".equals(jsonMessage.getString("action"))) {
+        if ("uid".equals(jsonMessage.getString("action"))) {
             System.out.println(jsonMessage.getString("value"));
             Room r = RoomHandler.getInstance().getRoomBySession(session);
             r.getUserMap().get(session).setUid(jsonMessage.getString("value"));
+        }
+
+        if ("search".equals(jsonMessage.getString("action"))) {
+            System.out.println("Sending search request for keyword: " + jsonMessage.getString("keyword"));
+            List<AnimeSearchObject> animeSearchObjectList = Anime.search(jsonMessage.getString("keyword"));
+            JsonProvider provider = JsonProvider.provider();
+            JsonArrayBuilder jsonArray = Json.createArrayBuilder();
+            for (AnimeSearchObject animeSearchObject : animeSearchObjectList) {
+                System.out.println(animeSearchObject.getTitle());
+                jsonArray.add(Json.createObjectBuilder()
+                        .add("title", animeSearchObject.getTitle()).add("link", animeSearchObject.getLink()).add("image", animeSearchObject.getPoster()));
+            }
+            javax.json.JsonArray array = jsonArray.build();
+            JsonObject messageJson = provider.createObjectBuilder()
+                    .add("action", "search-result").add("result", array).build();
+            UserSessionHandler.getInstance().sendToSession(session, messageJson);
         }
 
         if ("join".equals(jsonMessage.getString("action"))) {
