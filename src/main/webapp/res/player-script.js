@@ -164,7 +164,7 @@ function handler(e) {
     }
 }
 
-$('#url-button').on('keyup', function(e) {
+$('#url-button').on('keyup', function (e) {
     if (e.keyCode === 32 || e.which === 32) {
         e.preventDefault();
         e.stopPropagation();
@@ -384,7 +384,7 @@ function onMessage(event) {
         sendBufferedInd();
     }
     if (eventJSON.action === "debug") {
-        if(eventJSON.message === "invalid URL") {
+        if (eventJSON.message === "invalid URL") {
             document.getElementById("url").value = "invalid";
         }
         console.log(eventJSON.message);
@@ -463,17 +463,17 @@ function onMessage(event) {
             roomJoined = true;
         }
     }
-    if(eventJSON.action === "playlist") {
+    if (eventJSON.action === "playlist") {
         var checkbox = document.getElementById("auto-next-checkbox");
-        if(eventJSON.playlist.length > 1 && !checkbox.disabled) {
+        if (eventJSON.playlist.length > 1 && !checkbox.disabled) {
             console.log("set old value to " + checkbox.checked);
             oldNextEpisode = checkbox.checked;
-            if(checkbox.checked) {
+            if (checkbox.checked) {
                 checkbox.click();
             }
             //checkbox.setAttribute("disabled", true);
             checkbox.disabled = true;
-        } else if(eventJSON.playlist.length === 1) {
+        } else if (eventJSON.playlist.length === 1) {
             //checkbox.removeAttribute("disabled");
             checkbox.disabled = false;
             checkbox.checked = oldNextEpisode;
@@ -520,21 +520,38 @@ $(document).on('click', function (e) {
     }
 });
 
+Number.prototype.pad = function(size) {
+    var s = String(this);
+    while (s.length < (size || 2)) {s = "0" + s;}
+    return s;
+}
+
 function buildHtmlListSearch(resultList) {
     var res = "";
     for (var i = 0; i < resultList.length; i++) {
-        res = res + "<a href='#' onclick='addSearchResultToPlaylist(\"" + resultList[i].link + "\");' class=\"mdc-list-item\" style='height:96px;'>" +
-            "<img style='height:78px;padding-right:14px;' src='" + resultList[i].image + "' role='presentation'></img>";
+        res = res + "<li class='mdc-list-item list-item-search'>" +
+            "<img style='height:78px;padding-right:14px;' src='" + resultList[i].image + "' role='presentation'/>";
         res += "<span class='mdc-list-item__text'>" + resultList[i].title + "";
-        res += "<span class='mdc-list-item__text__secondary'>";
-        for(var j = 1; j <= resultList[i].episodeCount; j++) {
-            res+="<a href='#'";
-            res += "onclick='addSearchEpisodeToPlaylist(event,\"" + resultList[i].link + "\"," + j + ");'> " + j + " </a>";
+        res += "<span class='episode-text-span'>";
+        if (resultList[i].episodeCount > 0) {
+            for (var j = 1; j <= resultList[i].episodeCount; j++) {
+                res += "<a href='#' class='text square-box mdc-toolbar__icon' " +
+                    "onclick='addSearchEpisodeToPlaylist(event,\"" + resultList[i].link + "\"," + j + ");'>" +
+                    "<b>" +
+                    (j).pad(resultList[i].episodeCount.toString().length) +
+                    "</b></a>";
+            }
+        } else {
+            res += "<a href='#' class='text square-box mdc-toolbar__icon' " +
+                "onclick='addSearchResultToPlaylist(\"" + resultList[i].link + "\");'>" +
+                "<b>" +
+                "load" +
+                "</b></a>";
         }
         res += "</span></span>";
-        res += "</i>";
         if (i != resultList.length - 1) {
-            res = res + "</a><hr class=\"mdc-list-divider\">";
+            res = res + "</li>" +
+                "<hr class=\"mdc-list-divider\">";
         }
     }
     if (res === "") {
@@ -569,8 +586,8 @@ function buildHtmlPlaylist(playList) {
         }
         res += "<span class='mdc-list-item__text__secondary'>" + playList[i].episodeTitle + "</span></span>";
         res += "<a href='#' class='mdc-list-item__end-detail material-icons' " +
-        "aria-label='Play now' title='Play now'" +
-        "onclick='playNow(event, " + i + ");' >play_arrow</a>";
+            "aria-label='Play now' title='Play now'" +
+            "onclick='playNow(event, " + i + ");' >play_arrow</a>";
         res += "<a href='#' class='mdc-list-item__end-detail material-icons' style='margin-left: 8px'" +
             "aria-label='Delete' title='Delete'" +
             "onclick='deleteFromPlaylist(event, " + i + ");' >delete</a>";
