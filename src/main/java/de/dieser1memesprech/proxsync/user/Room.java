@@ -184,6 +184,7 @@ public class Room {
             }
         } else {
             playlist.remove(playlist.get(episode));
+            sendPlaylist();
         }
     }
 

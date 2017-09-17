@@ -26,6 +26,7 @@ var firstVideo = true;
 var timeUpdate = false;
 var pauseFlag = true;
 var finishedFlag = false;
+var oldNextEpisode = true;
 //add onload function
 if (window.attachEvent) {
     window.attachEvent('onload', onloadFunction);
@@ -441,6 +442,21 @@ function onMessage(event) {
         }
     }
     if(eventJSON.action === "playlist") {
+        var checkbox = document.getElementById("auto-next-checkbox");
+        if(eventJSON.playlist.length > 1 && !checkbox.disabled) {
+            console.log("set old value to " + checkbox.checked);
+            oldNextEpisode = checkbox.checked;
+            if(checkbox.checked) {
+                checkbox.click();
+            }
+            //checkbox.setAttribute("disabled", true);
+            checkbox.disabled = true;
+        } else if(eventJSON.playlist.length === 1) {
+            //checkbox.removeAttribute("disabled");
+            checkbox.disabled = false;
+            checkbox.checked = oldNextEpisode;
+            console.log("old value: " + oldNextEpisode + ", current value: " + checkbox.checked);
+        }
         var playListString = buildHtmlPlaylist(eventJSON.playlist);
         document.getElementById("playlist-list").innerHTML = playListString;
     }
@@ -476,10 +492,10 @@ function buildHtmlPlaylist(playList) {
         res += "<span class='mdc-list-item__text__secondary'>" + playList[i].episodeTitle + "</span></span>";
         res += "<a href='#' class='mdc-list-item__end-detail material-icons' " +
         "aria-label='Play now' title='Play now'" +
-        "onclick='playNow(" + i + ");' >play_arrow</a>";
+        "onclick='playNow(event, " + i + ");' >play_arrow</a>";
         res += "<a href='#' class='mdc-list-item__end-detail material-icons' " +
             "aria-label='Delete' title='Delete'" +
-            "onclick='deleteFromPlaylist(" + i + ");' >delete</a>";
+            "onclick='deleteFromPlaylist(event, " + i + ");' >delete</a>";
         res += "</li>";
         if (i != playList.length - 1) {
             res += "</li><hr class=\"mdc-list-divider\">";
@@ -488,20 +504,24 @@ function buildHtmlPlaylist(playList) {
     return res;
 }
 
-function playNow(i) {
+function playNow(e, i) {
     var userAction = {
         action: "playNow",
         episode: i
     };
     socket.send(JSON.stringify(userAction));
+    e.preventDefault();
+    return false;
 }
 
-function deleteFromPlaylist(i) {
+function deleteFromPlaylist(e, i) {
     var userAction = {
         action: "delete",
         episode: i
     };
     socket.send(JSON.stringify(userAction));
+    e.preventDefault();
+    return false;
 }
 
 function buildHtmlList(userList) {
