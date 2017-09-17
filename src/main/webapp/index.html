@@ -125,10 +125,10 @@
                                      role="tablist">
                                     <a role="tab" aria-controls="tab-users" href="#one" onclick="return false;"
                                        class="mdc-tab">Users</a>
+                                    <span class="mdc-tab-bar__indicator"></span>
                                     <a role="tab" aria-controls="tab-playlist" href="#two"
                                        onclick="return false;"
-                                       class="mdc-tab">Playlist</a>
-                                    <span class="mdc-tab-bar__indicator"></span>
+                                       class="mdc-tab mdc-tab--active">Playlist</a>
                                 </nav>
                             </div>
                         </header>
@@ -138,7 +138,7 @@
                     <div id="cell-panel-users" class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
                         <section>
                             <div class="panels" id="panels">
-                                <div class="panel active" id="panel-users" role="tabpanel" aria-hidden="false">
+                                <div class="panel" id="panel-users" role="tabpanel" aria-hidden="true">
                                     <div style="margin-left:12px;">
                                         <section id="mdc-users-list"
                                                  class="mdc-dialog__body mdc-dialog__body--scrollable"
@@ -148,7 +148,7 @@
                                         </section>
                                     </div>
                                 </div>
-                                <div class="panel" id="panel-playlist" role="tabpanel" aria-hidden="true">
+                                <div class="panel active" id="panel-playlist" role="tabpanel" aria-hidden="false">
                                     <div class="mdc-layout-grid__inner">
                                         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
                                             <button class="mdc-button mdc-button--raised mdc-button--primary"

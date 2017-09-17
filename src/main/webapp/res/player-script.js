@@ -477,6 +477,11 @@ function onMessage(event) {
             //checkbox.removeAttribute("disabled");
             checkbox.disabled = false;
             checkbox.checked = oldNextEpisode;
+            var userAction = {
+                "action": "autoNext",
+                "value": document.getElementById("auto-next-checkbox").checked
+            };
+            socket.send(JSON.stringify(userAction));
             console.log("old value: " + oldNextEpisode + ", current value: " + checkbox.checked);
         }
         var playListString = buildHtmlPlaylist(eventJSON.playlist);
@@ -535,8 +540,13 @@ function buildHtmlListSearch(resultList) {
         res += "<span class='episode-text-span'>";
         if (resultList[i].episodeCount > 0) {
             for (var j = 1; j <= resultList[i].episodeCount; j++) {
-                res += "<a href='#' class='text square-box mdc-toolbar__icon' " +
-                    "onclick='addSearchEpisodeToPlaylist(event,\"" + resultList[i].link + "\"," + j + ");'>" +
+                res += "<a href='#' class='text square-box mdc-toolbar__icon";
+                if(j > resultList[i].lastEpisode) {
+                    res += " mdc-theme--primary-light-bg'";
+                } else {
+                    res +="'";
+                }
+                res += "onclick='addSearchEpisodeToPlaylist(event,\"" + resultList[i].link + "\"," + j + ");'>" +
                     "<b>" +
                     (j).pad(resultList[i].episodeCount.toString().length) +
                     "</b></a>";
