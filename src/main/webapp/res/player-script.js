@@ -129,7 +129,6 @@ function onloadFunction() {
     document.getElementById("url-button").style.display = 'none';
     document.getElementById("invite-link").style.display = 'none';
     document.getElementById("invite-button").style.display = 'none';
-    document.getElementById("leave-button").style.display = 'none';
     document.getElementById("auto-next-container").style.display = 'none';
     document.getElementById("auto-play-container").style.display = 'none';
     checkCookie();
@@ -216,13 +215,12 @@ function showElement(elementId) {
 }
 
 function createRoom() {
-    bindTimeUpdate();
     if (!roomJoined) {
+        bindTimeUpdate();
         isOwner = true;
         roomJoined = true;
         var userAction = {
             action: "create",
-            roomName: "" + document.getElementById("room-id-in").value,
             name: getCookie("username")
         };
         socket.send(JSON.stringify(userAction));
@@ -428,7 +426,6 @@ function onMessage(event) {
                 showSpecialControl();
             }
             document.getElementById("room-id-in").style.display = 'none';
-            document.getElementById("leave-button").style.display = 'block';
             roomId = eventJSON.id;
             document.getElementById("room-id-out").innerHTML = "Room ID: " + roomId;
             document.getElementById("invite-button").style.display = '';
@@ -590,14 +587,6 @@ function checkCookie() {
         document.getElementById("name").focus();
         document.getElementById("name").value = username;
         document.getElementById("name").blur();
-        var curUrl = "" + window.location;
-        if (curUrl.indexOf("?") === -1) {
-            if (!socket.opened_) {
-                socket.onopen = makeRoomDialog;
-            } else {
-                makeRoomDialog();
-            }
-        }
     } else {
         cookieDialog.show();
         document.getElementById("cookie-field").focus();

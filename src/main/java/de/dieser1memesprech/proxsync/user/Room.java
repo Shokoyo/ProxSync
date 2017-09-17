@@ -47,16 +47,12 @@ public class Room {
     private Random random = new Random();
     private Anime anime;
 
-    public Room(Session host, String hostname, String roomName) {
+    public Room(Session host, String hostname) {
         playlist = new LinkedList<Video>();
         this.host = host;
-        if (roomName != null && !roomName.equals("")) {
-            id = roomName;
-        } else {
-            do {
-                id = Long.toHexString(Double.doubleToLongBits(Math.random()));
-            } while (!RoomHandler.getInstance().checkId(id));
-        }
+        do {
+            id = Long.toHexString(Double.doubleToLongBits(Math.random()));
+        } while (!RoomHandler.getInstance().checkId(id));
         sessions = new LinkedList<Session>();
         this.addSession(host, hostname);
         RoomHandler.getInstance().addRoom(this);
@@ -247,10 +243,10 @@ public class Room {
 
     private String get9animeLink() {
         //String content = getWebsiteContent(video, "");
-        if(_9animeLink.equals("")) {
+        if (_9animeLink.equals("")) {
             return "";
         }
-        if(episode == 0) {
+        if (episode == 0) {
             System.out.println("Episode is 0. creating episode element from url " + video);
             _9animeLink = video;
             anime = new Anime(video);
@@ -261,7 +257,7 @@ public class Room {
             } catch (No9AnimeUrlException e) {
                 e.printStackTrace();
             }
-            if(episode == null) {
+            if (episode == null) {
                 System.out.println("ERROR: episode element is null");
                 return "";
             }
@@ -269,7 +265,7 @@ public class Room {
             return episode.getEpisodeUrl();
         } else {
             Episode episode = anime.getEpisodeObject(_9animeLink, this.episode);
-            if(episode != null) {
+            if (episode != null) {
                 return episode.getEpisodeUrl();
             } else {
                 return "";
@@ -466,15 +462,15 @@ public class Room {
 
     public void loadNextVideo() {
         timestamp = null;
-        if(playlist.isEmpty() && autoNext) {
+        if (playlist.isEmpty() && autoNext) {
             episode++;
             String newUrl = get9animeLink();
-            if(!"".equals(newUrl)) {
+            if (!"".equals(newUrl)) {
                 setVideo(newUrl);
             } else {
                 sendDebugToHost("failed to load next Video");
             }
-        } else if(!playlist.isEmpty()) {
+        } else if (!playlist.isEmpty()) {
             //TODO play playlist
         }
     }

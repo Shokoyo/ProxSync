@@ -59,22 +59,7 @@ public class UserWebSocket {
             if (old != null) {
                 old.removeSession(session);
             }
-            String s = jsonMessage.getString("roomName");
-            if (s == null) {
-                s = "";
-            } else if (!s.equals("")) {
-                if (!RoomHandler.getInstance().checkId(s)) {
-                    System.out.println("ALARM");
-                    JsonProvider provider = JsonProvider.provider();
-                    JsonObject messageJson = provider.createObjectBuilder()
-                            .add("action", "roomID")
-                            .add("id", "-2")
-                            .build();
-                    UserSessionHandler.getInstance().sendToSession(session, messageJson);
-                    return;
-                }
-            }
-            Room r = new Room(session, jsonMessage.getString("name"), s);
+            Room r = new Room(session, jsonMessage.getString("name"));
             RoomHandler.getInstance().mapSession(session, r);
         }
 
