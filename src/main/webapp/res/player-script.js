@@ -526,6 +526,7 @@ $(document).on('click', function (e) {
 });
 
 Number.prototype.pad = function(size) {
+    size = Math.max(size, 2);
     var s = String(this);
     while (s.length < (size || 2)) {s = "0" + s;}
     return s;
@@ -544,7 +545,7 @@ function buildHtmlListSearch(resultList) {
                 if(j > resultList[i].lastEpisode) {
                     res += " mdc-theme--primary-light-bg'";
                 } else {
-                    res +="'";
+                    res +=" mdc-theme--secondary-bg'";
                 }
                 res += "onclick='addSearchEpisodeToPlaylist(event,\"" + resultList[i].link + "\"," + j + ");'>" +
                     "<b>" +
