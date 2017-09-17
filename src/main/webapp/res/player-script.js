@@ -177,7 +177,7 @@ $(document).on('keydown', function (e) {
 
         return;
     }
-    if (e.keyCode === 32 || e.which === 32 && isOwner) {
+    if ((e.keyCode === 32 || e.which === 32) && isOwner) {
         if (myPlayer.paused()) {
             myPlayer.play();
         } else {
@@ -676,6 +676,8 @@ function bindFinishedEvent() {
 function unbindFinishedEvent() {
     finishedFlag = false;
 }
+
+myPlayer.on('timeupdate',sendCurrentTime);
 
 myPlayer.on('ended', function () {
     if (finishedFlag) {
