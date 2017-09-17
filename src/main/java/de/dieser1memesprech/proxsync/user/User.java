@@ -27,4 +27,8 @@ public class User {
     public String getAvatarUrl() {
         return avatarUrl;
     }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 }

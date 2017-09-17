@@ -80,6 +80,8 @@ public class UserWebSocket {
 
         if("uid".equals(jsonMessage.getString("action"))) {
             System.out.println(jsonMessage.getString("value"));
+            Room r = RoomHandler.getInstance().getRoomBySession(session);
+            r.getUserMap().get(session).setUid(jsonMessage.getString("value"));
         }
 
         if ("join".equals(jsonMessage.getString("action"))) {

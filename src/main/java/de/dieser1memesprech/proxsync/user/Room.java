@@ -30,7 +30,7 @@ public class Room {
     private static final String USER_AGENT = "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.13) Gecko/20101206 Ubuntu/10.10 (maverick) Firefox/3.6.13";
     private static final String ripLink = "http://i.imgur.com/eKmmyv1.mp4";
     private HashMap<Session, Boolean> readyStates = new HashMap<Session, Boolean>();
-    private HashMap<Session, User> nameMap = new HashMap<Session, User>();
+    private HashMap<Session, User> userMap = new HashMap<Session, User>();
     private List<Session> sessions;
     private String video = "";
     private String _9animeLink = "";
@@ -93,7 +93,7 @@ public class Room {
 
     public void addSession(Session session, String name, String uid) {
         User user = new User(uid, name, "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/panda.svg?alt=media&token=6f4d5bf1-af69-4211-994d-66655456d91a");
-        nameMap.put(session, user);
+        userMap.put(session, user);
         setName(session, name);
         readyStates.put(session, false);
         sessions.add(session);
@@ -111,7 +111,7 @@ public class Room {
 
     public void removeSession(Session session) {
         readyStates.remove(session);
-        nameMap.remove(session);
+        userMap.remove(session);
         sessions.remove(session);
         if (session == host) {
             if (sessions.isEmpty()) {
@@ -133,9 +133,9 @@ public class Room {
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         for (Session s : sessions) {
             arrayBuilder.add(Json.createObjectBuilder()
-                    .add("uid", nameMap.get(s).getUid())
-                    .add("name", nameMap.get(s).getName())
-                    .add("avatar", nameMap.get(s).getAvatarUrl())
+                    .add("uid", userMap.get(s).getUid())
+                    .add("name", userMap.get(s).getName())
+                    .add("avatar", userMap.get(s).getAvatarUrl())
                     .add("isOwner", s == host)
                     .build());
         }
@@ -148,7 +148,7 @@ public class Room {
     }
 
     public void changeName(Session s, String name) {
-        String old = nameMap.get(s).getName();
+        String old = userMap.get(s).getName();
         if (!name.equals(old)) {
             setName(s, name);
             sendRoomList();
@@ -159,7 +159,7 @@ public class Room {
         if (name.contains("<")) {
             name = "User " + random.nextInt(10000);
         }
-        nameMap.get(s).setName(name);
+        userMap.get(s).setName(name);
     }
 
     public void setVideo(String url) {
@@ -518,5 +518,9 @@ public class Room {
 
     public Anime getAnime() {
         return this.anime;
+    }
+
+    public Map<Session, User> getUserMap() {
+        return userMap;
     }
 }
