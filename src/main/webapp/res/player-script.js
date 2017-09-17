@@ -49,13 +49,13 @@ myPlayer.on('play', handlePlayEvent);
 myPlayer.on('volumechange', function () {
     setCookie("volume", myPlayer.volume(), 365);
 });
-myPlayer.on('error', function() {
+myPlayer.on('error', function () {
     unbindFinishedEvent();
     myPlayer.off('canplay');
 });
 
 function initCheckbox() {
-    if(document.getElementById("auto-next-checkbox").checked === false) {
+    if (document.getElementById("auto-next-checkbox").checked === false) {
         document.getElementById("auto-next-checkbox").click();
     }
     $('#auto-next-checkbox').click(function () {
@@ -66,7 +66,7 @@ function initCheckbox() {
         };
         socket.send(JSON.stringify(userAction));
     });
-    if(document.getElementById("auto-play-checkbox").checked === false) {
+    if (document.getElementById("auto-play-checkbox").checked === false) {
         document.getElementById("auto-play-checkbox").click();
     }
 }
@@ -221,6 +221,7 @@ function createRoom() {
         roomJoined = true;
         var userAction = {
             action: "create",
+            uid: uid,
             name: getCookie("username")
         };
         socket.send(JSON.stringify(userAction));
@@ -242,6 +243,7 @@ function joinRoom() {
         var userAction = {
             action: "join",
             name: getCookie("username"),
+            uid: uid,
             id: id
         };
         socket.send(JSON.stringify(userAction));
@@ -341,7 +343,7 @@ function onMessage(event) {
     if (eventJSON.action === "video") {
         var SourceString = eventJSON.url;
         console.log("URL: " + SourceString);
-        if(url === "") {
+        if (url === "") {
             return;
         }
         var SourceObject;
@@ -356,15 +358,16 @@ function onMessage(event) {
         myPlayer.pause();
         bindTimeUpdate();
         bindPauseEvent();
-        if(!firstVideo && document.getElementById("auto-play-checkbox").checked) {
-            myPlayer.one('canplay', function() {
+        if (!firstVideo && document.getElementById("auto-play-checkbox").checked) {
+            myPlayer.one('canplay', function () {
                 setStartTime();
                 bindFinishedEvent();
-                setTimeout(function() {
-                myPlayer.play();
-            }, 1000)});
+                setTimeout(function () {
+                    myPlayer.play();
+                }, 1000)
+            });
         } else {
-            myPlayer.one('canplay', function() {
+            myPlayer.one('canplay', function () {
                 bindFinishedEvent();
                 setStartTime();
             });
@@ -376,36 +379,15 @@ function onMessage(event) {
         //setTimeout(myPlayer.pause,20);
     }
 
-    if(eventJSON.action === "animeInfo") {
+    if (eventJSON.action === "animeInfo") {
         document.getElementById("anime-title").innerHTML = "" + eventJSON.title + ", Episode: " + eventJSON.episode
             + "/" + eventJSON.episodeCount;
-    };
+    }
+    ;
 
     if (eventJSON.action === "roomID") {
         if (eventJSON.id === "-1") {
-            if (roomDialog == null) {
-                makeRoomDialog();
-            } else {
-                roomDialog.show();
-            }
-            document.getElementById("room-id-in").focus();
-            document.getElementById("room-id-in").value = "invalid";
-            document.getElementById("room-id-in").blur();
-            roomId = -1;
-            roomJoined = false;
-            isOwner = false;
-        } else if (eventJSON.id === "-2") {
-            if (roomDialog == null) {
-                makeRoomDialog();
-            } else {
-                roomDialog.show();
-            }
-            document.getElementById("room-id-in").focus();
-            document.getElementById("room-id-in").value = "already taken";
-            document.getElementById("room-id-in").blur();
-            roomId = -2;
-            roomJoined = false;
-            isOwner = false;
+            leaveRoom();
         } else {
             if (roomDialog != null) {
                 roomDialog.close();
@@ -441,17 +423,17 @@ function onMessage(event) {
 
 function buildHtmlList(userList) {
     var res = "";
-    for(var i = 0; i < userList.length; i++) {
+    for (var i = 0; i < userList.length; i++) {
         res = res + "<li class=\"mdc-list-item\">" +
-        "<img class=\"mdc-list-item__start-detail grey-bg\" src=\"" + userList[i].avatar + "\"" +
-        "width=\"56\" height=\"56\" alt=\"Brown Bear\">" +
+            "<img class=\"mdc-list-item__start-detail grey-bg\" src=\"" + userList[i].avatar + "\"" +
+            "width=\"56\" height=\"56\" alt=\"Brown Bear\">" +
             userList[i].name;
-        if(userList[i].isOwner) {
+        if (userList[i].isOwner) {
             res = res + "<span class=\"mdc-list-item__end-detail material-icons\">" +
-            "star" +
-            "</span>";
+                "star" +
+                "</span>";
         }
-        if(i != userList.length - 1) {
+        if (i != userList.length - 1) {
             res = res + "</li><hr class=\"mdc-list-divider\">";
         }
     }
@@ -482,7 +464,7 @@ function unbindFinishedEvent() {
 }
 
 myPlayer.on('ended', function () {
-    if(finishedFlag) {
+    if (finishedFlag) {
         unbindPauseEvent();
         if (isOwner) {
             unbindTimeUpdate();
@@ -562,7 +544,7 @@ function copyToClipboard(element) {
 }
 
 function sendCurrentTime() {
-    if(timeUpdate) {
+    if (timeUpdate) {
         var userAction = {
             action: "current",
             current: myPlayer.currentTime()

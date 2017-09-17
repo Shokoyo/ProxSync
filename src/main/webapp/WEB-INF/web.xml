@@ -6,12 +6,12 @@
          version="3.1"
          metadata-complete="true">
     <display-name>ProxSync</display-name>
-    <filter>
+    <!--<filter>
         <filter-name>roomFilter</filter-name>
         <filter-class>de.dieser1memesprech.proxsync.filters.RoomFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>roomFilter</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping>
+    </filter-mapping>-->
 </web-app>

@@ -59,6 +59,7 @@ public class UserWebSocket {
             if (old != null) {
                 old.removeSession(session);
             }
+            System.out.println(jsonMessage.getString("uid"));
             Room r = new Room(session, jsonMessage.getString("name"));
             RoomHandler.getInstance().mapSession(session, r);
         }
@@ -77,11 +78,16 @@ public class UserWebSocket {
             }
         }
 
+        if("uid".equals(jsonMessage.getString("action"))) {
+            System.out.println(jsonMessage.getString("value"));
+        }
+
         if ("join".equals(jsonMessage.getString("action"))) {
             Room old = RoomHandler.getInstance().getRoomBySession(session);
             if (old != null) {
                 old.removeSession(session);
             }
+            System.out.println(jsonMessage.getString("uid"));
             try {
                 String id = jsonMessage.getString("id");
                 Room r = RoomHandler.getInstance().getRoomById(id);
