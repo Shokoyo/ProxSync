@@ -526,7 +526,12 @@ function buildHtmlListSearch(resultList) {
         res = res + "<a href='#' onclick='addSearchResultToPlaylist(\"" + resultList[i].link + "\");' class=\"mdc-list-item\" style='height:96px;'>" +
             "<img style='height:78px;padding-right:14px;' src='" + resultList[i].image + "' role='presentation'></img>";
         res += "<span class='mdc-list-item__text'>" + resultList[i].title + "";
-        res += "<span class='mdc-list-item__text__secondary'>" + "1 2 3 4 5 6 7 8 9 10 11 12" + "</span></span>";
+        res += "<span class='mdc-list-item__text__secondary'>";
+        for(var j = 1; j <= resultList[i].episodeCount; j++) {
+            res+="<a href='#'";
+            res += "onclick='addSearchEpisodeToPlaylist(event,\"" + resultList[i].link + "\"," + j + ");'> " + j + " </a>";
+        }
+        res += "</span></span>";
         res += "</i>";
         if (i != resultList.length - 1) {
             res = res + "</a><hr class=\"mdc-list-divider\">";
@@ -541,6 +546,16 @@ function buildHtmlListSearch(resultList) {
         $('#mdc-search-list').addClass("hidden");
     }
     return res;
+}
+
+function addSearchEpisodeToPlaylist(event, url, episode) {
+    var userAction = {
+        action: "episodeLink",
+        url: url,
+        episode: episode
+    };
+    event.preventDefault();
+    socket.send(JSON.stringify(userAction));
 }
 
 function buildHtmlPlaylist(playList) {

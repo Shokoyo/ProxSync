@@ -13,12 +13,23 @@ public class Video {
     int episodeCount;
     public String key;
 
+    public Video(String url, int episode) {
+        this.url = url;
+        this.episode = episode;
+        this.infoGot = false;
+        this.animeTitle = url;
+        this.url = url;
+        this.episodeTitle = "";
+        this.episodePoster = "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/ic_ondemand_video_black_24px.svg?alt=media&token=fb90a1ff-ef22-4f7a-a900-48363ff27241";
+    }
+
     public Video(String url) {
         this.infoGot = false;
         this.animeTitle = url;
         this.url = url;
         this.episodeTitle = "";
         this.episodePoster = "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/ic_ondemand_video_black_24px.svg?alt=media&token=fb90a1ff-ef22-4f7a-a900-48363ff27241";
+        this.episode = 0;
     }
 
     public String getUrl() {

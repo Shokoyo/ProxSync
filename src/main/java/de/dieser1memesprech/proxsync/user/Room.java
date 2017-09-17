@@ -146,7 +146,19 @@ public class Room {
         if (playlist.size() == 1) {
             updatePlaylistInfo(playlist.peek());
             if (!playlist.isEmpty()) {
-                setVideo(playlist.peek().url);
+                setVideo(playlist.peek().url, playlist.peek().episode);
+            }
+        }
+        sendPlaylist();
+    }
+
+    public void addVideo(String url, int episode) {
+        System.out.println(episode);
+        playlist.add(new Video(url, episode));
+        if (playlist.size() == 1) {
+            updatePlaylistInfo(playlist.peek());
+            if (!playlist.isEmpty()) {
+                setVideo(playlist.peek().url, playlist.peek().episode);
             }
         }
         sendPlaylist();
@@ -211,7 +223,9 @@ public class Room {
                 v.episodeCount = anime.getEpisodeCount();
                 String link = anime.getAnimeSearchObject().getLink();
                 v.key = link.substring(link.lastIndexOf("/") + 1);
-                v.episode = episode;
+                if(v.episode == 0) {
+                    v.episode = episode;
+                }
                 v.episodePoster = anime.getAnimeSearchObject().getPoster();
 
                 FirebaseResponse response = Database.getEpisodeTitleFromDatabase(v.key, episode);
@@ -296,7 +310,8 @@ public class Room {
         userMap.get(s).setName(name);
     }
 
-    public void setVideo(String url) {
+    public void setVideo(String url, int episode) {
+        this.episode = episode;
         timestamp = null;
         for (Session s : readyStates.keySet()) {
             markReady(s, false);
@@ -367,7 +382,6 @@ public class Room {
                     sendDebugToHost("Couldn't find video URL. May be my fault or your fault");
                 }
             } else if (url.getHost().equals("9anime.to")) {
-                episode = 0;
                 _9animeLink = video;
                 System.out.println("getting 9anime link");
                 website = get9animeLink(video);
@@ -566,6 +580,7 @@ public class Room {
             CloseableHttpResponse response = httpClient.execute(head);
             try {
                 String contentType = response.getFirstHeader("Content-Type").getValue();
+                System.out.println(contentType);
                 if (contentType != null && contentType.contains("video")) {
                     res = true;
                 }
@@ -610,7 +625,7 @@ public class Room {
             }
         } else if (!playlist.isEmpty()) {
             sendPlaylist();
-            setVideo(playlist.peek().getUrl());
+            setVideo(playlist.peek().getUrl(), playlist.peek().episode);
         } else {
             sendPlaylist();
         }

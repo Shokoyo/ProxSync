@@ -84,6 +84,14 @@ public class UserWebSocket {
             r.getUserMap().get(session).setUid(jsonMessage.getString("value"));
         }
 
+        if("episodeLink".equals(jsonMessage.getString("action"))) {
+            Room r = RoomHandler.getInstance().getRoomBySession(session);
+            if (r != null) {
+                r.reset9anime();
+                r.addVideo(jsonMessage.getString("url"), jsonMessage.getInt("episode"));
+            }
+        }
+
         if ("search".equals(jsonMessage.getString("action"))) {
             System.out.println("Sending search request for keyword: " + jsonMessage.getString("keyword"));
             List<AnimeSearchObject> animeSearchObjectList = Anime.search(jsonMessage.getString("keyword"));
@@ -92,7 +100,11 @@ public class UserWebSocket {
             for (AnimeSearchObject animeSearchObject : animeSearchObjectList) {
                 System.out.println(animeSearchObject.getTitle());
                 jsonArray.add(Json.createObjectBuilder()
-                        .add("title", animeSearchObject.getTitle()).add("link", animeSearchObject.getLink()).add("image", animeSearchObject.getPoster()));
+                        .add("title", animeSearchObject.getTitle())
+                        .add("link", animeSearchObject.getLink())
+                        .add("image", animeSearchObject.getPoster())
+                        .add("lastEpisode", animeSearchObject.getLastEpisode())
+                        .add("episodeCount", animeSearchObject.getEpisodeCount()));
             }
             javax.json.JsonArray array = jsonArray.build();
             JsonObject messageJson = provider.createObjectBuilder()

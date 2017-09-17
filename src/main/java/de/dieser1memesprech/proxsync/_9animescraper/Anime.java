@@ -63,8 +63,41 @@ public class Anime {
         Element img = item.select("img").first();
         Element nameAnchor = item.select("a[class=name]").first();
         Element lang = item.select("div[class=lang]").first();
+        Element status = item.select("div[class=status]").first();
+        int lastEpisode = 0;
+        int episodeCount = 0;
+        if(status != null && !"".equals(status)) {
+            String[] statusArray = status.text().split("/");
+            if (!isInteger(statusArray[0]) && !isInteger(statusArray[1])) {
+                statusArray[0] = "0";
+                statusArray[1] = "1";
+            } else if (!isInteger(statusArray[0])) {
+                statusArray[0] = statusArray[1];
+            } else if (!isInteger(statusArray[1])) {
+                statusArray[1] = statusArray[0];
+            }
+            try {
+                lastEpisode = Integer.parseInt(statusArray[0]);
+                episodeCount = Integer.parseInt(statusArray[1]);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
         String langStr = lang == null ? "sub" : lang.text();
-        return new AnimeSearchObject(nameAnchor.text(), nameAnchor.attr("href"), langStr.toLowerCase(), Configuration.instance.SITE_NAME, img.attr("src"));
+        return new AnimeSearchObject(nameAnchor.text(), nameAnchor.attr("href"), langStr.toLowerCase(),
+                Configuration.instance.SITE_NAME, img.attr("src"), lastEpisode, episodeCount);
+    }
+
+    public static boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+        } catch(NumberFormatException e) {
+            return false;
+        } catch(NullPointerException e) {
+            return false;
+        }
+        // only got here if we didn't return false
+        return true;
     }
 
     private int getEpisodeCountInt() {
