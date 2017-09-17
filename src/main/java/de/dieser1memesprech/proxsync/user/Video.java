@@ -11,6 +11,7 @@ public class Video {
     boolean infoGot;
     int episode;
     int episodeCount;
+    public String key;
 
     public Video(String url) {
         this.infoGot = false;

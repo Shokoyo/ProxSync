@@ -1,9 +1,8 @@
 package de.dieser1memesprech.proxsync.websocket;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
 import de.dieser1memesprech.proxsync._9animescraper.Anime;
 import de.dieser1memesprech.proxsync._9animescraper.AnimeSearchObject;
+import de.dieser1memesprech.proxsync.database.Database;
 import de.dieser1memesprech.proxsync.user.Room;
 import de.dieser1memesprech.proxsync.user.RoomHandler;
 
@@ -192,6 +191,10 @@ public class UserWebSocket {
             if (r != null) {
                 r.setCurrent(jsonMessage.getJsonNumber("current"));
             }
+        }
+
+        if ("db".equals(jsonMessage.getString("action"))) {
+            Database.testIt();
         }
 
         reader.close();

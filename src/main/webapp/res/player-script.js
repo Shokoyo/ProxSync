@@ -300,6 +300,10 @@ $('#tf-box-search-field').on('input', function () {
 
 function leaveRoom() {
     window.location = window.location.pathname;
+    var userAction = {
+        action: "db"
+    }
+    socket.send(JSON.stringify(userAction));
 }
 
 $("#url").keypress(function (event) {

@@ -5,9 +5,11 @@ import de.dieser1memesprech.proxsync._9animescraper.Anime;
 import de.dieser1memesprech.proxsync._9animescraper.Episode;
 import de.dieser1memesprech.proxsync._9animescraper.Exceptions.No9AnimeUrlException;
 import de.dieser1memesprech.proxsync._9animescraper.util.HtmlUtils;
+import de.dieser1memesprech.proxsync.database.Database;
 import de.dieser1memesprech.proxsync.util.NamespaceContextMap;
 import de.dieser1memesprech.proxsync.util.RandomString;
 import de.dieser1memesprech.proxsync.websocket.UserSessionHandler;
+import net.thegreshams.firebase4j.model.FirebaseResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -207,9 +209,17 @@ public class Room {
             } else if (anime != null) {
                 v.animeTitle = anime.getTitle();
                 v.episodeCount = anime.getEpisodeCount();
+                String link = anime.getAnimeSearchObject().getLink();
+                v.key = link.substring(link.lastIndexOf("/") + 1);
                 v.episode = episode;
                 v.episodePoster = anime.getAnimeSearchObject().getPoster();
-                v.episodeTitle = getEpisodeTitle(v.animeTitle, v.episode);
+
+                FirebaseResponse response = Database.getEpisodeTitleFromDatabase(v.key, episode);
+                if (response.getRawBody().equals("null")) {
+                    v.episodeTitle = getEpisodeTitle(v.key, v.animeTitle, v.episode, v.episodeCount);
+                } else {
+                    v.episodeTitle = response.getRawBody();
+                }
             }
             v.infoGot = true;
         }
@@ -229,8 +239,9 @@ public class Room {
         return res;
     }
 
-    private String getEpisodeTitle(String animeTitle, int episode) {
+    private String getEpisodeTitle(String key, String animeTitle, int episode, int episodeCount) {
         String res = "";
+        List<String> episodeNames = new ArrayList<String>();
         try {
             String content = HtmlUtils.getHtmlContent("http://anisearch.outrance.pl/?task=search&query="
                     + URLEncoder.encode("\\" + animeTitle, "UTF-8"));
@@ -239,12 +250,16 @@ public class Room {
             if(aid != "") {
                 content = HtmlUtils.getHtmlContent("http://api.anidb.net:9001/httpapi?request=anime&" +
                         "client=anisync&clientver=1&protover=1&aid=" + aid);
+                for (int i = 1; i <= episodeCount; i++) {
+                    episodeNames.add(evaluateXPath(content, "//episode[epno=\"" + i + "\"]/title[@xml:lang=\"en\"]/text()"));
+                }
                 res = evaluateXPath(content, "//episode[epno=\"" + episode + "\"]/title[@xml:lang=\"en\"]/text()");
                 System.out.println(res);
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        Database.addToDB(key, animeTitle, episodeNames);
         return res;
     }
 

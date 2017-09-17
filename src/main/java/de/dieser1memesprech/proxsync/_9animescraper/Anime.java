@@ -27,7 +27,13 @@ public class Anime {
         this.document = Jsoup.parse(source);
         this.title = getTitleString();
         this.episodeCount = getEpisodeCountInt();
-        this.animeSearchObject = search(title).get(0);
+        List<AnimeSearchObject> animeSearchObjectList = search(title);
+        for (AnimeSearchObject animeSearchObject : animeSearchObjectList) {
+            if (url.contains(animeSearchObject.getLink())) {
+                this.animeSearchObject = animeSearchObject;
+                break;
+            }
+        }
     }
 
     private String getTitleString() {
