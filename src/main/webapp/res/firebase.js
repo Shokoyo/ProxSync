@@ -1,5 +1,6 @@
 var uid;
 var roomCreated = false;
+var anonymous;
 
 function register() {
     var provider = new firebase.auth.GoogleAuthProvider();
@@ -32,12 +33,12 @@ function signout() {
 }
 
 var currentUser;
-var uid;
 firebase.auth().onAuthStateChanged(function (authData) {
     if (authData) {
         console.log("Logged in as:", authData.uid);
         currentUser = authData.currentUser;
         uid = authData.uid;
+        anonymous = authData.isAnonymous;
         if (!roomCreated) {
             roomCreated = true;
             var url = "" + window.location;

@@ -2,7 +2,6 @@ package de.dieser1memesprech.proxsync.websocket;
 
 import de.dieser1memesprech.proxsync._9animescraper.Anime;
 import de.dieser1memesprech.proxsync._9animescraper.AnimeSearchObject;
-import de.dieser1memesprech.proxsync.database.Database;
 import de.dieser1memesprech.proxsync.user.Room;
 import de.dieser1memesprech.proxsync.user.RoomHandler;
 
@@ -11,6 +10,7 @@ import javax.json.*;
 import javax.json.spi.JsonProvider;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
+import javax.xml.crypto.Data;
 import java.io.StringReader;
 import java.util.List;
 import java.util.logging.Level;
@@ -60,7 +60,7 @@ public class UserWebSocket {
                 old.removeSession(session);
             }
             System.out.println(jsonMessage.getString("uid"));
-            Room r = new Room(session, jsonMessage.getString("name"), jsonMessage.getString("uid"));
+            Room r = new Room(session, jsonMessage.getString("name"), jsonMessage.getString("uid"), jsonMessage.getBoolean("anonymous"));
             RoomHandler.getInstance().mapSession(session, r);
         }
 
@@ -129,7 +129,7 @@ public class UserWebSocket {
                             .build();
                     UserSessionHandler.getInstance().sendToSession(session, messageJson);
                 } else {
-                    r.addSession(session, jsonMessage.getString("name"), jsonMessage.getString("uid"));
+                    r.addSession(session, jsonMessage.getString("name"), jsonMessage.getString("uid"), jsonMessage.getBoolean("anonymous"));
                     RoomHandler.getInstance().mapSession(session, r);
                 }
             } catch (NumberFormatException e) {
@@ -203,10 +203,6 @@ public class UserWebSocket {
             if (r != null) {
                 r.setCurrent(jsonMessage.getJsonNumber("current"));
             }
-        }
-
-        if ("db".equals(jsonMessage.getString("action"))) {
-            Database.testIt();
         }
 
         reader.close();

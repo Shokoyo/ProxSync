@@ -19,8 +19,6 @@ var syncing = false;
 var startTime;
 var roomId;
 var lastName;
-var roomDialog;
-var cookieDialog;
 var skipButton;
 var firstVideo = true;
 var timeUpdate = false;
@@ -128,7 +126,6 @@ $("#name").blur(function () {
 function onloadFunction() {
     initCheckbox();
     mdc.textfield.MDCTextfield.attachTo(document.querySelector('.mdc-textfield'));
-    cookieDialog = new mdc.dialog.MDCDialog(document.querySelector('#cookie-dialog'));
     document.getElementById("url-field").style.display = 'none';
     document.getElementById("url-button").style.display = 'none';
     document.getElementById("invite-link").style.display = 'none';
@@ -136,33 +133,9 @@ function onloadFunction() {
     document.getElementById("auto-next-container").style.display = 'none';
     document.getElementById("auto-play-container").style.display = 'none';
     checkCookie();
-    // updateAuthButtons();
 }
 
-$(document).on('keydown', function (e) {
-    var code = (e.keyCode ? e.keyCode : e.which);
-    if (code === 27) {
-        if (roomDialog != null && roomDialog.open) {
-            e.stopImmediatePropagation();
-        }
-        if (cookieDialog != null && cookieDialog.open) {
-            e.stopImmediatePropagation();
-        }
-    }
-});
 
-document.addEventListener("click", handler, true);
-
-function handler(e) {
-    if (roomDialog != null && roomDialog.open && !(e.target.id === "room-id-in" || e.target.id === "create-button-dialog" || e.target.id === "join-button-dialog")) {
-        e.stopPropagation();
-        e.preventDefault();
-    }
-    if (cookieDialog != null && cookieDialog.open && !(e.target.id === "cookie-field" || e.target.id === "cookie-button")) {
-        e.stopPropagation();
-        e.preventDefault();
-    }
-}
 
 $('#url-button').on('keyup', function (e) {
     if (e.keyCode === 32 || e.which === 32) {
@@ -187,11 +160,6 @@ $(document).on('keydown', function (e) {
         e.stopPropagation();
     }
 });
-
-function makeRoomDialog() {
-    roomDialog = new mdc.dialog.MDCDialog(document.querySelector('#room-dialog'));
-    roomDialog.show();
-}
 
 function hidePlayButtons() {
     myPlayer.removeChild('BigPlayButton');
@@ -250,7 +218,8 @@ function createRoom() {
         var userAction = {
             action: "create",
             uid: uid,
-            name: getCookie("username")
+            name: getCookie("username"),
+            anonymous: anonymous
         };
         socket.send(JSON.stringify(userAction));
     }
@@ -272,6 +241,7 @@ function joinRoom() {
             action: "join",
             name: getCookie("username"),
             uid: uid,
+            anonymous: anonymous,
             id: id
         };
         socket.send(JSON.stringify(userAction));
@@ -438,9 +408,6 @@ function onMessage(event) {
         if (eventJSON.id === "-1") {
             leaveRoom();
         } else {
-            if (roomDialog != null) {
-                roomDialog.close();
-            }
             if (!isOwner) {
                 disableSeeking();
                 hidePlayButtons();
@@ -456,7 +423,6 @@ function onMessage(event) {
                 document.getElementById("auto-play-container").style.display = '';
                 showSpecialControl();
             }
-            document.getElementById("room-id-in").style.display = 'none';
             roomId = eventJSON.id;
             document.getElementById("room-id-out").innerHTML = "Room ID: " + roomId;
             document.getElementById("invite-button").style.display = '';
@@ -823,7 +789,11 @@ function checkCookie() {
             document.getElementById("name").blur();
         }
     } else {
-        cookieDialog.show();
-        document.getElementById("cookie-field").focus();
+        username = "Userxxxx";
+        if (document.getElementById("name") != null) {
+            document.getElementById("name").focus();
+            document.getElementById("name").value = username;
+            document.getElementById("name").blur();
+        }
     }
 }

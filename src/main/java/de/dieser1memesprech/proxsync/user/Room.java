@@ -58,14 +58,14 @@ public class Room {
     private Anime anime;
     private static RandomString randomString = new RandomString(10);
 
-    public Room(Session host, String hostname, String hostuid) {
+    public Room(Session host, String hostname, String hostuid, boolean hostanonymous) {
         playlist = new LinkedList<Video>();
         this.host = host;
         do {
             id = randomString.nextString();
         } while (!RoomHandler.getInstance().checkId(id));
         sessions = new LinkedList<Session>();
-        this.addSession(host, hostname, hostuid);
+        this.addSession(host, hostname, hostuid, hostanonymous);
         RoomHandler.getInstance().addRoom(this);
         httpClient = HttpClients.createDefault();
     }
@@ -103,8 +103,8 @@ public class Room {
         return new LinkedList<Session>(sessions);
     }
 
-    public void addSession(Session session, String name, String uid) {
-        User user = new User(uid, name, "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/panda.svg?alt=media&token=6f4d5bf1-af69-4211-994d-66655456d91a");
+    public void addSession(Session session, String name, String uid, boolean anonymous) {
+        User user = new User(uid, name, "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/panda.svg?alt=media&token=6f4d5bf1-af69-4211-994d-66655456d91a", anonymous);
         userMap.put(session, user);
         setName(session, name);
         readyStates.put(session, false);
@@ -232,6 +232,12 @@ public class Room {
                 v.episodePoster = anime.getAnimeSearchObject().getPoster();
 
                 FirebaseResponse response = Database.getEpisodeTitleFromDatabase(v.key, episode);
+                for (Session session : getSessions()) {
+                    User user = getUserMap().get(session);
+                    if (!user.isAnonymous()) {
+                        Database.addToWatchlist(v.key, episode, user.getUid());
+                    }
+                }
                 if (response.getRawBody().equals("null")) {
                     v.episodeTitle = getEpisodeTitle(v.key, v.animeTitle, v.episode, v.episodeCount);
                 } else {
@@ -276,7 +282,7 @@ public class Room {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        Database.addToDB(key, animeTitle, episodeNames);
+        Database.addAnimeinfoToDatabase(key, animeTitle, episodeNames);
         return res;
     }
 

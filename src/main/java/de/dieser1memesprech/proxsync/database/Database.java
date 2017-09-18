@@ -12,11 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Database {
-    public static void testIt() {
-    }
-
-    public static void addToDB(String key, String title, List<String> res) {
-
+    public static void addAnimeinfoToDatabase(String key, String title, List<String> res) {
         try {
             Map<String, Object> dataMapEpisodeNames = new LinkedHashMap<String, Object>();
             for (int i = 0; i < res.size(); i++) {
@@ -28,7 +24,6 @@ public class Database {
             dataMapAnimeInfo.put("episodenames", dataMapEpisodeNames);
 
             FirebaseResponse response = Configuration.instance.getFirebase().put("anime/animeinfo/" + key.replaceAll("\\.", "-"), dataMapAnimeInfo);
-            System.out.println(response);
         } catch (FirebaseException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
@@ -42,6 +37,32 @@ public class Database {
         FirebaseResponse response = null;
         try {
             response = Configuration.instance.getFirebase().get("anime/animeinfo/" + key.replaceAll("\\.", "-") + "/episodenames/" + (episode - 1));
+        } catch (FirebaseException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public static void addToWatchlist(String key, int episode, String uid) {
+        try {
+            Map<String, Object> dataMapWatchlist = new LinkedHashMap<String, Object>();
+            dataMapWatchlist.put("episode", episode);
+            FirebaseResponse response = Configuration.instance.getFirebase().put("users/" + uid + "/watchlist/" + key.replaceAll("\\.", "-"), dataMapWatchlist);
+        } catch (FirebaseException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (JacksonUtilityException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static FirebaseResponse getWatchlist(String uid) {
+        FirebaseResponse response = null;
+        try {
+            response = Configuration.instance.getFirebase().get("users/" + uid + "/watchlist");
         } catch (FirebaseException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
