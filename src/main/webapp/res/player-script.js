@@ -13,6 +13,7 @@ new_uri += "//" + loc.host;
 new_uri += loc.pathname + "actions";
 var socket = new WebSocket(new_uri);
 socket.onmessage = onMessage;
+var inSearchField = false;
 var isOwner = true;
 var roomJoined = false;
 var syncing = false;
@@ -540,7 +541,10 @@ $(document).on('click', function (e) {
         blurredSearch();
     } else if ($(e.target).closest("#tf-box-search").length === 0){
         // TODO: do not close when clicked
+        inSearchField = true;
         menu.open = true;
+    } else {
+        inSearchField = false;
     }
 });
 
@@ -551,10 +555,9 @@ Number.prototype.pad = function (size) {
         s = "0" + s;
     }
     return s;
-}
+};
 
 function buildHtmlListSearch(resultList) {
-
     var res = "";
     for (var i = 0; i < resultList.length; i++) {
         res = res + "<li class='mdc-list-item list-item-search' role='menuitem' aria-disabled=\"true\">" +
@@ -600,6 +603,7 @@ function buildHtmlListSearch(resultList) {
         $('#mdc-search-list').addClass("hidden");
     } else {
         $('#mdc-search-list').removeClass("hidden");
+        setTimeout(function() {document.getElementById("tf-box-search-field").focus();},80);
     }
     if (document.getElementById("tf-box-search-field").value === "") {
         $('#mdc-search-list').addClass("hidden");
