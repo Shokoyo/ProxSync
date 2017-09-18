@@ -40,6 +40,10 @@
     height: auto!important;
 }
 
+.mdc-list-item.list-item-user {
+    align-items: center;
+}
+
 .episode-text-span {
     margin-top: 16px;
 }

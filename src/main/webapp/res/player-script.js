@@ -45,9 +45,12 @@ if (window.attachEvent) {
 
 function blurredSearch() {
     if (!menu.open) {
-        $('#tf-box-search-field').value = "";
+        console.log("resetting search");
+        document.getElementById("tf-box-search-field").value = '';
+        $('#tf-box-search-field').blur();
     } else {
         $('#tf-box-search-field').focus();
+        console.log("search menu is open!");
     }
 }
 
@@ -101,7 +104,7 @@ myPlayer.ready(function () {
     }
 
     var y = document.getElementsByClassName("vjs-big-play-button");
-    if(y.length === 1) {
+    if (y.length === 1) {
         y[0].setAttribute("tabIndex", "-1");
     }
     var x = document.getElementsByClassName("vjs-control");
@@ -148,7 +151,6 @@ function onloadFunction() {
 }
 
 
-
 $('#url-button').on('keyup', function (e) {
     if (e.keyCode === 32 || e.which === 32) {
         e.preventDefault();
@@ -181,7 +183,7 @@ function hidePlayButtons() {
 
 function showSpecialControl() {
     addSkipButton();
-    document.getElementById("room-name-changer").style.display="";
+    document.getElementById("room-name-changer").style.display = "";
 }
 
 function addSkipButton() {
@@ -270,7 +272,7 @@ function searchRequest(keyword, old) {
         };
         socket.send(JSON.stringify(userAction));
     } else {
-        $("#mdc-search-list").animate({ scrollTop: 0 }, "fast");
+        $("#mdc-search-list").animate({scrollTop: 0}, "fast");
         $('#mdc-search-list').addClass("hidden");
     }
 }
@@ -413,13 +415,13 @@ function onMessage(event) {
             + "/" + eventJSON.episodeCount;
     }
 
-    if(eventJSON.action === "newRoomId") {
+    if (eventJSON.action === "newRoomId") {
         console.log("new Room id: " + eventJSON.id);
         roomId = eventJSON.id;
         document.getElementById("room-id-out").innerHTML = "" + roomId;
         document.getElementById("invite-link").innerHTML = "http://" + loc.host + loc.pathname + "?r=" + roomId;
-        if(isOwner) {
-            if(userCount > 1) {
+        if (isOwner) {
+            if (userCount > 1) {
                 window.history.pushState({}, null, location.protocol + '//' + location.host + location.pathname + '?r=' + roomId);
             } else {
                 window.history.pushState({}, null, location.protocol + '//' + location.host + location.pathname);
@@ -482,7 +484,7 @@ function onMessage(event) {
     if (eventJSON.action === "room-list") {
         var roomString = buildHtmlList(eventJSON.userList);
         userCount = eventJSON.userList.length;
-        if(userCount > 1) {
+        if (userCount > 1) {
             window.history.pushState({}, null, '?r=' + roomId);
         } else {
             window.history.pushState({}, null, location.protocol + '//' + location.host + location.pathname);
@@ -503,7 +505,7 @@ function editName() {
 
 function editRoomName() {
     document.getElementById("room-name-field").style.display = "block";
-    document.getElementById("room-id-out").style.display="none";
+    document.getElementById("room-id-out").style.display = "none";
     document.getElementById("room-name-in").value = roomId;
     document.getElementById("room-name-in").focus();
 }
@@ -523,7 +525,7 @@ $(document).on("keypress", "#room-name-in", function (e) {
 });
 
 function addSearchResultToPlaylist(url) {
-    if(isOwner) {
+    if (isOwner) {
         var userAction = {
             action: "video",
             url: url
@@ -533,15 +535,21 @@ function addSearchResultToPlaylist(url) {
 }
 
 $(document).on('click', function (e) {
-    if ($(e.target).closest("#mdc-search-list").length === 0) {
-        $("#mdc-search-list").addClass("hidden");
+    if ($(e.target).closest("#mdc-search-list").length === 0 && $(e.target).closest("#tf-box-search").length === 0) {
+        menu.open = false;
+        blurredSearch();
+    } else if ($(e.target).closest("#tf-box-search").length === 0){
+        // TODO: do not close when clicked
+        menu.open = true;
     }
 });
 
-Number.prototype.pad = function(size) {
+Number.prototype.pad = function (size) {
     size = Math.max(size, 2);
     var s = String(this);
-    while (s.length < (size || 2)) {s = "0" + s;}
+    while (s.length < (size || 2)) {
+        s = "0" + s;
+    }
     return s;
 }
 
@@ -556,10 +564,10 @@ function buildHtmlListSearch(resultList) {
         if (resultList[i].episodeCount > 0) {
             for (var j = 1; j <= resultList[i].episodeCount; j++) {
                 res += "<a href='#' class='text square-box mdc-toolbar__icon";
-                if(j > resultList[i].lastEpisode) {
+                if (j > resultList[i].lastEpisode) {
                     res += " mdc-theme--primary-light-bg'";
                 } else {
-                    res +=" mdc-theme--secondary-bg'";
+                    res += " mdc-theme--secondary-bg'";
                 }
                 res += "onclick='addSearchEpisodeToPlaylist(event,\"" + resultList[i].link + "\"," + j + ");'>" +
                     "<b> " +
@@ -587,7 +595,7 @@ function buildHtmlListSearch(resultList) {
     } else {
         menu.open = true;
     }
-    $("#mdc-search-list").animate({ scrollTop: 0 }, "fast");
+    $("#mdc-search-list").animate({scrollTop: 0}, "fast");
     if (res === "") {
         $('#mdc-search-list').addClass("hidden");
     } else {
@@ -600,7 +608,7 @@ function buildHtmlListSearch(resultList) {
 }
 
 function addSearchEpisodeToPlaylist(event, url, episode) {
-    if(isOwner) {
+    if (isOwner) {
         var userAction = {
             action: "episodeLink",
             url: url,
@@ -636,7 +644,7 @@ function buildHtmlPlaylist(playList) {
 }
 
 function playNow(e, i) {
-    if(isOwner) {
+    if (isOwner) {
         var userAction = {
             action: "playNow",
             episode: i
@@ -648,7 +656,7 @@ function playNow(e, i) {
 }
 
 function deleteFromPlaylist(e, i) {
-    if(isOwner) {
+    if (isOwner) {
         var userAction = {
             action: "delete",
             episode: i
@@ -663,7 +671,7 @@ function buildHtmlList(userList) {
     var res = "";
     userCount = userList.length;
     for (var i = 0; i < userList.length; i++) {
-        res = res + "<li class=\"mdc-list-item\">" +
+        res = res + "<li class=\"mdc-list-item list-item-user\">" +
             "<img class=\"mdc-list-item__start-detail grey-bg\" src=\"" + userList[i].avatar + "\"" +
             "width=\"56\" height=\"56\" alt=\"Brown Bear\">";
         if (userList[i].uid === uid) {
@@ -718,7 +726,7 @@ function unbindFinishedEvent() {
     finishedFlag = false;
 }
 
-myPlayer.on('timeupdate',sendCurrentTime);
+myPlayer.on('timeupdate', sendCurrentTime);
 
 myPlayer.on('ended', function () {
     if (finishedFlag) {
@@ -869,7 +877,8 @@ function checkCookie() {
             document.getElementById("name").blur();
         }
     } else {
-        username = "User " + Math.floor((Math.random() * 10000) + 1);;
+        username = "User " + Math.floor((Math.random() * 10000) + 1);
+        ;
         setCookie("username", username, 365);
         if (document.getElementById("name") != null) {
             document.getElementById("name").focus();
