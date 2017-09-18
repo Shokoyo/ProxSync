@@ -79,6 +79,7 @@ function joinParamRoom() {
         action: "join",
         id: "" + getQueryVariable("r"),
         uid: uid,
+        anonymous: anonymous,
         name: getCookie("username")
     };
     isOwner = false;

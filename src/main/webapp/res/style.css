@@ -13,8 +13,12 @@
 .square-box {
     display: inline-block;
     margin: 2px 6px 2px 1px;
-    padding: 2px 5px;
+    padding: 0px 5px;
     border-radius: 2px;
+}
+
+.episode-text-span {
+    z-index: 5;
 }
 
 .text{
@@ -34,4 +38,8 @@
 
 .episode-text-span {
     margin-top: 16px;
+}
+
+.menu-search {
+    max-height: 500px;
 }

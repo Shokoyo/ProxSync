@@ -25,6 +25,7 @@ var timeUpdate = false;
 var pauseFlag = true;
 var finishedFlag = false;
 var oldNextEpisode = true;
+let menu = new mdc.menu.MDCSimpleMenu(document.querySelector('.mdc-simple-menu'));
 //add onload function
 if (window.attachEvent) {
     window.attachEvent('onload', onloadFunction);
@@ -38,6 +39,14 @@ if (window.attachEvent) {
         window.onload = newonload;
     } else {
         window.onload = onloadFunction;
+    }
+}
+
+function blurredSearch() {
+    if (!menu.open) {
+        $('#tf-box-search-field').value = "";
+    } else {
+        $('#tf-box-search-field').focus();
     }
 }
 
@@ -500,9 +509,10 @@ Number.prototype.pad = function(size) {
 }
 
 function buildHtmlListSearch(resultList) {
+
     var res = "";
     for (var i = 0; i < resultList.length; i++) {
-        res = res + "<li class='mdc-list-item list-item-search'>" +
+        res = res + "<li class='mdc-list-item list-item-search' role='menuitem' aria-disabled=\"true\">" +
             "<img style='height:78px;padding-right:14px;' src='" + resultList[i].image + "' role='presentation'/>";
         res += "<span class='mdc-list-item__text'>" + resultList[i].title + "";
         res += "<span class='episode-text-span'>";
@@ -515,9 +525,12 @@ function buildHtmlListSearch(resultList) {
                     res +=" mdc-theme--secondary-bg'";
                 }
                 res += "onclick='addSearchEpisodeToPlaylist(event,\"" + resultList[i].link + "\"," + j + ");'>" +
-                    "<b>" +
+                    "<b> " +
                     (j).pad(resultList[i].episodeCount.toString().length) +
-                    "</b></a>";
+                    " </b></a>";
+                if (j % 10 === 0) {
+                    res += "<br/>";
+                }
             }
         } else {
             res += "<a href='#' class='text square-box mdc-toolbar__icon  mdc-theme--secondary-bg' " +
@@ -531,6 +544,11 @@ function buildHtmlListSearch(resultList) {
             res = res + "</li>" +
                 "<hr class=\"mdc-list-divider\">";
         }
+    }
+    if (res === "") {
+        menu.open = false;
+    } else {
+        menu.open = true;
     }
     $("#mdc-search-list").animate({ scrollTop: 0 }, "fast");
     if (res === "") {
