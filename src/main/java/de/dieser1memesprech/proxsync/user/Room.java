@@ -70,6 +70,10 @@ public class Room {
         httpClient = HttpClients.createDefault();
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public boolean isPlaying() {
         return playing;
     }

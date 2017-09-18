@@ -79,7 +79,8 @@ function joinParamRoom() {
         action: "join",
         id: "" + getQueryVariable("r"),
         uid: uid,
-        name: getCookie("username")
+        name: getCookie("username"),
+        anonymous: anonymous
     };
     isOwner = false;
     socket.send(JSON.stringify(userAction));
