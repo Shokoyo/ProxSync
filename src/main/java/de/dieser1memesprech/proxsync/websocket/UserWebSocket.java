@@ -94,7 +94,11 @@ public class UserWebSocket {
 
         if ("search".equals(jsonMessage.getString("action"))) {
             System.out.println("Sending search request for keyword: " + jsonMessage.getString("keyword"));
-            List<AnimeSearchObject> animeSearchObjectList = Anime.search(jsonMessage.getString("keyword"));
+            String s = jsonMessage.getString("keyword");
+            if(s.toLowerCase().contains("zitat")) {
+                s = "Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e";
+            }
+            List<AnimeSearchObject> animeSearchObjectList = Anime.search(s);
             JsonProvider provider = JsonProvider.provider();
             JsonArrayBuilder jsonArray = Json.createArrayBuilder();
             for (AnimeSearchObject animeSearchObject : animeSearchObjectList) {
@@ -110,6 +114,22 @@ public class UserWebSocket {
             JsonObject messageJson = provider.createObjectBuilder()
                     .add("action", "search-result").add("result", array).build();
             UserSessionHandler.getInstance().sendToSession(session, messageJson);
+        }
+
+        if("changeRoomName".equals(jsonMessage.getString("action"))) {
+            Room old = RoomHandler.getInstance().getRoomBySession(session);
+            if(RoomHandler.getInstance().checkId(jsonMessage.getString("name"))) {
+                System.out.println("available");
+                if (old != null) {
+                    old.setId(jsonMessage.getString("name"));
+                    JsonProvider provider = JsonProvider.provider();
+                    JsonObject messageJson = provider.createObjectBuilder()
+                            .add("action", "newRoomId")
+                            .add("id", old.getId())
+                            .build();
+                    UserSessionHandler.getInstance().sendToRoom(messageJson, old);
+                }
+            }
         }
 
         if ("join".equals(jsonMessage.getString("action"))) {

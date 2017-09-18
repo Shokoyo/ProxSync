@@ -26,6 +26,7 @@ var pauseFlag = true;
 var finishedFlag = false;
 var oldNextEpisode = true;
 let menu = new mdc.menu.MDCSimpleMenu(document.querySelector('.mdc-simple-menu'));
+var userCount = 0;
 //add onload function
 if (window.attachEvent) {
     window.attachEvent('onload', onloadFunction);
@@ -100,7 +101,9 @@ myPlayer.ready(function () {
     }
 
     var y = document.getElementsByClassName("vjs-big-play-button");
-    y[0].setAttribute("tabIndex", "-1");
+    if(y.length === 1) {
+        y[0].setAttribute("tabIndex", "-1");
+    }
     var x = document.getElementsByClassName("vjs-control");
     var i;
     for (i = 0; i < x.length; i++) {
@@ -178,6 +181,7 @@ function hidePlayButtons() {
 
 function showSpecialControl() {
     addSkipButton();
+    document.getElementById("room-name-changer").style.display="";
 }
 
 function addSkipButton() {
@@ -280,10 +284,6 @@ $('#tf-box-search-field').on('input', function () {
 
 function leaveRoom() {
     window.location = window.location.pathname;
-    var userAction = {
-        action: "db"
-    }
-    socket.send(JSON.stringify(userAction));
 }
 
 $("#url").keypress(function (event) {
@@ -413,6 +413,22 @@ function onMessage(event) {
             + "/" + eventJSON.episodeCount;
     }
 
+    if(eventJSON.action === "newRoomId") {
+        console.log("new Room id: " + eventJSON.id);
+        roomId = eventJSON.id;
+        document.getElementById("room-id-out").innerHTML = "" + roomId;
+        document.getElementById("invite-link").innerHTML = "http://" + loc.host + loc.pathname + "?r=" + roomId;
+        if(isOwner) {
+            if(userCount > 1) {
+                window.history.pushState({}, null, location.protocol + '//' + location.host + location.pathname + '?r=' + roomId);
+            } else {
+                window.history.pushState({}, null, location.protocol + '//' + location.host + location.pathname);
+            }
+        } else {
+            window.history.pushState({}, null, location.protocol + '//' + location.host + location.pathname + '?r=' + roomId);
+        }
+    }
+
     if (eventJSON.action === "roomID") {
         if (eventJSON.id === "-1") {
             leaveRoom();
@@ -433,7 +449,7 @@ function onMessage(event) {
                 showSpecialControl();
             }
             roomId = eventJSON.id;
-            document.getElementById("room-id-out").innerHTML = "Room ID: " + roomId;
+            document.getElementById("room-id-out").innerHTML = "" + roomId;
             document.getElementById("invite-button").style.display = '';
             document.getElementById("invite-link").innerHTML = "http://" + loc.host + loc.pathname + "?r=" + roomId;
             roomJoined = true;
@@ -465,6 +481,12 @@ function onMessage(event) {
     }
     if (eventJSON.action === "room-list") {
         var roomString = buildHtmlList(eventJSON.userList);
+        userCount = eventJSON.userList.length;
+        if(userCount > 1) {
+            window.history.pushState({}, null, '?r=' + roomId);
+        } else {
+            window.history.pushState({}, null, location.protocol + '//' + location.host + location.pathname);
+        }
         document.getElementById("user-list").innerHTML = "" + roomString;
     }
     if (eventJSON.action === "search-result") {
@@ -479,6 +501,13 @@ function editName() {
     document.getElementById("name").focus();
 }
 
+function editRoomName() {
+    document.getElementById("room-name-field").style.display = "block";
+    document.getElementById("room-id-out").style.display="none";
+    document.getElementById("room-name-in").value = roomId;
+    document.getElementById("room-name-in").focus();
+}
+
 $(document).on("keypress", "#name", function (e) {
     if (e.keyCode == 13 || e.which == '13') {
         lastName = document.getElementById("name").value;
@@ -487,12 +516,20 @@ $(document).on("keypress", "#name", function (e) {
     }
 });
 
+$(document).on("keypress", "#room-name-in", function (e) {
+    if (e.keyCode == 13 || e.which == '13') {
+        changeRoomName();
+    }
+});
+
 function addSearchResultToPlaylist(url) {
-    var userAction = {
-        action: "video",
-        url: url
-    };
-    socket.send(JSON.stringify(userAction));
+    if(isOwner) {
+        var userAction = {
+            action: "video",
+            url: url
+        };
+        socket.send(JSON.stringify(userAction));
+    }
 }
 
 $(document).on('click', function (e) {
@@ -563,13 +600,15 @@ function buildHtmlListSearch(resultList) {
 }
 
 function addSearchEpisodeToPlaylist(event, url, episode) {
-    var userAction = {
-        action: "episodeLink",
-        url: url,
-        episode: episode
-    };
+    if(isOwner) {
+        var userAction = {
+            action: "episodeLink",
+            url: url,
+            episode: episode
+        };
+        socket.send(JSON.stringify(userAction));
+    }
     event.preventDefault();
-    socket.send(JSON.stringify(userAction));
 }
 
 function buildHtmlPlaylist(playList) {
@@ -597,27 +636,32 @@ function buildHtmlPlaylist(playList) {
 }
 
 function playNow(e, i) {
-    var userAction = {
-        action: "playNow",
-        episode: i
-    };
-    socket.send(JSON.stringify(userAction));
+    if(isOwner) {
+        var userAction = {
+            action: "playNow",
+            episode: i
+        };
+        socket.send(JSON.stringify(userAction));
+    }
     e.preventDefault();
     return false;
 }
 
 function deleteFromPlaylist(e, i) {
-    var userAction = {
-        action: "delete",
-        episode: i
-    };
-    socket.send(JSON.stringify(userAction));
+    if(isOwner) {
+        var userAction = {
+            action: "delete",
+            episode: i
+        };
+        socket.send(JSON.stringify(userAction));
+    }
     e.preventDefault();
     return false;
 }
 
 function buildHtmlList(userList) {
     var res = "";
+    userCount = userList.length;
     for (var i = 0; i < userList.length; i++) {
         res = res + "<li class=\"mdc-list-item\">" +
             "<img class=\"mdc-list-item__start-detail grey-bg\" src=\"" + userList[i].avatar + "\"" +
@@ -696,6 +740,24 @@ function bindPauseEvent() {
 
 function unbindPauseEvent() {
     pauseFlag = false;
+}
+
+function enterRoomName() {
+    document.getElementById("room-name-in").blur();
+    changeRoomName();
+}
+
+function changeRoomName() {
+    document.getElementById("room-id-out").style.display = "block";
+    document.getElementById("room-name-field").style.display = "none";
+    if (document.getElementById("room-name-in").value === "") {
+        return;
+    }
+    var userAction = {
+        action: "changeRoomName",
+        name: document.getElementById("room-name-in").value
+    };
+    socket.send(JSON.stringify(userAction));
 }
 
 function changeName() {
@@ -807,7 +869,8 @@ function checkCookie() {
             document.getElementById("name").blur();
         }
     } else {
-        username = "Userxxxx";
+        username = "User " + Math.floor((Math.random() * 10000) + 1);;
+        setCookie("username", username, 365);
         if (document.getElementById("name") != null) {
             document.getElementById("name").focus();
             document.getElementById("name").value = username;

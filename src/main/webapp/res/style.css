@@ -3,6 +3,10 @@
     color: inherit;
     text-decoration: none;
 }
+.light-font {
+    color:#F5F5F6;
+}
+
 .search-dialog {
     display: block;
 }
