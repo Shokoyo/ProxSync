@@ -29,7 +29,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 
@@ -53,7 +55,7 @@ public class Firebase {
 	private final String baseUrl;
 	private String secureToken = null;
 	private List<NameValuePair> query;
-	
+	private CloseableHttpClient client;
 	
 	public Firebase( String baseUrl ) throws FirebaseException {
 
@@ -65,6 +67,7 @@ public class Firebase {
 		this.baseUrl = baseUrl.trim();
 		query = new ArrayList<NameValuePair>();
 		LOGGER.info( "intialized with base-url: " + this.baseUrl );
+		client = HttpClients.createDefault();
 	}
 	
 	public Firebase(String baseUrl, String secureToken) throws FirebaseException {
@@ -499,8 +502,7 @@ public class Firebase {
 		}
 		
 		try {
-			
-			HttpClient client = new DefaultHttpClient();
+
 			response = client.execute( request );
 			
 		} catch( Throwable t ) {
