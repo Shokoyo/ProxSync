@@ -130,17 +130,15 @@ public class Database {
     }
 
     public static void addToWatchlistImporter(String key, String episode, String status, String animeTitle,
-                                              String poster, String episodeCount, String uid) {
+                                              String poster, String episodeCount, String uid, String rating) {
         try {
-            System.out.println(key);
             Map<String, Object> dataMapWatchlist = new LinkedHashMap<String, Object>();
             dataMapWatchlist.put("episode", episode);
-            dataMapWatchlist.put("rating", "0");
+            dataMapWatchlist.put("rating", rating);
             dataMapWatchlist.put("status", status);
             dataMapWatchlist.put("title", animeTitle);
             dataMapWatchlist.put("episodeCount", episodeCount);
             dataMapWatchlist.put("poster", poster);
-            System.out.println(key.replaceAll("\\.", "-"));
             FirebaseResponse response = Configuration.instance.getFirebase().put("users/" + uid + "/watchlist/" + key.replaceAll("\\.", "-"), dataMapWatchlist);
         } catch (FirebaseException e) {
             e.printStackTrace();

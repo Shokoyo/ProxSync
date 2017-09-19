@@ -24,11 +24,8 @@ public class ProxerImporter implements Runnable {
     }
 
     public void run() {
-        System.out.println(url);
-
         Document doc = Jsoup.parse(url);
         Element body = doc.body();
-        System.out.println("body parsed");
         Elements table = body.getElementsByTag("table");
         parseTable(table.get(1), "completed");
         parseTable(table.get(2), "watching");
@@ -61,7 +58,7 @@ public class ProxerImporter implements Runnable {
                 for (AnimeSearchObject a : searchResult) {
                     if (a.getTitle().toLowerCase().equals(title.toLowerCase())) {
                         success = true;
-                        Database.addToWatchlistImporter(a.getLink().substring(a.getLink().lastIndexOf("/") + 1), eps[0], status, uid, title, "" + a.getEpisodeCount(), a.getPoster());
+                        Database.addToWatchlistImporter(a.getLink().substring(a.getLink().lastIndexOf("/") + 1), eps[0], status, title, a.getPoster(), "" + a.getEpisodeCount(), uid, "" + rating);
                     }
                 }
                 if (!success) {
@@ -83,6 +80,7 @@ public class ProxerImporter implements Runnable {
             System.out.println("invalid arguments");
             System.exit(-1);
         }
+        System.out.println(args[1]);
         File file = new File(args[0]);
         try {
             FileReader fileStream = new FileReader(file);
