@@ -240,6 +240,8 @@ public class Room {
                 }
                 v.episodePoster = anime.getAnimeSearchObject().getPoster();
 
+                Database.updateAnimeInfo(v.key, anime.getAnimeSearchObject().getLastEpisode() + "",
+                        anime.getAnimeSearchObject().getCurrentEpisode() + "", v.episodePoster);
                 FirebaseResponse response = Database.getEpisodeTitleFromDatabase(v.key, episode);
                 if (response.getRawBody().equals("null")) {
                     v.episodeTitle = getEpisodeTitle(v.key, v.animeTitle, v.episode, v.episodeCount);

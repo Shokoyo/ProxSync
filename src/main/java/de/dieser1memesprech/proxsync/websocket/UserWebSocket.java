@@ -241,7 +241,7 @@ public class UserWebSocket {
                     String key = r.getAnime().getAnimeSearchObject().getLink();
                     key = key.substring(key.lastIndexOf("/") + 1);
                     key = key.replaceAll("\\.", "-");
-                    Database.addToWatchlist(key, r.getPlaylist().peek().getEpisode(), user.getUid());
+                    Database.addToWatchlist(key, r.getPlaylist().peek().getEpisode() + "", "watching", user.getUid());
                 }
             }
         }
