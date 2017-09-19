@@ -27,9 +27,9 @@ public class ProxerImporter implements Runnable {
         Document doc = Jsoup.parse(url);
         Element body = doc.body();
         Elements table = body.getElementsByTag("table");
-        parseTable(table.get(1), "completed");
-        parseTable(table.get(2), "watching");
-        parseTable(table.get(3), "planned");
+        parseTable(table.get(0), "completed");
+        parseTable(table.get(1), "watching");
+        parseTable(table.get(2), "planned");
         System.out.println("finished");
     }
 
@@ -44,7 +44,7 @@ public class ProxerImporter implements Runnable {
             Element stars = el.getElementsByTag("td").get(3);
             int rating = 0;
             for (Element e : stars.getElementsByTag("img")) {
-                if (e.attributes().get("src").equals("/images/misc/stern.png")) {
+                if (!e.attributes().get("src").contains("stern_grau")) {
                     rating++;
                 }
             }
