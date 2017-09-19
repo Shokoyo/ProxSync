@@ -63,7 +63,7 @@ public class Database {
                     } else {
                         list = res.getPlanned();
                     }
-                    list.add(new WatchlistEntry(animeId, episode, poster, animeTitle, episodeCount));
+                    list.add(new WatchlistEntry(episode, poster, animeTitle, episodeCount));
                 } catch(NullPointerException ex) {
                     ex.printStackTrace();
                     System.out.println("Malformed anime or watchlist entry");
