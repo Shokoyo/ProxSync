@@ -139,6 +139,7 @@ public class Database {
             dataMapWatchlist.put("title", animeTitle);
             dataMapWatchlist.put("episodeCount", episodeCount);
             dataMapWatchlist.put("poster", poster);
+            dataMapWatchlist.put("key", key);
             FirebaseResponse response = Configuration.instance.getFirebase().put("users/" + uid + "/watchlist/" + key.replaceAll("\\.", "-"), dataMapWatchlist);
         } catch (FirebaseException e) {
             e.printStackTrace();
