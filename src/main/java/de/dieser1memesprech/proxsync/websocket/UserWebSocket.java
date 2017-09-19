@@ -1,6 +1,5 @@
 package de.dieser1memesprech.proxsync.websocket;
 
-import de.dieser1memesprech.proxsync._9animescraper.Anime;
 import de.dieser1memesprech.proxsync._9animescraper.AnimeSearchObject;
 import de.dieser1memesprech.proxsync._9animescraper.util.AnimeUtils;
 import de.dieser1memesprech.proxsync.database.Database;
@@ -14,7 +13,6 @@ import javax.json.*;
 import javax.json.spi.JsonProvider;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
-import javax.xml.crypto.Data;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
@@ -116,7 +114,7 @@ public class UserWebSocket {
                         .add("image", animeSearchObject.getPoster())
                         .add("lastEpisode", animeSearchObject.getLastEpisode())
                         .add("watchlist", getEpisodenumFromWatchlist(dataMap, animeSearchObject.getLink()))
-                        .add("episodeCount", animeSearchObject.getCurrentEpisode()));
+                        .add("episodeCount", animeSearchObject.getEpisodeCount()));
             }
             javax.json.JsonArray array = jsonArray.build();
             JsonObject messageJson = provider.createObjectBuilder()

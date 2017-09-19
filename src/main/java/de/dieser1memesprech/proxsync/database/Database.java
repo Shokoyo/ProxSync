@@ -9,7 +9,6 @@ import de.dieser1memesprech.proxsync._9animescraper.config.Configuration;
 import net.thegreshams.firebase4j.error.FirebaseException;
 import net.thegreshams.firebase4j.error.JacksonUtilityException;
 import net.thegreshams.firebase4j.model.FirebaseResponse;
-import net.thegreshams.firebase4j.service.Firebase;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
@@ -128,6 +127,28 @@ public class Database {
             e.printStackTrace();
         }
         return response;
+    }
+
+    public static void addToWatchlistImporter(String key, String episode, String status, String animeTitle,
+                                              String poster, String episodeCount, String uid) {
+        try {
+            System.out.println(key);
+            Map<String, Object> dataMapWatchlist = new LinkedHashMap<String, Object>();
+            dataMapWatchlist.put("episode", episode);
+            dataMapWatchlist.put("rating", "0");
+            dataMapWatchlist.put("status", status);
+            dataMapWatchlist.put("title", animeTitle);
+            dataMapWatchlist.put("episodeCount", episodeCount);
+            dataMapWatchlist.put("poster", poster);
+            System.out.println(key.replaceAll("\\.", "-"));
+            FirebaseResponse response = Configuration.instance.getFirebase().put("users/" + uid + "/watchlist/" + key.replaceAll("\\.", "-"), dataMapWatchlist);
+        } catch (FirebaseException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (JacksonUtilityException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void addToWatchlist(String key, String episode, String status, String uid) {

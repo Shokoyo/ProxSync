@@ -3,7 +3,6 @@ package de.dieser1memesprech.proxsync.user;
 import com.google.gson.Gson;
 import de.dieser1memesprech.proxsync._9animescraper.Anime;
 import de.dieser1memesprech.proxsync._9animescraper.Episode;
-import de.dieser1memesprech.proxsync._9animescraper.Exceptions.No9AnimeUrlException;
 import de.dieser1memesprech.proxsync._9animescraper.util.HtmlUtils;
 import de.dieser1memesprech.proxsync.database.Database;
 import de.dieser1memesprech.proxsync.util.NamespaceContextMap;
@@ -241,7 +240,7 @@ public class Room {
                 v.episodePoster = anime.getAnimeSearchObject().getPoster();
 
                 Database.updateAnimeInfo(v.key, anime.getAnimeSearchObject().getLastEpisode() + "",
-                        anime.getAnimeSearchObject().getCurrentEpisode() + "", v.episodePoster);
+                        anime.getAnimeSearchObject().getEpisodeCount() + "", v.episodePoster);
                 FirebaseResponse response = Database.getEpisodeTitleFromDatabase(v.key, episode);
                 if (response.getRawBody().equals("null")) {
                     v.episodeTitle = getEpisodeTitle(v.key, v.animeTitle, v.episode, v.episodeCount);

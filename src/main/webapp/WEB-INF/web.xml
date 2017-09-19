@@ -7,11 +7,11 @@
          metadata-complete="true">
     <display-name>ProxSync</display-name>
     <!--<filter>
-        <filter-name>roomFilter</filter-name>
-        <filter-class>de.dieser1memesprech.proxsync.filters.RoomFilter</filter-class>
+        <filter-name>settingsFilter</filter-name>
+        <filter-class>de.dieser1memesprech.proxsync.filter.SettingsFilter</filter-class>
     </filter>
     <filter-mapping>
-        <filter-name>roomFilter</filter-name>
-        <url-pattern>/*</url-pattern>
+        <filter-name>settingsFilter</filter-name>
+        <url-pattern>/settings/*</url-pattern>
     </filter-mapping>-->
 </web-app>

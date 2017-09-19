@@ -592,7 +592,6 @@ public class Firebase {
 		// convert response-body to map
 		Map<String, Object> body = null;
 		try {
-			
 			body = JacksonUtility.GET_JSON_STRING_AS_MAP( writer.toString() );
 			
 		} catch( JacksonUtilityException jue ) {

@@ -44,7 +44,7 @@ public class AnimeSearchObject {
         return lastEpisode;
     }
 
-    public int getCurrentEpisode() {
+    public int getEpisodeCount() {
         return episodeCount;
     }
 }
