@@ -54,10 +54,9 @@ public class Database {
                     String episode = objectEntry.get("episode").getAsString();
                     String status = objectEntry.get("status").getAsString();
                     int rating = objectEntry.get("rating").getAsInt();
-                    JsonObject animeObject = Database.getAnimeObjectFromDatabase(animeId);
-                    String animeTitle = animeObject.get("title").getAsString();
-                    String episodeCount = animeObject.get("episodeCount").getAsString();
-                    String poster = animeObject.get("poster").getAsString();
+                    String animeTitle = objectEntry.get("title").getAsString();
+                    String episodeCount = objectEntry.get("episodeCount").getAsString();
+                    String poster = objectEntry.get("poster").getAsString();
                     List<WatchlistEntry> list;
                     if (status.equals("watching")) {
                         list = res.getWatching();
@@ -137,6 +136,10 @@ public class Database {
             dataMapWatchlist.put("episode", episode);
             dataMapWatchlist.put("rating", "0");
             dataMapWatchlist.put("status", status);
+            JsonObject animeObject = Database.getAnimeObjectFromDatabase(key);
+            dataMapWatchlist.put("title", animeObject.get("title").getAsString());
+            dataMapWatchlist.put("episodeCount", animeObject.get("episodeCount").getAsString());
+            dataMapWatchlist.put("poster", animeObject.get("poster").getAsString());
             FirebaseResponse response = Configuration.instance.getFirebase().put("users/" + uid + "/watchlist/" + key.replaceAll("\\.", "-"), dataMapWatchlist);
         } catch (FirebaseException e) {
             e.printStackTrace();

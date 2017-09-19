@@ -58,19 +58,19 @@
 <div class="content mdc-toolbar-fixed-adjust">
     <nav class="mdc-permanent-drawer">
         <nav class="mdc-list">
-            <a class="mdc-list-item left-list mdc-permanent-drawer--selected" href="#">
+            <a class="mdc-list-item left-list mdc-permanent-drawer--selected" href="../profile">
                 <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">person</i><span class="text-in-list">Profile</span>
             </a>
-            <a class="mdc-list-item left-list" href="#">
+            <a class="mdc-list-item left-list" href="../watchlist">
                 <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">video_library</i><span class="text-in-list">Watch List</span>
             </a>
-            <a class="mdc-list-item left-list" href="#">
+            <a class="mdc-list-item left-list" href="../airing">
                 <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">new_releases</i><span class="text-in-list">Airing</span>
             </a>
-            <a class="mdc-list-item left-list" href="#">
+            <a class="mdc-list-item left-list" href="../">
                 <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">ondemand_video</i><span class="text-in-list">ProxSync</span>
             </a>
-            <a class="mdc-list-item left-list" href="#">
+            <a class="mdc-list-item left-list" href="../settings">
                 <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">settings</i><span class="text-in-list">Settings</span>
             </a>
         </nav>
@@ -79,7 +79,18 @@
         <section style="margin-left:14px;">
                 <h3>Full-Width Dividers</h3>
                 <ul class="mdc-list" style="border:none;">
-                    <li class="mdc-list-item">Import from Proxer</li>
+                    <li class="mdc-list-item">Import from Proxer:&nbsp;
+                        <div class="mdc-textfield">
+                            <input type="text" id="my-textfield" class="mdc-textfield__input">
+                            <label class="mdc-textfield__label" for="my-textfield">Watchlist URL</label>
+                        </div>
+                        <p class="mdc-textfield-helptext mdc-textfield-helptext--persistent">
+                            URL to your watchlist ("Anime" tab in your Proxer profile)
+                        </p>
+                        <button class="mdc-button mdc-button--raised">
+                            Import
+                        </button>
+                    </li>
                     <li class="mdc-list-divider" role="separator"></li>
                 </ul>
         </section>
