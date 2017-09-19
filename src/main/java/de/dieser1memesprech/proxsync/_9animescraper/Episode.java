@@ -4,59 +4,93 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import de.dieser1memesprech.proxsync._9animescraper.config.Configuration;
 import de.dieser1memesprech.proxsync._9animescraper.util.HtmlUtils;
-
-import java.io.UnsupportedEncodingException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 public class Episode {
     private String id;
-    private String epNum;
-    private String sources;
-    private int epNumInt;
+    private String episodeName;
     private String episodeUrl;
+    private String sourceUrl;
 
-    public Episode(String id, String epNum, String sources) {
+    public Episode(String id, String episodeName, String episodeUrl) {
         this.id = id;
-        this.epNum = epNum;
-        this.sources = sources;
-        if (Anime.isInteger(epNum)) {
-            this.epNumInt = Integer.parseInt(epNum);
-        } else {
-            this.epNumInt = 0;
-        }
+        this.episodeName = episodeName;
+        this.episodeUrl = episodeUrl;
     }
 
-    public String getSources() {
-        return sources;
+    public String getEpisodeUrl() {
+        return episodeUrl;
     }
 
     public String getId() {
         return id;
     }
 
-    public String getEpNum() {
-        return epNum;
+    public String getEpisodeName() {
+        return episodeName;
     }
 
-    public int getEpNumInt() {
-        return epNumInt;
-    }
-
-    public String getEpisodeUrl() {
-        if (episodeUrl == null) {
-            String episodeJson = this.getSources();
-            JsonElement jsonElementSource = new JsonParser().parse(episodeJson);
-            JsonObject jsonObjectSource = jsonElementSource.getAsJsonObject();
-            String grabber = jsonObjectSource.get("grabber").getAsString();
-            JsonObject params = jsonObjectSource.getAsJsonObject("params");
-            String token = params.get("token").getAsString();
-            String url = grabber + "&token=" + token;
-            String episodeUrls = HtmlUtils.getHtmlContent(url);
-            JsonElement jsonElementUrls = new JsonParser().parse(episodeUrls);
-            JsonObject jsonObjectUrls = jsonElementUrls.getAsJsonObject();
-            JsonArray jsonArrayUrlsData = jsonObjectUrls.getAsJsonArray("data");
-            episodeUrl = jsonArrayUrlsData.get(jsonArrayUrlsData.size() - 1).getAsJsonObject().get("file").getAsString();
+    public String getSourceUrl() {
+        if (sourceUrl == null) {
+            sourceUrl = scrapeSource();
         }
+        System.out.println(sourceUrl);
+        return sourceUrl;
+    }
+
+    public String scrapeSource() {
+        String sourceUrl = "";
+        Document document = Jsoup.parse(HtmlUtils.getHtmlContent(episodeUrl));
+        Elements servers = document.select("div[class=server row");
+        Element body = document.select("body").first();
+        String ts = body.attr("data-ts");
+        String update = "0";
+        for (Element server : servers) {
+            if (server.attr("data-id").equals("30")) {
+                Elements episodes = server.select("li");
+                for (Element elEpisode : episodes) {
+                    Element anchor = elEpisode.select("a").first();
+                    String id = anchor.attr("data-id");
+                    if (episodeUrl.contains(id)) {
+                        sourceUrl =  parseServerSingleEpisode(elEpisode, ts, update, id);
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        return sourceUrl;
+    }
+
+    private String parseServerSingleEpisode(Element elEpisode, String ts, String update, String serverid) {
+        Element anchor = elEpisode.select("a").first();
+        String id = anchor.attr("data-id");
+        return scrapeEpisodeInfo(id, ts, update, serverid);
+    }
+
+    private String scrapeEpisodeInfo(String id, String ts, String update, String serverid) {
+        String url = Configuration.instance.INFO_API_URL + "?ts=" + ts + "&_=" + _9AnimeUrlExtender.getExtraUrlParameter(id, ts, update, serverid) + "&id=" + id + "&server=" + serverid + "&update=" + update;
+        String content = HtmlUtils.getHtmlContent(url);
+        return scrapeSourceUrl(content);
+    }
+
+    private String scrapeSourceUrl(String content) {
+        JsonElement jsonElementSource = new JsonParser().parse(content);
+        JsonObject jsonObjectSource = jsonElementSource.getAsJsonObject();
+        String grabber = jsonObjectSource.get("grabber").getAsString();
+        JsonObject params = jsonObjectSource.getAsJsonObject("params");
+        String token = params.get("token").getAsString();
+        String url = grabber + "&token=" + token;
+        String episodeUrls = HtmlUtils.getHtmlContent(url);
+        JsonElement jsonElementUrls = new JsonParser().parse(episodeUrls);
+        JsonObject jsonObjectUrls = jsonElementUrls.getAsJsonObject();
+        JsonArray jsonArrayUrlsData = jsonObjectUrls.getAsJsonArray("data");
+        episodeUrl = jsonArrayUrlsData.get(jsonArrayUrlsData.size() - 1).getAsJsonObject().get("file").getAsString();
         return episodeUrl;
     }
 }

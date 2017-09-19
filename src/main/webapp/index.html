@@ -31,7 +31,9 @@
     <div class="mdc-toolbar__row">
         <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
             <div id="tf-box-search"
-                 class="mdc-textfield mdc-textfield--box">
+                 class="mdc-textfield mdc-textfield--box mdc-textfield--upgraded mdc-ripple-upgraded"
+                 data-demo-no-auto-js=""
+                 style="--mdc-ripple-surface-width:214px; --mdc-ripple-surface-height:56px; --mdc-ripple-fg-size:128.4px; --mdc-ripple-fg-scale:1.80067; --mdc-ripple-fg-translate-start:22.8px, -28.6375px; --mdc-ripple-fg-translate-end:42.8px, -36.2px;">
                 <input type="text" id="tf-box-search-field"
                        class="mdc-textfield__input mdc-theme--primary-light"
                        style="color: rgba(255,255,255,0.7)!important;">
@@ -74,12 +76,27 @@
 </header>
 <main class="mdc-toolbar-fixed-adjust">
     <div class="mdc-simple-menu" tabindex="-1">
-        <ul class="mdc-dialog__body--scrollable mdc-simple-menu__items mdc-list mdc-list--avatar-list menu-search" role="menu" id="mdc-search-list">
+        <ul class="mdc-dialog__body--scrollable mdc-simple-menu__items mdc-list mdc-list--avatar-list menu-search"
+            role="menu" id="mdc-search-list">
         </ul>
     </div>
     <div class="mdc-layout-grid">
-        <div class="mdc-layout-grid-inner">
-            <h1 align="left" id="anime-title" style="display:block" class="mdc-typography--headline">&nbsp;</h1>
+        <div class="mdc-layout-grid__inner">
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">
+                <span id="anime-title" class="mdc-typography--headline"></span>
+            </div>
+            <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">
+                <button class="mdc-button mdc-button--raised mdc-theme--secondary-bg"
+                        onclick="watchlistNext()"
+                        id="add-next-watchlist-button"
+                        style="align-self: center;float: right;">watchlist: next
+                </button>
+                <button class="mdc-button mdc-button--raised mdc-theme--secondary-bg"
+                        onclick="addToWatchlist()"
+                        id="add-watchlist-button"
+                        style="align-self: center;float: right;margin-right: 16px;">watchlist: this
+                </button>
+            </div>
         </div>
         <div class="mdc-layout-grid__inner">
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
@@ -93,16 +110,20 @@
                             <div class="mdc-toolbar__row">
                                 <section class="mdc-toolbar__section mdc-toolbar__section--align-start"
                                          style="height:0;">
-                                    <div id='room-name-field' class="mdc-toolbar__title light-font" style='display: none;float:left;'>
+                                    <div id='room-name-field' class="mdc-toolbar__title light-font"
+                                         style='display: none;float:left;'>
                                         <div class="mdc-textfield light-font">
                                             <input onfocus="this.select();" onblur="enterRoomName();" type="text"
                                                    id="room-name-in" class="mdc-textfield__input light-font">
                                             <label for="room-name-in" class="mdc-textfield__label light-font"></label>
-                                            <div class="mdc-textfield__bottom-line mdc-theme--background" style="height:1px;"></div>
+                                            <div class="mdc-textfield__bottom-line mdc-theme--background"
+                                                 style="height:1px;"></div>
                                         </div>
                                     </div>
                                     <span class="mdc-toolbar__title" id="room-id-out" style="float:left;"></span>
-                                    <a href="#" id="room-name-changer" onclick="editRoomName(event);" class="material-icons mdc-toolbar__icon mdc-theme--secondary" style="float:left;align-self:center;display:none;">create</a>
+                                    <a href="#" id="room-name-changer" onclick="editRoomName(event);"
+                                       class="material-icons mdc-toolbar__icon mdc-theme--secondary"
+                                       style="float:left;align-self:center;display:none;">create</a>
                                 </section>
                                 <section class="mdc-toolbar__section mdc-toolbar__section--align-end"
                                          style="height:0;">
@@ -169,8 +190,8 @@
                                                     </div>
                                                 </div>
                                                 <label for="auto-next-checkbox" class="mdc-switch-label">Auto
-                                                                                                         next
-                                                                                                         episode</label>
+                                                    next
+                                                    episode</label>
                                             </div>
                                             <div class="mdc-form-field" id="auto-play-container"
                                                  style="margin-right: 10px; margin-top: 10px;">

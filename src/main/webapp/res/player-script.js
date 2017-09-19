@@ -563,10 +563,14 @@ function buildHtmlListSearch(resultList) {
         if (resultList[i].episodeCount > 0) {
             for (var j = 1; j <= resultList[i].episodeCount; j++) {
                 res += "<a href='#' class='text square-box mdc-toolbar__icon";
-                if (j > resultList[i].lastEpisode) {
-                    res += " mdc-theme--primary-light-bg'";
+                if (resultList[i].watchlist > j) {
+                    res += " mdc-theme--secondary-dark-bg'";
                 } else {
-                    res += " mdc-theme--secondary-bg'";
+                    if (j > resultList[i].lastEpisode) {
+                        res += " mdc-theme--primary-bg'";
+                    } else {
+                        res += " mdc-theme--secondary-bg'";
+                    }
                 }
                 res += "onclick='addSearchEpisodeToPlaylist(event,\"" + resultList[i].link + "\"," + j + ");'>" +
                     "<b> " +
@@ -619,6 +623,15 @@ function addSearchEpisodeToPlaylist(event, url, episode) {
         socket.send(JSON.stringify(userAction));
     }
     event.preventDefault();
+}
+
+function addToWatchlist() {
+    if (!anonymous) {
+        var userAction = {
+            action: "addToWatchlist"
+        };
+        socket.send(JSON.stringify(userAction));
+    }
 }
 
 function buildHtmlPlaylist(playList) {
@@ -735,14 +748,18 @@ myPlayer.on('ended', function () {
         unbindPauseEvent();
         if (isOwner) {
             unbindTimeUpdate();
-            var userAction = {
-                "action": "finished"
-            };
-            socket.send(JSON.stringify(userAction));
+            nextEpisode();
         }
         unbindFinishedEvent();
     }
 });
+
+function nextEpisode() {
+    var userAction = {
+        "action": "finished"
+    };
+    socket.send(JSON.stringify(userAction));
+}
 
 function bindPauseEvent() {
     pauseFlag = true;

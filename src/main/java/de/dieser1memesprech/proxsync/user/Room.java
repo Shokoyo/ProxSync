@@ -37,6 +37,11 @@ import java.util.regex.Pattern;
 
 public class Room {
     private int episode;
+
+    public LinkedList<Video> getPlaylist() {
+        return playlist;
+    }
+
     private LinkedList<Video> playlist;
     private static final String USER_AGENT = "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.13) Gecko/20101206 Ubuntu/10.10 (maverick) Firefox/3.6.13";
     private static final String ripLink = "http://i.imgur.com/eKmmyv1.mp4";
@@ -236,12 +241,6 @@ public class Room {
                 v.episodePoster = anime.getAnimeSearchObject().getPoster();
 
                 FirebaseResponse response = Database.getEpisodeTitleFromDatabase(v.key, episode);
-                for (Session session : getSessions()) {
-                    User user = getUserMap().get(session);
-                    if (!user.isAnonymous()) {
-                        Database.addToWatchlist(v.key, episode, user.getUid());
-                    }
-                }
                 if (response.getRawBody().equals("null")) {
                     v.episodeTitle = getEpisodeTitle(v.key, v.animeTitle, v.episode, v.episodeCount);
                 } else {
@@ -419,24 +418,21 @@ public class Room {
             anime = new Anime(video);
             System.out.println(anime.getAnimeSearchObject().getLink());
             Episode episode = null;
-            try {
-                episode = anime.getEpisodeObject(video);
-            } catch (No9AnimeUrlException e) {
-                e.printStackTrace();
-            }
+            episode = anime.getEpisodeList().get(0);
             if (episode == null) {
                 System.out.println("ERROR: episode element is null");
                 return "";
             }
-            this.episode = episode.getEpNumInt();
-            return episode.getEpisodeUrl();
+            this.episode = anime.getEpisodeList().indexOf(episode);
+            return episode.getSourceUrl();
         } else {
             if(anime == null) {
                 anime = new Anime(video);
             }
-            Episode episode = anime.getEpisodeObject(_9animeLink, this.episode);
+            Episode episode = anime.getEpisodeList().get(this.episode - 1);
             if (episode != null) {
-                return episode.getEpisodeUrl();
+                String episodeSource = episode.getSourceUrl();
+                return episodeSource;
             } else {
                 return "";
             }

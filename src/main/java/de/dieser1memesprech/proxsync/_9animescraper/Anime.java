@@ -1,17 +1,14 @@
 package de.dieser1memesprech.proxsync._9animescraper;
 
-import de.dieser1memesprech.proxsync._9animescraper.Exceptions.No9AnimeUrlException;
 import de.dieser1memesprech.proxsync._9animescraper.config.Configuration;
+import de.dieser1memesprech.proxsync._9animescraper.util.AnimeUtils;
 import de.dieser1memesprech.proxsync._9animescraper.util.HtmlUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class Anime {
@@ -19,15 +16,16 @@ public class Anime {
     private String source;
     private Document document;
     private int episodeCount;
-    private Map<String, Episode> episodeMap = new HashMap<String, Episode>();
+    private List<Episode> episodeList;
     private AnimeSearchObject animeSearchObject;
 
     public Anime(String url) {
         this.source = HtmlUtils.getHtmlContent(url);
         this.document = Jsoup.parse(source);
         this.title = getTitleString();
+        initializeEpisodeList();
         this.episodeCount = getEpisodeCountInt();
-        List<AnimeSearchObject> animeSearchObjectList = search(title);
+        List<AnimeSearchObject> animeSearchObjectList = AnimeUtils.search(title);
         for (AnimeSearchObject animeSearchObject : animeSearchObjectList) {
             if (url.contains(animeSearchObject.getLink())) {
                 this.animeSearchObject = animeSearchObject;
@@ -36,171 +34,38 @@ public class Anime {
         }
     }
 
-    private String getTitleString() {
-        return document.select("h1[class=title]").first().text();
-    }
-
-    public static List<AnimeSearchObject> search(String keyword) {
-        keyword = keyword.replaceAll(" ", "%20");
-        String url = Configuration.instance.BASE_URL + "/search?keyword=" + keyword;
-        String content = HtmlUtils.getHtmlContent(url);
-        return parseSearchMulti(content);
-    }
-
-    private static List<AnimeSearchObject> parseSearchMulti(String data) {
-        List<AnimeSearchObject> animeList = new ArrayList<AnimeSearchObject>();
-        Document doc = Jsoup.parse(data);
-
-        Elements items = doc.select("div[class=item]");
-
-        for (Element item : items) {
-            animeList.add(parseSearchSingle(item));
-        }
-        return animeList;
-    }
-
-    private static AnimeSearchObject parseSearchSingle(Element item) {
-        Element img = item.select("img").first();
-        Element nameAnchor = item.select("a[class=name]").first();
-        Element lang = item.select("div[class=lang]").first();
-        Element status = item.select("div[class=status]").first();
-        int lastEpisode = 0;
-        int episodeCount = 0;
-        if(status != null && !"".equals(status)) {
-            String[] statusArray = status.text().split("/");
-            if(statusArray.length == 2) {
-                if (!isInteger(statusArray[0]) && !isInteger(statusArray[1])) {
-                    statusArray[0] = "0";
-                    statusArray[1] = "1";
-                } else if (!isInteger(statusArray[0])) {
-                    statusArray[0] = statusArray[1];
-                } else if (!isInteger(statusArray[1])) {
-                    statusArray[1] = statusArray[0];
-                }
-                try {
-                    lastEpisode = Integer.parseInt(statusArray[0]);
-                    episodeCount = Integer.parseInt(statusArray[1]);
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        String langStr = lang == null ? "sub" : lang.text();
-        return new AnimeSearchObject(nameAnchor.text(), nameAnchor.attr("href"), langStr.toLowerCase(),
-                Configuration.instance.SITE_NAME, img.attr("src"), lastEpisode, episodeCount);
-    }
-
-    public static boolean isInteger(String s) {
-        try {
-            Integer.parseInt(s);
-        } catch(NumberFormatException e) {
-            return false;
-        } catch(NullPointerException e) {
-            return false;
-        }
-        // only got here if we didn't return false
-        return true;
-    }
-
-    private int getEpisodeCountInt() {
-        int count = -1;
-        Elements servers = document.select("div[class=server row");
-        for (Element server : servers) {
-            if (server.attr("data-id").equals("30")) {
-                Elements episodes = server.select("li");
-                count = episodes.size();
-            }
-        }
-        return count;
-    }
-
-    public Episode getEpisodeObject(String url) throws No9AnimeUrlException {
-        String id = "";
-        if (Pattern.matches(Configuration.instance.BASE_URL + "/watch/(.*)", url)) {
-            if (isEpisodeLink(url)) {
-                String episodeId = url.substring(url.lastIndexOf('/') + 1);
-                System.out.println("Episode url provided: " + episodeId);
-                if (!episodeMap.containsKey(episodeId)) {
-                    Elements servers = document.select("div[class=server row");
-                    Element body = document.select("body").first();
-                    String ts = body.attr("data-ts");
-                    String update = "0";
-                    for (Element server : servers) {
-                        if (server.attr("data-id").equals("30")) {
-                            Elements episodes = server.select("li");
-                            for (Element elEpisode : episodes) {
-                                Element anchor = elEpisode.select("a").first();
-                                id = anchor.attr("data-id");
-                                if (episodeId.equals(id)) {
-                                    Episode episode = parseServerSingleEpisode(elEpisode, ts, update, server.attr("data-id"));
-                                    episodeMap.put(episodeId, episode);
-                                    break;
-                                }
-                            }
-                            break;
-                        }
-                    }
-                }
-                return episodeMap.get(episodeId);
-            } else {
-                System.out.println("Anime url provided");
-                Elements servers = document.select("div[class=server row");
-                Element body = document.select("body").first();
-                String ts = body.attr("data-ts");
-                String update = "0";
-                for (Element server : servers) {
-                    if (server.attr("data-id").equals("30")) {
-                        Elements episodes = server.select("li");
-                        for (Element elEpisode : episodes) {
-                            Element anchor = elEpisode.select("a").first();
-                            id = anchor.attr("data-id");
-                            Episode episode = parseServerSingleEpisode(elEpisode, ts, update, server.attr("data-id"));
-                            episodeMap.put(id, episode);
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
-            return episodeMap.get(id);
-        }
-        throw new No9AnimeUrlException();
-    }
-
-    public Episode getEpisodeObject(String url, int episodeNum) {
-        String id = "";
+    private void initializeEpisodeList() {
+        episodeList = new ArrayList<Episode>();
         Elements servers = document.select("div[class=server row");
         Element body = document.select("body").first();
-        String ts = body.attr("data-ts");
-        String update = "0";
         for (Element server : servers) {
             if (server.attr("data-id").equals("30")) {
                 Elements episodes = server.select("li");
                 for (Element elEpisode : episodes) {
                     Element anchor = elEpisode.select("a").first();
-                    int epNum = Integer.parseInt(anchor.text());
-                    System.out.println(epNum);
-                    if (epNum == episodeNum) {
-                        id = anchor.attr("data-id");
-                        System.out.println(id);
-                        if (!episodeMap.containsKey(id)) {
-                            Episode episode = parseServerSingleEpisode(elEpisode, ts, update, id);
-                            episodeMap.put(id, episode);
-                        }
-                        break;
-                    }
-
+                    String id = anchor.attr("data-id");
+                    String name = anchor.text();
+                    episodeList.add(new Episode(id, name, Configuration.instance.BASE_URL + anchor.attr("href")));
                 }
+                break;
             }
         }
-        return id.equals("") ? null : episodeMap.get(id);
+        return;
+    }
+
+    private String getTitleString() {
+        return document.select("h1[class=title]").first().text();
+    }
+
+    private int getEpisodeCountInt() {
+        return getEpisodeList().size();
     }
 
     private Episode parseServerSingleEpisode(Element elEpisode, String ts, String update, String serverid) {
         Element anchor = elEpisode.select("a").first();
         String id = anchor.attr("data-id");
         Episode episode = new Episode(id, anchor.text(), scrapeEpisodeInfo(id, ts, update, serverid));
-        return episode.getSources() == null ? null : episode;
+        return episode.getEpisodeUrl() == null ? null : episode;
     }
 
     private String scrapeEpisodeInfo(String id, String ts, String update, String serverid) {
@@ -214,8 +79,8 @@ public class Anime {
         return animeSearchObject;
     }
 
-    public Map<String, Episode> getEpisodeMap() {
-        return episodeMap;
+    public List<Episode> getEpisodeList() {
+        return episodeList;
     }
 
     public String getTitle() {

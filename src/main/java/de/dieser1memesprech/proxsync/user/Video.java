@@ -9,6 +9,11 @@ public class Video {
     String episodeTitle;
     String episodePoster;
     boolean infoGot;
+
+    public int getEpisode() {
+        return episode;
+    }
+
     int episode;
     int episodeCount;
     public String key;

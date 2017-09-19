@@ -10,13 +10,13 @@ public class AnimeSearchObject {
     private int lastEpisode;
     private int episodeCount;
 
-    public AnimeSearchObject(String title, String link, String language, String host, String poster, int lastEpisode, int episodeCount) {
+    public AnimeSearchObject(String title, String link, String language, String host, String poster, int episodeCount, int currentEpisode) {
         this.title = title;
         this.link = link;
         this.language = language;
         this.host = host;
         this.poster = poster;
-        this.lastEpisode = lastEpisode;
+        this.lastEpisode = currentEpisode;
         this.episodeCount = episodeCount;
     }
 
@@ -44,7 +44,7 @@ public class AnimeSearchObject {
         return lastEpisode;
     }
 
-    public int getEpisodeCount() {
+    public int getCurrentEpisode() {
         return episodeCount;
     }
 }

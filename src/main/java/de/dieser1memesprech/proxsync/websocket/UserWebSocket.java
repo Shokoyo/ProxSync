@@ -2,8 +2,12 @@ package de.dieser1memesprech.proxsync.websocket;
 
 import de.dieser1memesprech.proxsync._9animescraper.Anime;
 import de.dieser1memesprech.proxsync._9animescraper.AnimeSearchObject;
+import de.dieser1memesprech.proxsync._9animescraper.util.AnimeUtils;
+import de.dieser1memesprech.proxsync.database.Database;
 import de.dieser1memesprech.proxsync.user.Room;
 import de.dieser1memesprech.proxsync.user.RoomHandler;
+import de.dieser1memesprech.proxsync.user.User;
+import net.thegreshams.firebase4j.model.FirebaseResponse;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.json.*;
@@ -13,6 +17,7 @@ import javax.websocket.server.ServerEndpoint;
 import javax.xml.crypto.Data;
 import java.io.StringReader;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -98,9 +103,11 @@ public class UserWebSocket {
             if(s.toLowerCase().contains("zitat")) {
                 s = "Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e";
             }
-            List<AnimeSearchObject> animeSearchObjectList = Anime.search(s);
+            List<AnimeSearchObject> animeSearchObjectList = AnimeUtils.search(s);
             JsonProvider provider = JsonProvider.provider();
             JsonArrayBuilder jsonArray = Json.createArrayBuilder();
+            FirebaseResponse response = Database.getWatchlist(RoomHandler.getInstance().getRoomBySession(session).getUserMap().get(session).getUid());
+            Map<String, Object> dataMap = response.getBody();
             for (AnimeSearchObject animeSearchObject : animeSearchObjectList) {
                 System.out.println(animeSearchObject.getTitle());
                 jsonArray.add(Json.createObjectBuilder()
@@ -108,7 +115,8 @@ public class UserWebSocket {
                         .add("link", animeSearchObject.getLink())
                         .add("image", animeSearchObject.getPoster())
                         .add("lastEpisode", animeSearchObject.getLastEpisode())
-                        .add("episodeCount", animeSearchObject.getEpisodeCount()));
+                        .add("watchlist", getEpisodenumFromWatchlist(dataMap, animeSearchObject.getLink()))
+                        .add("episodeCount", animeSearchObject.getCurrentEpisode()));
             }
             javax.json.JsonArray array = jsonArray.build();
             JsonObject messageJson = provider.createObjectBuilder()
@@ -225,6 +233,35 @@ public class UserWebSocket {
             }
         }
 
+        if ("addToWatchlist".equals(jsonMessage.getString("action"))) {
+            Room r = RoomHandler.getInstance().getRoomBySession(session);
+            if (r != null) {
+                User user = r.getUserMap().get(session);
+                if (!user.isAnonymous()) {
+                    String key = r.getAnime().getAnimeSearchObject().getLink();
+                    key = key.substring(key.lastIndexOf("/") + 1);
+                    key = key.replaceAll("\\.", "-");
+                    Database.addToWatchlist(key, r.getPlaylist().peek().getEpisode(), user.getUid());
+                }
+            }
+        }
+
         reader.close();
     }
+
+    private int getEpisodenumFromWatchlist(Map<String, Object> dataMap, String link) {
+        int num = -1;
+        String key = link.substring(link.lastIndexOf("/")+1);
+        key = key.replaceAll("\\.", "-");
+        System.out.println(key);
+        if (dataMap.size() > 0) {
+            Map map = (Map) dataMap.get(key);
+            if (map != null) {
+                num = Integer.parseInt(map.get("episode").toString());
+            }
+        }
+        return num;
+    }
+
+
 }
