@@ -78,6 +78,7 @@ public class Database {
         }
     }
 
+
     public static FirebaseResponse getWatchlist(String uid) {
         FirebaseResponse response = null;
         try {

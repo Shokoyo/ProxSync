@@ -108,24 +108,41 @@
             <section>
                 <div class="panels" id="panels">
                     <div class="panel active" id="panel-watching" role="tabpanel" aria-hidden="false">
-                        <div class="mdc-grid-list">
-                            <ul class="mdc-grid-list__tiles" style="width: 1632px;">
-
-                                <%
-                                    String uid = "";
-                                    Cookie[] cookies = request.getCookies();
-                                    if (cookies != null) {
-                                        for (Cookie cookie : cookies) {
-                                            if (cookie.getName().equals("loginData")) {
-                                                uid = cookie.getValue();
-                                            }
-                                        }
+                        <%
+                            String uid = "";
+                            Cookie[] cookies = request.getCookies();
+                            if (cookies != null) {
+                                for (Cookie cookie : cookies) {
+                                    if (cookie.getName().equals("loginData")) {
+                                        uid = cookie.getValue();
                                     }
-                                    if ("".equals(uid)) { %>
-                                <h3> Log in to view your watch list </h3>
-                                <% } else {
-                                    FirebaseResponse dataResponse = Database.getWatchlist(uid);
-                                    JsonElement json = new JsonParser().parse(dataResponse.getRawBody());
+                                }
+                            }
+                            if ("".equals(uid)) { %>
+                        <h4> Log in to view your watch list </h4>
+                    </div>
+                    <div class="panel" id="panel-completed" role="tabpanel" aria-hidden="true">
+                        <h4> Log in to view your watch list </h4>
+                    </div>
+                    <div class="panel" id="panel-plan" role="tabpanel" aria-hidden="true">
+                        <h4> Log in to view your watch list </h4>
+                    </div>
+                    <% } else {
+                        System.out.println("uid: " + uid);
+                        FirebaseResponse dataResponse = Database.getWatchlist(uid);
+                        JsonElement json = new JsonParser().parse(dataResponse.getRawBody());
+                        if (!json.isJsonObject()) {
+                    %>
+                    <h4> Log in to view your watch list </h4>
+                </div>
+                <div class="panel" id="panel-completed" role="tabpanel" aria-hidden="true">
+                    <h4> Log in to view your watch list </h4>
+                </div>
+                <div class="panel" id="panel-plan" role="tabpanel" aria-hidden="true">
+                    <h4> Log in to view your watch list </h4>
+                </div>
+                    <%
+                                    } else {
                                     for(Map.Entry<String,JsonElement> e: json.getAsJsonObject().entrySet()) {
                                         String animeId = e.getKey();
                                         JsonObject objectEntry = e.getValue().getAsJsonObject();
@@ -133,41 +150,45 @@
                                         JsonObject animeObject = Database.getAnimeObjectFromDatabase(animeId);
                                         String animeTitle = animeObject.get("title").getAsString();
                                         %>
-                                <li class="mdc-grid-title">
-                                    <div class="mdc-grid-tile__primary">
-                                        <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
-                                             style="background-image:url(https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http://2.bp.blogspot.com/-XxTEKtFU4K0/WE-zGkjZVpI/AAAAAAABSj0/Qg76Gpk-7fc/s0/);">
-                                            <section class="mdc-card__primary">
-                                                <h1 class="mdc-card__title mdc-card__title--large"><%=animeTitle%></h1>
-                                                <h2 class="mdc-card__subtitle"><%=episode%>/?</h2>
-                                                <span class="mdc-card__subtitle">
-                                                    <i class="material-icons watchlist-star">star</i>
-                                                    <i class="material-icons watchlist-star">star_border</i>
-                                                    <i class="material-icons watchlist-star">star_border</i>
-                                                    <i class="material-icons watchlist-star">star_border</i>
-                                                    <i class="material-icons watchlist-star">star_border</i>
-                                                </span>
-                                            </section>
-                                        </div>
-                                    </div>
-                                </li>
-                                    <%
+                <div class="mdc-grid-list">
+                    <ul class="mdc-grid-list__tiles" style="width: 1632px;">
+                        <li class="mdc-grid-title">
+                            <div class="mdc-grid-tile__primary">
+                                <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
+                                     style="background-image:url(https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&refresh=604800&url=http://2.bp.blogspot.com/-XxTEKtFU4K0/WE-zGkjZVpI/AAAAAAABSj0/Qg76Gpk-7fc/s0/);">
+                                    <section class="mdc-card__primary">
+                                        <h1 class="mdc-card__title mdc-card__title--large"><%=animeTitle%>
+                                        </h1>
+                                        <h2 class="mdc-card__subtitle"><%=episode%>/?</h2>
+                                        <span class="mdc-card__subtitle">
+                                            <i class="material-icons watchlist-star">star</i>
+                                            <i class="material-icons watchlist-star">star_border</i>
+                                            <i class="material-icons watchlist-star">star_border</i>
+                                            <i class="material-icons watchlist-star">star_border</i>
+                                            <i class="material-icons watchlist-star">star_border</i>
+                                        </span>
+                                    </section>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+        </div>
+        <div class="panel" id="panel-completed" role="tabpanel" aria-hidden="true">
+
+        </div>
+        <div class="panel" id="panel-plan" role="tabpanel" aria-hidden="true">
+
+        </div>
+            <%
+                    }
                                     }
                                     }
                                 %>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="panel" id="panel-completed" role="tabpanel" aria-hidden="true">
-
-                    </div>
-                    <div class="panel" id="panel-plan" role="tabpanel" aria-hidden="true">
-
-                    </div>
-                </div>
-            </section>
-        </div>
-    </main>
+</div>
+</section>
+</div>
+</main>
 </div>
 <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-app.js"></script>
