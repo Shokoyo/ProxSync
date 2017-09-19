@@ -9,6 +9,7 @@ import de.dieser1memesprech.proxsync._9animescraper.config.Configuration;
 import net.thegreshams.firebase4j.error.FirebaseException;
 import net.thegreshams.firebase4j.error.JacksonUtilityException;
 import net.thegreshams.firebase4j.model.FirebaseResponse;
+import net.thegreshams.firebase4j.service.Firebase;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
@@ -174,7 +175,8 @@ public class Database {
     public static FirebaseResponse getWatchlist(String uid) {
         FirebaseResponse response = null;
         try {
-            response = Configuration.instance.getFirebase().get("users/" + uid + "/watchlist");
+            Firebase firebase = Configuration.instance.getFirebase();
+            response = firebase.get("users/" + uid + "/watchlist");
         } catch (FirebaseException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {

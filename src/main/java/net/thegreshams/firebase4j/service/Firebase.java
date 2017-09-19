@@ -119,7 +119,10 @@ public class Firebase {
 		HttpResponse httpResponse = this.makeRequest( request );
 		
 		// process the response
+		long t1 = System.currentTimeMillis();
 		FirebaseResponse response = this.processResponse( FirebaseRestMethod.GET, httpResponse );
+
+		System.out.println("Watchlist get response aa: " + (System.currentTimeMillis() - t1) + "ms");
 		
 		return response;
 	}
