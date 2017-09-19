@@ -76,7 +76,13 @@
         </nav>
     </nav>
     <main>
-
+        <section style="margin-left:14px;">
+                <h3>Full-Width Dividers</h3>
+                <ul class="mdc-list" style="border:none;">
+                    <li class="mdc-list-item">Import from Proxer</li>
+                    <li class="mdc-list-divider" role="separator"></li>
+                </ul>
+        </section>
     </main>
 </div>
 

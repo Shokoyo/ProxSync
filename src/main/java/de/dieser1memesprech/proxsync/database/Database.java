@@ -40,10 +40,13 @@ public class Database {
     }
 
     public static Watchlist getWatchlistObjectFromDatabase(String uid) {
+        long t1 = System.currentTimeMillis();
         FirebaseResponse dataResponse = Database.getWatchlist(uid);
+        System.out.println("Watchlist get: " + (System.currentTimeMillis() - t1) + "ms");
         JsonElement json = new JsonParser().parse(dataResponse.getRawBody());
         Watchlist res = new Watchlist();
         if (json.isJsonObject()) {
+            t1 = System.currentTimeMillis();
             for (Map.Entry<String, JsonElement> e : json.getAsJsonObject().entrySet()) {
                 try {
                     String animeId = e.getKey();
@@ -58,19 +61,20 @@ public class Database {
                     List<WatchlistEntry> list;
                     if (status.equals("watching")) {
                         list = res.getWatching();
-                    } else if(status.equals("completed")) {
+                    } else if (status.equals("completed")) {
                         list = res.getCompleted();
                     } else {
                         list = res.getPlanned();
                     }
                     list.add(new WatchlistEntry(episode, poster, animeTitle, episodeCount));
-                } catch(NullPointerException ex) {
+                } catch (NullPointerException ex) {
                     ex.printStackTrace();
                     System.out.println("Malformed anime or watchlist entry");
                     System.out.println("Watchlist entry: " + dataResponse.getRawBody());
                 }
             }
         }
+        System.out.println("Object generation: " + (System.currentTimeMillis() - t1) + "ms");
         return res;
     }
 

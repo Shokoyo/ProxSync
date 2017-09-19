@@ -12,11 +12,12 @@ html {
     box-sizing: border-box;
     min-height: 100%;
 }
-.mdc-list-item {
-    height:48px;
-    min-height:48px;
-    margin-top:0px;
-    margin-bottom:0px;
+
+.left-list {
+    height: 48px;
+    min-height: 48px;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 .mdc-list-item__start-detail {
@@ -24,7 +25,7 @@ html {
 }
 
 .text-in-list {
-    align-self:center;
+    align-self: center;
 }
 
 /* Place drawer and main next to each other. */
@@ -35,6 +36,35 @@ html {
     box-sizing: border-box;
 }
 
+.watchlist-star {
+    font-size:22px;
+}
+
 .main {
     padding-left: 16px;
+}
+
+.mdc-grid-title {
+    width: 160px;
+    height: 220px;
+    margin:4px;
+}
+
+.watchlist-card {
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 160px;
+    height: 220px;
+    margin:4px;
+}
+
+.mdc-grid-list__tiles {
+    list-style-type: none;
+    padding:0;
+    margin: 0;
+}
+
+.watchlist-card .mdc-card__primary,
+.watchlist-card .mdc-card__actions {
+    background: rgba(0, 0, 0, .4);
 }

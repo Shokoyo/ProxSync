@@ -69,25 +69,20 @@
 <div class="content mdc-toolbar-fixed-adjust">
     <nav class="mdc-permanent-drawer">
         <nav class="mdc-list">
-            <a class="mdc-list-item mdc-permanent-drawer--selected" href="#">
-                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">person</i><span
-                    class="text-in-list">Profile</span>
+            <a class="mdc-list-item left-list mdc-permanent-drawer--selected" href="#">
+                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">person</i><span class="text-in-list">Profile</span>
             </a>
-            <a class="mdc-list-item" href="#">
-                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">video_library</i><span
-                    class="text-in-list">Watch List</span>
+            <a class="mdc-list-item left-list" href="#">
+                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">video_library</i><span class="text-in-list">Watch List</span>
             </a>
-            <a class="mdc-list-item" href="#">
-                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">new_releases</i><span
-                    class="text-in-list">Airing</span>
+            <a class="mdc-list-item left-list" href="#">
+                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">new_releases</i><span class="text-in-list">Airing</span>
             </a>
-            <a class="mdc-list-item" href="#">
-                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">ondemand_video</i><span
-                    class="text-in-list">ProxSync</span>
+            <a class="mdc-list-item left-list" href="#">
+                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">ondemand_video</i><span class="text-in-list">ProxSync</span>
             </a>
-            <a class="mdc-list-item" href="#">
-                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">settings</i><span
-                    class="text-in-list">Settings</span>
+            <a class="mdc-list-item left-list" href="#">
+                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">settings</i><span class="text-in-list">Settings</span>
             </a>
         </nav>
     </nav>
