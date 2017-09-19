@@ -51,3 +51,21 @@
 .menu-search {
     max-height: 500px;
 }
+
+.panel {
+    display: none;
+}
+
+.panel.active{
+    display: block;
+}
+
+.mdc-textfield {
+    margin-bottom: 0;
+    align-self: center;
+}
+
+.mdc-textfield--box {
+    margin-left: 8px;
+    background-color: rgba(0,0,0,0.15);
+}

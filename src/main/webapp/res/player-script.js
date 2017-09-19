@@ -380,11 +380,7 @@ function onMessage(event) {
         }
         var SourceObject;
         startTime = eventJSON.current;
-        if (SourceString.indexOf(".mp4") !== -1) {
-            SourceObject = {src: SourceString, type: 'video/mp4'}
-        } else {
-            SourceObject = {src: SourceString, type: 'video/webm'}
-        }
+        SourceObject = {src: SourceString, type: 'video/mp4'};
         myPlayer.reset();
         myPlayer.src(SourceObject);
         myPlayer.pause();
@@ -539,7 +535,7 @@ $(document).on('click', function (e) {
     if ($(e.target).closest("#mdc-search-list").length === 0 && $(e.target).closest("#tf-box-search").length === 0) {
         menu.open = false;
         blurredSearch();
-    } else if ($(e.target).closest("#tf-box-search").length === 0){
+    } else if ($(e.target).closest("#tf-box-search").length === 0) {
         // TODO: do not close when clicked
         inSearchField = true;
         menu.open = true;
@@ -603,7 +599,9 @@ function buildHtmlListSearch(resultList) {
         $('#mdc-search-list').addClass("hidden");
     } else {
         $('#mdc-search-list').removeClass("hidden");
-        setTimeout(function() {document.getElementById("tf-box-search-field").focus();},80);
+        setTimeout(function () {
+            document.getElementById("tf-box-search-field").focus();
+        }, 80);
     }
     if (document.getElementById("tf-box-search-field").value === "") {
         $('#mdc-search-list').addClass("hidden");

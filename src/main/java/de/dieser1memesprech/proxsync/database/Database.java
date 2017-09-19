@@ -1,5 +1,7 @@
 package de.dieser1memesprech.proxsync.database;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.dieser1memesprech.proxsync._9animescraper.config.Configuration;
 import net.thegreshams.firebase4j.error.FirebaseException;
 import net.thegreshams.firebase4j.error.JacksonUtilityException;
@@ -31,6 +33,23 @@ public class Database {
         } catch (JacksonUtilityException e) {
             e.printStackTrace();
         }
+    }
+
+    public static FirebaseResponse getAnimeFromDatabase(String key) {
+        FirebaseResponse response = null;
+        try {
+            response = Configuration.instance.getFirebase().get("anime/animeinfo/" + key.replaceAll("\\.", "-"));
+        } catch (FirebaseException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public static JsonObject getAnimeObjectFromDatabase(String key) {
+        FirebaseResponse response = getAnimeFromDatabase(key);
+        return new JsonParser().parse(response.getRawBody()).getAsJsonObject();
     }
 
     public static FirebaseResponse getEpisodeTitleFromDatabase(String key, int episode) {
