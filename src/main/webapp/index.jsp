@@ -68,7 +68,7 @@
                     <div style="float:right;" onmouseover="clearTimeout(timeOut); menuTop.open = true;"
                          onmouseout="timeOut = setTimeout(function() {menuTop.open = false;},200);"
                          id="profile-mouseaction">
-                        <a href="/profile">
+                        <a href="profile">
                             <img src="<%
                             String url= "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/panda.svg?alt=media&token=6f4d5bf1-af69-4211-994d-66655456d91a";
                             String uid = LoginUtil.getUid(request);
@@ -308,7 +308,7 @@
     function followLink(loc) {
         var path = window.location.pathname;
         if(path.charAt(path.length -1) === "/") {
-            path = path.substring(0, path.length -2);
+            path = path.substring(0, path.length -1);
         }
         window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + path + loc;
     }

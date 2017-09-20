@@ -165,7 +165,6 @@
     };
     firebase.initializeApp(config);
 </script>
-<script src="res/firebaseauth.js"></script>
 <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 <script src="../res/firebase.js"></script>
 <script src="res/avatarChange.js"></script>
@@ -218,8 +217,39 @@
 
         uploadBanner(files[0]);
     }
-    document.getElementById("file-banner").addEventListener('change', handleBannerSelect, false);
-    document.getElementById('files').addEventListener('change', handleAvatarSelect, false);
+    if (document.getElementById("file-banner") != null) {
+        document.getElementById("file-banner").addEventListener('change', handleBannerSelect, false);
+    }
+    if (document.getElementById("files") != null) {
+        document.getElementById('files').addEventListener('change', handleAvatarSelect, false);
+    }
+    firebase.auth().onAuthStateChanged(function (authData) {
+        if (authData) {
+            console.log("Logged in as:", authData.uid);
+            if(getCookie("anonymous") === "true" && !authData.isAnonymous) {
+                console.log("non anonymous login");
+                setCookie("loginData", authData.uid, 10000);
+                setCookie("anonymous", "false", 10000);
+                location.reload();
+                return;
+            }
+            currentUser = authData.currentUser;
+            uid = authData.uid;
+            anonymous = authData.isAnonymous;
+            if (!anonymous) {
+                document.getElementById("user-name").innerHTML = "" + authData.displayName;
+            }
+            updateAuthButtons(authData);
+        }
+        else {
+            console.log("Not logged in; going to log in as anonymous");
+            currentUser = null;
+            setCookie("anonymous", "true", 10000);
+            firebase.auth().signInAnonymously().catch(function (error) {
+                console.error("Anonymous authentication failed:", error);
+            });
+        }
+    });
 </script>
 </body>
 </html>

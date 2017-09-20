@@ -49,7 +49,8 @@
                 </div>
                 <div id="signout-row" style="align-self: center; margin-right: 16px; margin-left: auto;">
                     <div style="float:right;" onmouseover="clearTimeout(timeOut); menu.open = true;"
-                         onmouseout = "timeOut = setTimeout(function() {menu.open = false;},200);" id="profile-mouseaction">
+                         onmouseout="timeOut = setTimeout(function() {menu.open = false;},200);"
+                         id="profile-mouseaction">
                         <a href="../profile">
                             <img src="<%
                             String url= "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/panda.svg?alt=media&token=6f4d5bf1-af69-4211-994d-66655456d91a";
@@ -64,8 +65,10 @@
                             }
                             %><%=url%>" id="avatar-toolbar" class="user-avatar-toolbar">
                         </a>
-                        <div class="mdc-simple-menu mdc-simple-menu--open-from-top-right" id="profile-menu" tabindex="-1"style="top:64px;right:-14px;">
-                            <ul class="mdc-simple-menu__items mdc-list" role="menu" id="profile-list" aria-hidden="true">
+                        <div class="mdc-simple-menu mdc-simple-menu--open-from-top-right" id="profile-menu"
+                             tabindex="-1" style="top:64px;right:-14px;">
+                            <ul class="mdc-simple-menu__items mdc-list" role="menu" id="profile-list"
+                                aria-hidden="true">
                                 <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
                                     <span style="align-self:center;">Profile</span>
                                 </li>
@@ -163,8 +166,14 @@
                                 %>
                                 <li class="mdc-grid-title">
                                     <div class="mdc-grid-tile__primary">
+
                                         <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
                                              style="background-image:url(<%=e.getPoster()%>);">
+                                            <a href="javascript:void(0);" class="remove-from-watchlist-button-background material-icons mdc-toolbar__icon mdc-theme--secondary mdc-24">fiber_manual_record</a>
+                                            <a href="javascript:void(0);" class="remove-from-watchlist-button material-icons mdc-toolbar__icon mdc-theme--secondary">
+                                                cancel
+                                            </a>
+                                        </button>
                                             <section class="mdc-card__primary">
                                                 <h1 class="mdc-card__title mdc-card__title--large"><%=e.getAnimeTitle()%>
                                                 </h1>
@@ -278,7 +287,7 @@
     };
     firebase.initializeApp(config);
 </script>
-<script src="res/firebaseauth.js"></script>
+<script src="../res/firebaseauth-normal.js"></script>
 <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 <script src="res/tab-switch.js"></script>
 <script src="../res/firebase.js"></script>
@@ -288,10 +297,10 @@
     var menuEl = document.querySelector('#profile-menu');
     var menu = new mdc.menu.MDCSimpleMenu(menuEl);
 
-    menuEl.addEventListener('MDCSimpleMenu:selected', function(evt) {
+    menuEl.addEventListener('MDCSimpleMenu:selected', function (evt) {
         menu.open = false;
         var detail = evt.detail;
-        switch(detail.index) {
+        switch (detail.index) {
             case 0:
                 followLink("/profile/");
                 break;

@@ -9,14 +9,23 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class LoginUtil {
     public static String getUid(HttpServletRequest request) {
+        boolean anonymous = false;
+        String res = "";
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
+                if(cookie.getName().equals("anonymous")) {
+                    anonymous = Boolean.parseBoolean(cookie.getValue());
+                }
                 if (cookie.getName().equals("loginData")) {
-                    return cookie.getValue();
+                    res = cookie.getValue();
                 }
             }
         }
-        return "";
+        if(!anonymous) {
+            return res;
+        } else {
+            return "";
+        }
     }
 }

@@ -133,7 +133,7 @@
     };
     firebase.initializeApp(config);
 </script>
-<script src="res/firebaseauth.js"></script>
+<script src="../res/firebaseauth-normal.js"></script>
 <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 <script src="../res/firebase.js"></script>
 <script>
