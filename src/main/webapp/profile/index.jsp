@@ -47,23 +47,26 @@
                 </div>
                 <div id="signout-row" style="align-self: center; margin-right: 16px; margin-left: auto;">
                     <div style="float:right;" onmouseover="clearTimeout(timeOut); menu.open = true;"
-                         onmouseout = "timeOut = setTimeout(function() {menu.open = false;},200);" id="profile-mouseaction">
+                         onmouseout="timeOut = setTimeout(function() {menu.open = false;},200);"
+                         id="profile-mouseaction">
                         <a href="../profile">
                             <img src="<%
                             String url= "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/panda.svg?alt=media&token=6f4d5bf1-af69-4211-994d-66655456d91a";
-                            String uid = LoginUtil.getUid(request);
-                            if (!"".equals(uid)) {
-                            String databaseUrl = Database.getAvatarFromDatabase(uid);
-                            if(databaseUrl.equals("null")) {
-                                Database.setAvatar(uid, url);
-                            } else {
-                                url = databaseUrl;
-                            }
-                            }
-                            %><%=url%>" id="avatar-toolbar" class="user-avatar-toolbar">
+                                               String uid = LoginUtil.getUid(request);
+                                               if (!"".equals(uid)) {
+                                               String databaseUrl = Database.getAvatarFromDatabase(uid);
+                                               if(databaseUrl.equals("null")) {
+                                               Database.setAvatar(uid, url);
+                                               } else {
+                                               url = databaseUrl;
+                                               }
+                                               }
+                                               %><%=url%>" id="avatar-toolbar" class="user-avatar-toolbar">
                         </a>
-                        <div class="mdc-simple-menu mdc-simple-menu--open-from-top-right" id="profile-menu" tabindex="-1"style="top:64px;right:-14px;">
-                            <ul class="mdc-simple-menu__items mdc-list" role="menu" id="profile-list" aria-hidden="true">
+                        <div class="mdc-simple-menu mdc-simple-menu--open-from-top-right" id="profile-menu"
+                             tabindex="-1" style="top:64px;right:-14px;">
+                            <ul class="mdc-simple-menu__items mdc-list" role="menu" id="profile-list"
+                                aria-hidden="true">
                                 <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
                                     <span style="align-self:center;">Profile</span>
                                 </li>
@@ -89,7 +92,7 @@
 </header>
 <div class="content mdc-toolbar-fixed-adjust">
     <nav class="mdc-permanent-drawer">
-        <nav class="mdc-list">
+        <nav class="mdc-list mdc-drawer__content">
             <a class="mdc-list-item left-list mdc-permanent-drawer--selected" href="../profile">
                 <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">person</i><span
                     class="text-in-list">Profile</span>
@@ -112,15 +115,44 @@
             </a>
         </nav>
     </nav>
-    <main>
-        <section style="margin-left:14px;">
-        </section>
+    <main class="main">
+        <% if(!"".equals(uid)) {%>
+        <div class="mdc-card mdc-card--theme-dark user-card"
+             id="banner-div"
+             style="background-image: url(
+                 <% String urlBanner = "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/images%2Fbanner-VMivZ0koAPh9Q3HC3UFWgn5CZ1n1.jpg?alt=media&token=c4fe64f1-df54-4628-8c7c-940b7dcb56bf";
+                                               String databaseUrl = Database.getBannerFromDatabase(uid);
+                                               if(databaseUrl.equals("null")) {
+                                               Database.setBanner(uid, urlBanner);
+                                               } else {
+                                               urlBanner = databaseUrl;
+                                               }
+             %>
+                 <%=urlBanner%>);">
+            <input type="file" id="file-banner" name="file" style="display: none;"/>
+            <button class="mdc-fab material-icons" id="banner-button" aria-label="Favorite">
+                <span class="mdc-fab__icon">
+                    edit
+                </span>
+            </button>
+            <section class="mdc-card__primary" style="width:auto;">
+                <img class="user-card__avatar" id="avatar-on-card" src="<%=url%>">
+                <input type="file" id="files" name="files" style="display: none;"/>
+                <h1 class="mdc-card__title mdc-card__title--large" id="user-name">&nbsp;</h1>
+                <h2 class="mdc-card__subtitle">10000000000 Punkte (Kami-Sama)</h2>
+            </section>
+        </div>
+        <%} else {%>
+        <h4>Please log in</h4>
+        <%}%>
     </main>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-storage.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-database.js"></script>
 <script>
     // Initialize Firebase
     var config = {
@@ -128,7 +160,7 @@
         authDomain: "proxsync.firebaseapp.com",
         databaseURL: "https://proxsync.firebaseio.com",
         projectId: "proxsync",
-        storageBucket: "",
+        storageBucket: "gs://proxsync.appspot.com",
         messagingSenderId: "424948078611"
     };
     firebase.initializeApp(config);
@@ -136,16 +168,17 @@
 <script src="res/firebaseauth.js"></script>
 <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 <script src="../res/firebase.js"></script>
+<script src="res/avatarChange.js"></script>
 <script>
     var timeOut;
     mdc.textfield.MDCTextfield.attachTo(document.querySelector('.mdc-textfield'));
     var menuEl = document.querySelector('#profile-menu');
     var menu = new mdc.menu.MDCSimpleMenu(menuEl);
 
-    menuEl.addEventListener('MDCSimpleMenu:selected', function(evt) {
+    menuEl.addEventListener('MDCSimpleMenu:selected', function (evt) {
         menu.open = false;
         var detail = evt.detail;
-        switch(detail.index) {
+        switch (detail.index) {
             case 0:
                 followLink("/profile/");
                 break;
@@ -163,6 +196,27 @@
     function followLink(loc) {
         window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + loc;
     }
+</script>
+<script>
+    $("#avatar-on-card").click(function () {
+        $("#files").click();
+    });
+    $("#banner-button").click(function () {
+        $("#file-banner").click();
+    });
+    function handleAvatarSelect(evt) {
+        var files = evt.target.files; // FileList object
+
+        uploadAvatar(files[0]);
+    }
+
+    function handleBannerSelect(evt) {
+        var files = evt.target.files;
+
+        uploadBanner(files[0]);
+    }
+    document.getElementById("file-banner").addEventListener('change', handleBannerSelect, false);
+    document.getElementById('files').addEventListener('change', handleAvatarSelect, false);
 </script>
 </body>
 </html>

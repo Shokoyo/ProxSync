@@ -107,6 +107,66 @@ public class Database {
         return response;
     }
 
+    public static void setAvatar(String uid, String url) {
+        Map<String, Object> map = new LinkedHashMap<String, Object>();
+        map.put("avatar", url);
+        try {
+            FirebaseResponse response = Configuration.instance.getFirebase().patch("users/" + uid, map);
+        } catch (FirebaseException e) {
+            e.printStackTrace();
+        } catch(UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch(JacksonUtilityException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String getBannerFromDatabase(String uid) {
+        FirebaseResponse response = null;
+        try {
+            response = Configuration.instance.getFirebase().get("users/" + uid + "/banner");
+        } catch (FirebaseException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        if(response != null && !response.getRawBody().equals("null")) {
+            return new JsonParser().parse(response.getRawBody()).getAsString();
+        } else {
+            return "null";
+        }
+    }
+
+    public static String getAvatarFromDatabase(String uid) {
+        FirebaseResponse response = null;
+        try {
+            response = Configuration.instance.getFirebase().get("users/" + uid + "/avatar");
+        } catch (FirebaseException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        if(response != null && !response.getRawBody().equals("null")) {
+            return new JsonParser().parse(response.getRawBody()).getAsString();
+        } else {
+            return "null";
+        }
+    }
+
+    public static void setBanner(String uid, String url) {
+        Map<String, Object> map = new LinkedHashMap<String, Object>();
+        map.put("banner", url);
+        try {
+            FirebaseResponse response = Configuration.instance.getFirebase().patch("users/" + uid, map);
+        } catch (FirebaseException e) {
+            e.printStackTrace();
+        } catch(UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch(JacksonUtilityException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static JsonObject getAnimeObjectFromDatabase(String key) {
         FirebaseResponse response = getAnimeFromDatabase(key);
         JsonElement animeJson = new JsonParser().parse(response.getRawBody());

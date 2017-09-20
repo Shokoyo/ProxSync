@@ -4,7 +4,7 @@ html {
 }
 
 /* Stack toolbar and content on top of each other. */
-.body {
+.adjusted-body {
     display: flex;
     flex-direction: column;
     padding: 0;
@@ -33,6 +33,7 @@ html {
     display: flex;
     flex: 1 1 auto;
     height: 100%;
+    width:100%;
     box-sizing: border-box;
 }
 
@@ -41,7 +42,21 @@ html {
 }
 
 .main {
-    padding-left: 16px;
+    margin-left:48px;
+}
+
+.mdc-grid-list {
+    margin-top:16px;
+}
+
+.user-avatar-toolbar {
+    background: #bdbdbd;
+    align-self:center;
+    height:48px;
+    width:48px;
+    margin-top:5px;
+    margin-left:10px;
+    border-radius: 50%;
 }
 
 .mdc-grid-title {

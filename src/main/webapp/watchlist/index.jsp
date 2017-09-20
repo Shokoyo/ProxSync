@@ -1,14 +1,7 @@
 <%@ page import="de.dieser1memesprech.proxsync.database.Database" %>
-<%@ page import="net.thegreshams.firebase4j.model.FirebaseResponse" %>
-<%@ page import="java.util.HashMap" %>
-<%@ page import="org.codehaus.jackson.map.ObjectMapper" %>
-<%@ page import="com.google.gson.JsonElement" %>
-<%@ page import="com.google.gson.JsonParser" %>
-<%@ page import="com.google.gson.JsonArray" %>
-<%@ page import="java.util.Map" %>
-<%@ page import="com.google.gson.JsonObject" %>
 <%@ page import="de.dieser1memesprech.proxsync.database.Watchlist" %>
 <%@ page import="de.dieser1memesprech.proxsync.database.WatchlistEntry" %>
+<%@ page import="de.dieser1memesprech.proxsync.util.LoginUtil" %>
 <html language="de" class="mdc-typography">
 <head>
     <meta charset="utf-8"/>
@@ -24,7 +17,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <title>Prox-Sync</title>
 </head>
-<body class="mdc-theme--background mdc-typography">
+<body class="mdc-theme--background mdc-typography adjusted-body">
 <header id="page-header"
         class="mdc-toolbar mdc-toolbar--fixed">
     <div class="mdc-toolbar__row">
@@ -55,9 +48,39 @@
                     </button>
                 </div>
                 <div id="signout-row" style="align-self: center; margin-right: 16px; margin-left: auto;">
-                    <div style="float:right;"><a href="#" onclick="signout();"
-                                                 class="material-icons mdc-toolbar__icon mdc-theme--secondary"
-                                                 aria-label="Download" alt="Download" style="font-size: 32px;">account_circle</a>
+                    <div style="float:right;" onmouseover="clearTimeout(timeOut); menu.open = true;"
+                         onmouseout = "timeOut = setTimeout(function() {menu.open = false;},200);" id="profile-mouseaction">
+                        <a href="../profile">
+                            <img src="<%
+                            String url= "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/panda.svg?alt=media&token=6f4d5bf1-af69-4211-994d-66655456d91a";
+                            String uid = LoginUtil.getUid(request);
+                            if (!"".equals(uid)) {
+                            String databaseUrl = Database.getAvatarFromDatabase(uid);
+                            if(databaseUrl.equals("null")) {
+                                Database.setAvatar(uid, url);
+                            } else {
+                                url = databaseUrl;
+                            }
+                            }
+                            %><%=url%>" id="avatar-toolbar" class="user-avatar-toolbar">
+                        </a>
+                        <div class="mdc-simple-menu mdc-simple-menu--open-from-top-right" id="profile-menu" tabindex="-1"style="top:64px;right:-14px;">
+                            <ul class="mdc-simple-menu__items mdc-list" role="menu" id="profile-list" aria-hidden="true">
+                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
+                                    <span style="align-self:center;">Profile</span>
+                                </li>
+                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
+                                    <span style="align-self:center;">Watchlist</span>
+                                </li>
+                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
+                                    <span style="align-self:center;">Settings</span>
+                                </li>
+                                <li class="mdc-list-divider" role="separator"></li>
+                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
+                                    <span style="align-self:center;">Sign Out</span>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                     <span id="welcome-msg" class="mdc-toolbar__title"
                           style="margin-top:4px;float:right;align-self:center;"></span>
@@ -70,42 +93,46 @@
     <nav class="mdc-permanent-drawer">
         <nav class="mdc-list">
             <a class="mdc-list-item left-list mdc-permanent-drawer--selected" href="../profile">
-                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">person</i><span class="text-in-list">Profile</span>
+                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">person</i><span
+                    class="text-in-list">Profile</span>
             </a>
             <a class="mdc-list-item left-list" href="../watchlist">
-                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">video_library</i><span class="text-in-list">Watch List</span>
+                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">video_library</i><span
+                    class="text-in-list">Watch List</span>
             </a>
             <a class="mdc-list-item left-list" href="../airing">
-                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">new_releases</i><span class="text-in-list">Airing</span>
+                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">new_releases</i><span
+                    class="text-in-list">Airing</span>
             </a>
             <a class="mdc-list-item left-list" href="../">
-                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">ondemand_video</i><span class="text-in-list">ProxSync</span>
+                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">ondemand_video</i><span
+                    class="text-in-list">ProxSync</span>
             </a>
             <a class="mdc-list-item left-list" href="../settings">
-                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">settings</i><span class="text-in-list">Settings</span>
+                <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">settings</i><span
+                    class="text-in-list">Settings</span>
             </a>
         </nav>
     </nav>
     <main>
-        <div class="mdc-layout-grid" style="width:100%;">
+        <div class="mdc-layout-grid main" style="margin-left:auto;margin-right:auto;">
             <div class="mdc-layout-grid__inner">
                 <div class="mdc-layout-grid__cell"></div>
                 <div class="mdc-layout-grid__cell">
                     <div id="watchlist-toolbar">
                         <nav id="dynamic-tab-bar" class="mdc-tab-bar">
-                            <a class="mdc-tab mdc-tab--active" href="#one">Watching</a>
-                            <a class="mdc-tab" href="#two">Completed</a>
-                            <a class="mdc-tab" href="#three">Plan to Watch</a>
+                            <a class="mdc-tab mdc-tab--active" id="watching-tab" href="#watching">Watching</a>
+                            <a class="mdc-tab" href="#completed" id="completed-tab">Completed</a>
+                            <a class="mdc-tab" href="#plantowatch" id="plan-tab">Plan to Watch</a>
                             <span class="mdc-tab-bar__indicator"></span>
                         </nav>
                     </div>
                     <div class="mdc-layout-grid__cell"></div>
                 </div>
             </div>
-            <section>
+            <section class="main">
                 <div class="panels" id="panels">
-                        <%
-                        String uid = "";
+                    <%
                         Cookie[] cookies = request.getCookies();
                         if (cookies != null) {
                             for (Cookie cookie : cookies) {
@@ -124,13 +151,13 @@
                     <div class="panel" id="panel-plan" role="tabpanel" aria-hidden="true">
                         <h4> Log in to view your watch list </h4>
                     </div>
-                        <%
-                } else {
-                    Watchlist watchlist = Database.getWatchlistObjectFromDatabase(uid);
-                %>
+                    <%
+                    } else {
+                        Watchlist watchlist = Database.getWatchlistObjectFromDatabase(uid);
+                    %>
                     <div class="panel active" id="panel-watching" role="tabpanel" aria-hidden="false">
                         <div class="mdc-grid-list">
-                            <ul class="mdc-grid-list__tiles" style="width: 1632px;">
+                            <ul class="mdc-grid-list__tiles">
                                 <%
                                     for (WatchlistEntry e : watchlist.getWatching()) {
                                 %>
@@ -142,7 +169,8 @@
                                                 <h1 class="mdc-card__title mdc-card__title--large"><%=e.getAnimeTitle()%>
                                                 </h1>
                                                 <h2 class="mdc-card__subtitle"><%=e.getEpisode()%>
-                                                    /<%=e.getEpisodeCount()%>
+                                                    /
+                                                    <%=e.getEpisodeCount()%>
                                                 </h2>
                                                 <span class="mdc-card__subtitle">
                                                     <i class="material-icons watchlist-star">star</i>
@@ -161,8 +189,9 @@
                             </ul>
                         </div>
                     </div>
-                        <div class="panel" id="panel-completed" role="tabpanel" aria-hidden="true">
-                            <ul class="mdc-grid-list__tiles" style="width: 1632px;">
+                    <div class="panel" id="panel-completed" role="tabpanel" aria-hidden="true">
+                        <div class="mdc-grid-list">
+                            <ul class="mdc-grid-list__tiles">
                                 <%
                                     for (WatchlistEntry e : watchlist.getCompleted()) {
                                 %>
@@ -192,8 +221,10 @@
                                 %>
                             </ul>
                         </div>
-                        <div class="panel" id="panel-plan" role="tabpanel" aria-hidden="true">
-                            <ul class="mdc-grid-list__tiles" style="width: 1632px;">
+                    </div>
+                    <div class="panel" id="panel-plan" role="tabpanel" aria-hidden="true">
+                        <div class="mdc-grid-list">
+                            <ul class="mdc-grid-list__tiles">
                                 <%
                                     for (WatchlistEntry e : watchlist.getPlanned()) {
                                 %>
@@ -223,10 +254,11 @@
                                 %>
                             </ul>
                         </div>
-                        <%
-                            }
-                        %>
                     </div>
+                    <%
+                        }
+                    %>
+                </div>
             </section>
         </div>
     </main>
@@ -251,8 +283,32 @@
 <script src="res/tab-switch.js"></script>
 <script src="../res/firebase.js"></script>
 <script>
+    var timeOut;
     mdc.textfield.MDCTextfield.attachTo(document.querySelector('.mdc-textfield'));
-    window.mdc.autoInit();
+    var menuEl = document.querySelector('#profile-menu');
+    var menu = new mdc.menu.MDCSimpleMenu(menuEl);
+
+    menuEl.addEventListener('MDCSimpleMenu:selected', function(evt) {
+        menu.open = false;
+        var detail = evt.detail;
+        switch(detail.index) {
+            case 0:
+                followLink("/profile/");
+                break;
+            case 1:
+                followLink("/watchlist/");
+                break;
+            case 2:
+                followLink("/settings/");
+                break;
+            case 3:
+                signout();
+        }
+    });
+
+    function followLink(loc) {
+        window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + loc;
+    }
 </script>
 </body>
 </html>

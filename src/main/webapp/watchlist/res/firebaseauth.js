@@ -1,3 +1,5 @@
+var name;
+
 firebase.auth().onAuthStateChanged(function (authData) {
     if (authData) {
         console.log("Logged in as:", authData.uid);

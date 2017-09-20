@@ -26,7 +26,7 @@ var timeUpdate = false;
 var pauseFlag = true;
 var finishedFlag = false;
 var oldNextEpisode = true;
-let menu = new mdc.menu.MDCSimpleMenu(document.querySelector('.mdc-simple-menu'));
+let menu = new mdc.menu.MDCSimpleMenu(document.querySelector('#search-menu'));
 var userCount = 0;
 //add onload function
 if (window.attachEvent) {
@@ -138,8 +138,11 @@ $("#name").blur(function () {
     document.getElementById("name").value = getCookie("username");
 });
 
+var onloadExecuted = false;
+
 //hide video url and text field (when not connected to a room)
 function onloadFunction() {
+    onload = true;
     initCheckbox();
     mdc.textfield.MDCTextfield.attachTo(document.querySelector('.mdc-textfield'));
     document.getElementById("url-field").style.display = 'none';
@@ -432,6 +435,10 @@ function onMessage(event) {
         if (eventJSON.id === "-1") {
             leaveRoom();
         } else {
+            if(!onloadExecuted) {
+                window.onload = function() {};
+                onloadFunction();
+            }
             if (!isOwner) {
                 disableSeeking();
                 hidePlayButtons();

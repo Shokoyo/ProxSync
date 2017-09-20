@@ -60,6 +60,25 @@
     display: block;
 }
 
+.user-avatar-toolbar {
+    background: #bdbdbd;
+    align-self:center;
+    height:48px;
+    width:48px;
+    margin-top:5px;
+    margin-left:10px;
+    border-radius: 50%;
+}
+
+.profile-list {
+    height: 48px;
+    min-height: 48px;
+    max-height:48px;
+    line-height:48px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
 .mdc-textfield {
     margin-bottom: 0;
     align-self: center;

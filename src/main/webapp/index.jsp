@@ -1,3 +1,5 @@
+<%@ page import="de.dieser1memesprech.proxsync.database.Database" %>
+<%@ page import="de.dieser1memesprech.proxsync.util.LoginUtil" %>
 <html language="de" class="mdc-typography">
 <head>
     <meta charset="utf-8"/>
@@ -63,9 +65,42 @@
                     </button>
                 </div>
                 <div id="signout-row" style="align-self: center; margin-right: 16px; margin-left: auto;">
-                    <div style="float:right;"><a href="#" onclick="signout();"
-                                                 class="material-icons mdc-toolbar__icon mdc-theme--secondary"
-                                                 aria-label="Download" alt="Download" style="font-size: 32px;">account_circle</a>
+                    <div style="float:right;" onmouseover="clearTimeout(timeOut); menuTop.open = true;"
+                         onmouseout="timeOut = setTimeout(function() {menuTop.open = false;},200);"
+                         id="profile-mouseaction">
+                        <a href="/profile">
+                            <img src="<%
+                            String url= "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/panda.svg?alt=media&token=6f4d5bf1-af69-4211-994d-66655456d91a";
+                            String uid = LoginUtil.getUid(request);
+                            if (!"".equals(uid)) {
+                            String databaseUrl = Database.getAvatarFromDatabase(uid);
+                            if(databaseUrl.equals("null")) {
+                                Database.setAvatar(uid, url);
+                            } else {
+                                url = databaseUrl;
+                            }
+                            }
+                            %><%=url%>" id="avatar-toolbar" class="user-avatar-toolbar">
+                        </a>
+                        <div class="mdc-simple-menu mdc-simple-menu--open-from-top-right" id="profile-menu"
+                             tabindex="-1" style="top:64px;right:-14px;">
+                            <ul class="mdc-simple-menu__items mdc-list" role="menu" id="profile-list"
+                                aria-hidden="true">
+                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
+                                    <span style="align-self:center;">Profile</span>
+                                </li>
+                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
+                                    <span style="align-self:center;">Watchlist</span>
+                                </li>
+                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
+                                    <span style="align-self:center;">Settings</span>
+                                </li>
+                                <li class="mdc-list-divider" role="separator"></li>
+                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
+                                    <span style="align-self:center;">Sign Out</span>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                     <span id="welcome-msg" class="mdc-toolbar__title"
                           style="margin-top:4px;float:right;align-self:center;"></span>
@@ -75,7 +110,7 @@
     </div>
 </header>
 <main class="mdc-toolbar-fixed-adjust">
-    <div class="mdc-simple-menu" tabindex="-1">
+    <div class="mdc-simple-menu" id="search-menu" tabindex="-1">
         <ul class="mdc-dialog__body--scrollable mdc-simple-menu__items mdc-list mdc-list--avatar-list menu-search"
             role="menu" id="mdc-search-list">
         </ul>
@@ -190,8 +225,8 @@
                                                     </div>
                                                 </div>
                                                 <label for="auto-next-checkbox" class="mdc-switch-label">Auto
-                                                    next
-                                                    episode</label>
+                                                                                                         next
+                                                                                                         episode</label>
                                             </div>
                                             <div class="mdc-form-field" id="auto-play-container"
                                                  style="margin-right: 10px; margin-top: 10px;">
@@ -244,6 +279,35 @@
 <script src="res/videojs.disableProgress.js"></script>
 <script src="res/player-script.js?v=0.0.0.4.10"></script>
 <script src="res/tab-switch.js?v=0.1"></script>
-<script>mdc.autoInit();</script>
+<script>
+    var timeOut;
+    mdc.textfield.MDCTextfield.attachTo(document.querySelector('.mdc-textfield'));
+    var menuEl = document.querySelector('#profile-menu');
+    var menuTop = new mdc.menu.MDCSimpleMenu(menuEl);
+    var urlFieldEl = document.querySelector('#url-field');
+    var urlField = new mdc.textfield.MDCTextfield(urlFieldEl);
+
+    menuEl.addEventListener('MDCSimpleMenu:selected', function (evt) {
+        menuTop.open = false;
+        var detail = evt.detail;
+        switch (detail.index) {
+            case 0:
+                followLink("/profile/");
+                break;
+            case 1:
+                followLink("/watchlist/");
+                break;
+            case 2:
+                followLink("/settings/");
+                break;
+            case 3:
+                signout();
+        }
+    });
+
+    function followLink(loc) {
+        window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + loc;
+    }
+</script>
 </body>
 </html>

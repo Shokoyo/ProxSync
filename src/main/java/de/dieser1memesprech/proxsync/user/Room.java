@@ -112,7 +112,11 @@ public class Room {
     }
 
     public void addSession(Session session, String name, String uid, boolean anonymous) {
-        User user = new User(uid, name, "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/panda.svg?alt=media&token=6f4d5bf1-af69-4211-994d-66655456d91a", anonymous);
+        String avatarUrl = Database.getAvatarFromDatabase(uid);
+        if("null".equals(avatarUrl)) {
+            avatarUrl = "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/panda.svg?alt=media&token=6f4d5bf1-af69-4211-994d-66655456d91a";
+        }
+        User user = new User(uid, name, avatarUrl, anonymous);
         userMap.put(session, user);
         setName(session, name);
         readyStates.put(session, false);
@@ -238,7 +242,8 @@ public class Room {
                     v.episode = episode;
                 }
                 v.episodePoster = anime.getAnimeSearchObject().getPoster();
-
+                System.out.println("updating info for " + v.animeTitle + ":" + anime.getAnimeSearchObject().getLastEpisode()
+                + "," + anime.getAnimeSearchObject().getEpisodeCount() + "," + v.episodePoster);
                 Database.updateAnimeInfo(v.key, anime.getAnimeSearchObject().getLastEpisode() + "",
                         anime.getAnimeSearchObject().getEpisodeCount() + "", v.episodePoster);
                 FirebaseResponse response = Database.getEpisodeTitleFromDatabase(v.key, episode);

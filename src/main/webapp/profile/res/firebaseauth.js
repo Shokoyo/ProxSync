@@ -3,6 +3,7 @@ firebase.auth().onAuthStateChanged(function (authData) {
         console.log("Logged in as:", authData.uid);
         setCookie("loginData", authData.uid, 10000);
         currentUser = authData.currentUser;
+        document.getElementById("user-name").innerHTML = "" + authData.displayName;
         uid = authData.uid;
         anonymous = authData.isAnonymous;
         updateAuthButtons(authData);

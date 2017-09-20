@@ -23,3 +23,11 @@ dynamicTabBar.listen('MDCTabBar:change', function (t) {
 
     updatePanel(nthChildIndex);
 });
+console.log(location.hash);
+if(location.hash === "#completed") {
+    dynamicTabBar.activeTabIndex = 1;
+    updatePanel(1);
+} else if(location.hash=== "#plantowatch") {
+    dynamicTabBar.activeTabIndex = 2;
+    updatePanel(2)
+}

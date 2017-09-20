@@ -24,6 +24,7 @@ function register() {
 }
 
 function signout() {
+    console.log("signout");
     firebase.auth().signOut().then(function () {
 
     }).catch(function (error) {// Sign-out successful.
