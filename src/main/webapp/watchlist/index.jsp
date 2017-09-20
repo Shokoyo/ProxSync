@@ -173,7 +173,6 @@
                                             <a href="javascript:void(0);" class="remove-from-watchlist-button material-icons mdc-toolbar__icon mdc-theme--secondary">
                                                 cancel
                                             </a>
-                                        </button>
                                             <section class="mdc-card__primary">
                                                 <h1 class="mdc-card__title mdc-card__title--large"><%=e.getAnimeTitle()%>
                                                 </h1>
