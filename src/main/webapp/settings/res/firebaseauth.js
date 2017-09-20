@@ -1,11 +1,9 @@
 firebase.auth().onAuthStateChanged(function (authData) {
     if (authData) {
         console.log("Logged in as:", authData.uid);
-        if(getCookie("loginData") !== authData.uid) {
+        if(getCookie("loginData") !== authData.uid && !authData.isAnonymous) {
             setCookie("loginData", authData.uid, 10000);
             location.reload();
-        } else {
-            setCookie("loginData", authData.uid, 10000);
         }
         currentUser = authData.currentUser;
         uid = authData.uid;

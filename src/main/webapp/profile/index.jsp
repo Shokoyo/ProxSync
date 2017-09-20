@@ -116,11 +116,11 @@
         </nav>
     </nav>
     <main class="main">
-        <% if(!"".equals(uid)) {%>
+        <% if (!"".equals(uid)) {%>
         <div class="mdc-card mdc-card--theme-dark user-card"
              id="banner-div"
              style="background-image: url(
-                 <% String urlBanner = "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/images%2Fbanner-VMivZ0koAPh9Q3HC3UFWgn5CZ1n1.jpg?alt=media&token=c4fe64f1-df54-4628-8c7c-940b7dcb56bf";
+                 <% String urlBanner = "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/banner-default.png?alt=media&token=424d9e70-d360-4842-94ca-133ba9bb71ec";
                                                String databaseUrl = Database.getBannerFromDatabase(uid);
                                                if(databaseUrl.equals("null")) {
                                                Database.setBanner(uid, urlBanner);
@@ -194,7 +194,10 @@
     });
 
     function followLink(loc) {
-        window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + loc;
+        var path = window.location.pathname;
+        path = path.substring(0, path.lastIndexOf("/"));
+        path = path.substring(0, path.lastIndexOf("/"));
+        window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + path + loc;
     }
 </script>
 <script>

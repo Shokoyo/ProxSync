@@ -306,7 +306,11 @@
     });
 
     function followLink(loc) {
-        window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + loc;
+        var path = window.location.pathname;
+        if(path.charAt(path.length -1) === "/") {
+            path = path.substring(0, path.length -2);
+        }
+        window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + path + loc;
     }
 </script>
 </body>
