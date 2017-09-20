@@ -165,17 +165,17 @@
                                     for (WatchlistEntry e : watchlist.getWatching()) {
                                 %>
                                 <li class="mdc-grid-title"
-                                    id="card-<%=e.getKey()%>">
+                                    id="card-<%=e.getAnimeKey()%>">
                                     <div class="mdc-grid-tile__primary">
 
                                         <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
                                              style="background-image:url(<%=e.getPoster()%>);">
                                             <a href="javascript:void(0);" class="remove-from-watchlist-button-background material-icons mdc-theme--secondary mdc-24">fiber_manual_record</a>
-                                            <a href="#" onclick="removeFromWatchlist('<%=e.getKey()%>');return false;" class="remove-from-watchlist-button material-icons mdc-theme--secondary">
+                                            <a href="#" onclick="removeFromWatchlist('<%=e.getAnimeKey()%>');return false;" class="remove-from-watchlist-button material-icons mdc-theme--secondary">
                                                 cancel
                                             </a>
                                             <a href="javascript:void(0);" class="favorite-button-background material-icons mdc-theme--secondary-light">favorite</a>
-                                            <a href="#" onclick="addToFavorites('<%=e.getKey()%>');return false;" class="favorite-button material-icons mdc-theme--secondary">
+                                            <a href="#" onclick="addToFavorites('<%=e.getAnimeKey()%>');return false;" class="favorite-button material-icons mdc-theme--secondary">
                                                 favorite_border
                                             </a>
                                             <section class="mdc-card__primary watchlist-item" onclick="window.open('../?id=<%=e.getAnimeKey()%>&episode=<%=(Integer.parseInt(e.getEpisode())+1)%>','_self')">
@@ -209,16 +209,16 @@
                                     for (WatchlistEntry e : watchlist.getCompleted()) {
                                 %>
                                 <li class="mdc-grid-title"
-                                    id="card-<%=e.getKey()%>">
+                                    id="card-<%=e.getAnimeKey()%>">
                                     <div class="mdc-grid-tile__primary">
                                         <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
                                              style="background-image:url(<%=e.getPoster()%>);">
                                             <a href="javascript:void(0);" class="remove-from-watchlist-button-background material-icons mdc-theme--secondary mdc-24">fiber_manual_record</a>
-                                            <a href="#" onclick="removeFromWatchlist('<%=e.getKey()%>');return false;" class="remove-from-watchlist-button material-icons mdc-theme--secondary">
+                                            <a href="#" onclick="removeFromWatchlist('<%=e.getAnimeKey()%>');return false;" class="remove-from-watchlist-button material-icons mdc-theme--secondary">
                                                 cancel
                                             </a>
                                             <a href="javascript:void(0);" class="favorite-button-background material-icons mdc-theme--secondary-light">favorite</a>
-                                            <a href="#" onclick="addToFavorites('<%=e.getKey()%>');return false;" class="favorite-button material-icons mdc-theme--secondary">
+                                            <a href="#" onclick="addToFavorites('<%=e.getAnimeKey()%>');return false;" class="favorite-button material-icons mdc-theme--secondary">
                                                 favorite_border
                                             </a>
                                             <section class="mdc-card__primary">
@@ -251,16 +251,16 @@
                                     for (WatchlistEntry e : watchlist.getPlanned()) {
                                 %>
                                 <li class="mdc-grid-title"
-                                    id="card-<%=e.getKey()%>">
+                                    id="card-<%=e.getAnimeKey()%>">
                                     <div class="mdc-grid-tile__primary">
                                         <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
                                              style="background-image:url(<%=e.getPoster()%>);">
                                             <a href="javascript:void(0);" class="remove-from-watchlist-button-background material-icons mdc-theme--secondary mdc-24">fiber_manual_record</a>
-                                            <a href="#" onclick="removeFromWatchlist('<%=e.getKey()%>');return false;" class="remove-from-watchlist-button material-icons mdc-theme--secondary">
+                                            <a href="#" onclick="removeFromWatchlist('<%=e.getAnimeKey()%>');return false;" class="remove-from-watchlist-button material-icons mdc-theme--secondary">
                                                 cancel
                                             </a>
                                             <a href="javascript:void(0);" class="favorite-button-background material-icons mdc-theme--secondary-light">favorite</a>
-                                            <a href="#" onclick="addToFavorites('<%=e.getKey()%>');return false;" class="favorite-button material-icons mdc-theme--secondary">
+                                            <a href="#" onclick="addToFavorites('<%=e.getAnimeKey()%>');return false;" class="favorite-button material-icons mdc-theme--secondary">
                                                 favorite_border
                                             </a>
                                             <section class="mdc-card__primary">
