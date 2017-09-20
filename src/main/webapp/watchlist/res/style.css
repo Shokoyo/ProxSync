@@ -105,3 +105,7 @@ html {
 .watchlist-card .mdc-card__actions {
     background: rgba(0, 0, 0, .4);
 }
+
+.watchlist-item:hover {
+    cursor: pointer;
+}

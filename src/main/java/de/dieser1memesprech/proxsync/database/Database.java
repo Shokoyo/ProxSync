@@ -29,7 +29,7 @@ public class Database {
             dataMapAnimeInfo.put("title", title);
             dataMapAnimeInfo.put("episodenames", dataMapEpisodeNames);
 
-            FirebaseResponse response = Configuration.instance.getFirebase().put("anime/animeinfo/" + key.replaceAll("\\.", "-"), dataMapAnimeInfo);
+            FirebaseResponse response = Configuration.instance.getFirebase().patch("anime/animeinfo/" + key.replaceAll("\\.", "-"), dataMapAnimeInfo);
         } catch (FirebaseException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
@@ -53,6 +53,7 @@ public class Database {
                     JsonObject objectEntry = e.getValue().getAsJsonObject();
                     String episode = objectEntry.get("episode").getAsString();
                     String status = objectEntry.get("status").getAsString();
+                    String animeKey = objectEntry.get("key").getAsString();
                     int rating = objectEntry.get("rating").getAsInt();
                     String animeTitle = objectEntry.get("title").getAsString();
                     String episodeCount = objectEntry.get("episodeCount").getAsString();
@@ -65,7 +66,7 @@ public class Database {
                     } else {
                         list = res.getPlanned();
                     }
-                    list.add(new WatchlistEntry(episode, poster, animeTitle, episodeCount));
+                    list.add(new WatchlistEntry(animeKey, episode, poster, animeTitle, episodeCount));
                 } catch (NullPointerException ex) {
                     ex.printStackTrace();
                     System.out.println("Malformed anime or watchlist entry");
@@ -217,10 +218,11 @@ public class Database {
             dataMapWatchlist.put("episode", episode);
             dataMapWatchlist.put("rating", "0");
             dataMapWatchlist.put("status", status);
-            JsonObject animeObject = Database.getAnimeObjectFromDatabase(key);
+            JsonObject animeObject = Database.getAnimeObjectFromDatabase(key.replaceAll("\\.", "-"));
             dataMapWatchlist.put("title", animeObject.get("title").getAsString());
             dataMapWatchlist.put("episodeCount", animeObject.get("episodeCount").getAsString());
             dataMapWatchlist.put("poster", animeObject.get("poster").getAsString());
+            dataMapWatchlist.put("key", key);
             FirebaseResponse response = Configuration.instance.getFirebase().put("users/" + uid + "/watchlist/" + key.replaceAll("\\.", "-"), dataMapWatchlist);
         } catch (FirebaseException e) {
             e.printStackTrace();

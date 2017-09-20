@@ -164,16 +164,16 @@
                                 <%
                                     for (WatchlistEntry e : watchlist.getWatching()) {
                                 %>
-                                <li class="mdc-grid-title">
+                                <li class="mdc-grid-title" >
                                     <div class="mdc-grid-tile__primary">
 
                                         <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
                                              style="background-image:url(<%=e.getPoster()%>);">
-                                            <a href="javascript:void(0);" class="remove-from-watchlist-button-background material-icons mdc-toolbar__icon mdc-theme--secondary mdc-24">fiber_manual_record</a>
-                                            <a href="javascript:void(0);" class="remove-from-watchlist-button material-icons mdc-toolbar__icon mdc-theme--secondary">
+                                            <a href="javascript:void(0);"  class="remove-from-watchlist-button-background material-icons mdc-toolbar__icon mdc-theme--secondary mdc-24">fiber_manual_record</a>
+                                            <a href="javascript:void(0);" onclick="console.log('delete')" class="remove-from-watchlist-button material-icons mdc-toolbar__icon mdc-theme--secondary">
                                                 cancel
                                             </a>
-                                            <section class="mdc-card__primary">
+                                            <section class="mdc-card__primary watchlist-item" onclick="window.open('../?id=<%=e.getAnimeKey()%>&episode=<%=(Integer.parseInt(e.getEpisode())+1)%>','_self')">
                                                 <h1 class="mdc-card__title mdc-card__title--large"><%=e.getAnimeTitle()%>
                                                 </h1>
                                                 <h2 class="mdc-card__subtitle"><%=e.getEpisode()%>

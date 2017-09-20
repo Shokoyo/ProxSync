@@ -326,6 +326,17 @@ function loadVideo() {
     socket.send(JSON.stringify(userAction));
 }
 
+function loadVideo(url, episode) {
+    if (isOwner) {
+        var userAction = {
+            action: "episodeLink",
+            url: url,
+            episode: episode
+        };
+        socket.send(JSON.stringify(userAction));
+    }
+}
+
 function onMessage(event) {
     var eventJSON = JSON.parse(event.data);
     if (eventJSON.action === "pause") {

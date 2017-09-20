@@ -11,11 +11,16 @@ firebase.auth().onAuthStateChanged(function (authData) {
         if (!roomCreated) {
             roomCreated = true;
             var url = "" + window.location;
-            if (url.indexOf("?") === -1) {
+            if (getQueryVariable("r") === null) {
                 if (socket.readyState === socket.OPEN) {
                     createRoom();
                 } else {
                     socket.onopen = createRoom;
+                }
+                var id = getQueryVariable("id");
+                var episode = getQueryVariable("episode");
+                if (id !== null) {
+                    loadVideo("https://9anime.to/watch/" + id, episode === null ? 1 : parseInt(episode));
                 }
             } else {
                 if (socket.readyState === socket.OPEN) {
@@ -64,5 +69,5 @@ function getQueryVariable(variable) {
             return pair[1];
         }
     }
-    alert('Query Variable ' + variable + ' not found');
+    return null;
 }

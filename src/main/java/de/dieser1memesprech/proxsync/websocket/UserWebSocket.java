@@ -238,7 +238,6 @@ public class UserWebSocket {
                 if (!user.isAnonymous()) {
                     String key = r.getAnime().getAnimeSearchObject().getLink();
                     key = key.substring(key.lastIndexOf("/") + 1);
-                    key = key.replaceAll("\\.", "-");
                     Database.addToWatchlist(key, r.getPlaylist().peek().getEpisode() + "", "watching", user.getUid());
                 }
             }
