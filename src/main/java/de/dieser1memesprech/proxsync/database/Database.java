@@ -57,6 +57,12 @@ public class Database {
                     String animeTitle = objectEntry.get("title").getAsString();
                     String episodeCount = objectEntry.get("episodeCount").getAsString();
                     String poster = objectEntry.get("poster").getAsString();
+                    String key = "";
+                    try {
+                        key = objectEntry.get("key").getAsString();
+                    } catch(NullPointerException ex) {
+                        System.out.println("no key for " + animeTitle);
+                    }
                     List<WatchlistEntry> list;
                     if (status.equals("watching")) {
                         list = res.getWatching();
@@ -65,7 +71,7 @@ public class Database {
                     } else {
                         list = res.getPlanned();
                     }
-                    list.add(new WatchlistEntry(episode, poster, animeTitle, episodeCount));
+                    list.add(new WatchlistEntry(episode, poster, animeTitle, episodeCount, key));
                 } catch (NullPointerException ex) {
                     ex.printStackTrace();
                     System.out.println("Malformed anime or watchlist entry");
@@ -221,6 +227,7 @@ public class Database {
             dataMapWatchlist.put("title", animeObject.get("title").getAsString());
             dataMapWatchlist.put("episodeCount", animeObject.get("episodeCount").getAsString());
             dataMapWatchlist.put("poster", animeObject.get("poster").getAsString());
+            dataMapWatchlist.put("key", key);
             FirebaseResponse response = Configuration.instance.getFirebase().put("users/" + uid + "/watchlist/" + key.replaceAll("\\.", "-"), dataMapWatchlist);
         } catch (FirebaseException e) {
             e.printStackTrace();

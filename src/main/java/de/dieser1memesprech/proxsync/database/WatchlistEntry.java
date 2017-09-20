@@ -8,12 +8,14 @@ public class WatchlistEntry {
     private String poster;
     private String animeTitle;
     private String episodeCount;
+    private String key;
 
-    public WatchlistEntry(String episode, String poster, String animeTitle, String episodeCount) {
+    public WatchlistEntry(String episode, String poster, String animeTitle, String episodeCount, String key) {
         this.episode = episode;
         this.poster = poster;
         this.animeTitle = animeTitle;
         this.episodeCount = episodeCount;
+        this.key = key;
     }
 
     public String getEpisode() {
@@ -30,5 +32,9 @@ public class WatchlistEntry {
 
     public String getEpisodeCount() {
         return episodeCount;
+    }
+
+    public String getKey() {
+        return key;
     }
 }

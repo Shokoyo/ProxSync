@@ -75,20 +75,41 @@ html {
 
 .remove-from-watchlist-button {
     position: absolute;
-    top: -14px;
-    right: -14px;
+    top: 2px;
+    right: 2px;
     color: #c30000 !important;
     float: right;
     font-size: 24px;
+    text-decoration: none;
 }
+
 .remove-from-watchlist-button-background {
     position: absolute;
-    top: -14px;
-    right: -7px;
+    top: 2px;
+    right: 2px;
     color: white !important;
-    text-shadow: 0px 0px 6px rgba(0,0,0,1);
+    text-shadow: 0px 0px 6px rgba(0, 0, 0, 1);
     float: right;
-    font-size: 26px;
+    font-size: 25px;
+    text-decoration: none;
+}
+
+.favorite-button {
+    position: absolute;
+    color: #7d20a5 !important;
+    top: 2px;
+    left: 6px;
+    font-size: 24px;
+    text-decoration: none;
+}
+
+.favorite-button-background {
+    position: absolute;
+    top: 3px;
+    left: 8px;
+    color: rgba(216,85,255,0.8) !important;
+    font-size: 20px;
+    text-decoration: none;
 }
 
 .mdc-card__title .mdc-card__title--large {

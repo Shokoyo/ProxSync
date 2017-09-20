@@ -164,14 +164,19 @@
                                 <%
                                     for (WatchlistEntry e : watchlist.getWatching()) {
                                 %>
-                                <li class="mdc-grid-title">
+                                <li class="mdc-grid-title"
+                                    id="card-<%=e.getKey()%>">
                                     <div class="mdc-grid-tile__primary">
 
                                         <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
                                              style="background-image:url(<%=e.getPoster()%>);">
-                                            <a href="javascript:void(0);" class="remove-from-watchlist-button-background material-icons mdc-toolbar__icon mdc-theme--secondary mdc-24">fiber_manual_record</a>
-                                            <a href="javascript:void(0);" class="remove-from-watchlist-button material-icons mdc-toolbar__icon mdc-theme--secondary">
+                                            <a href="javascript:void(0);" class="remove-from-watchlist-button-background material-icons mdc-theme--secondary mdc-24">fiber_manual_record</a>
+                                            <a href="#" onclick="removeFromWatchlist('<%=e.getKey()%>');return false;" class="remove-from-watchlist-button material-icons mdc-theme--secondary">
                                                 cancel
+                                            </a>
+                                            <a href="javascript:void(0);" class="favorite-button-background material-icons mdc-theme--secondary-light">favorite</a>
+                                            <a href="#" onclick="addToFavorites('<%=e.getKey()%>');return false;" class="favorite-button material-icons mdc-theme--secondary">
+                                                favorite_border
                                             </a>
                                             <section class="mdc-card__primary">
                                                 <h1 class="mdc-card__title mdc-card__title--large"><%=e.getAnimeTitle()%>
@@ -203,10 +208,19 @@
                                 <%
                                     for (WatchlistEntry e : watchlist.getCompleted()) {
                                 %>
-                                <li class="mdc-grid-title">
+                                <li class="mdc-grid-title"
+                                    id="card-<%=e.getKey()%>">
                                     <div class="mdc-grid-tile__primary">
                                         <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
                                              style="background-image:url(<%=e.getPoster()%>);">
+                                            <a href="javascript:void(0);" class="remove-from-watchlist-button-background material-icons mdc-theme--secondary mdc-24">fiber_manual_record</a>
+                                            <a href="#" onclick="removeFromWatchlist('<%=e.getKey()%>');return false;" class="remove-from-watchlist-button material-icons mdc-theme--secondary">
+                                                cancel
+                                            </a>
+                                            <a href="javascript:void(0);" class="favorite-button-background material-icons mdc-theme--secondary-light">favorite</a>
+                                            <a href="#" onclick="addToFavorites('<%=e.getKey()%>');return false;" class="favorite-button material-icons mdc-theme--secondary">
+                                                favorite_border
+                                            </a>
                                             <section class="mdc-card__primary">
                                                 <h1 class="mdc-card__title mdc-card__title--large"><%=e.getAnimeTitle()%>
                                                 </h1>
@@ -236,10 +250,19 @@
                                 <%
                                     for (WatchlistEntry e : watchlist.getPlanned()) {
                                 %>
-                                <li class="mdc-grid-title">
+                                <li class="mdc-grid-title"
+                                    id="card-<%=e.getKey()%>">
                                     <div class="mdc-grid-tile__primary">
                                         <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
                                              style="background-image:url(<%=e.getPoster()%>);">
+                                            <a href="javascript:void(0);" class="remove-from-watchlist-button-background material-icons mdc-theme--secondary mdc-24">fiber_manual_record</a>
+                                            <a href="#" onclick="removeFromWatchlist('<%=e.getKey()%>');return false;" class="remove-from-watchlist-button material-icons mdc-theme--secondary">
+                                                cancel
+                                            </a>
+                                            <a href="javascript:void(0);" class="favorite-button-background material-icons mdc-theme--secondary-light">favorite</a>
+                                            <a href="#" onclick="addToFavorites('<%=e.getKey()%>');return false;" class="favorite-button material-icons mdc-theme--secondary">
+                                                favorite_border
+                                            </a>
                                             <section class="mdc-card__primary">
                                                 <h1 class="mdc-card__title mdc-card__title--large"><%=e.getAnimeTitle()%>
                                                 </h1>
@@ -274,6 +297,7 @@
 <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-database.js"></script>
 <script>
     // Initialize Firebase
     var config = {
@@ -321,5 +345,6 @@
         window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + path + loc;
     }
 </script>
+<script src="res/watchlistManager.js"></script>
 </body>
 </html>
