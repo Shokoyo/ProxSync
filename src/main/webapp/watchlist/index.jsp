@@ -238,6 +238,7 @@
                                 <li class="mdc-grid-title"
                                     id="card-<%=e.getAnimeKey()%>">
                                     <div class="mdc-grid-tile__primary">
+
                                         <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
                                              style="background-image:url(<%=e.getPoster()%>);">
                                             <a href="javascript:void(0);"
@@ -253,13 +254,20 @@
                                                class="favorite-button material-icons mdc-theme--secondary">
                                                 favorite_border
                                             </a>
-                                            <section class="mdc-card__primary">
+                                            <section class="mdc-card__primary watchlist-item"
+                                                     onclick="window.open('../?id=<%=e.getAnimeKey()%>&episode=<%=(Integer.parseInt(e.getEpisode())+1)%>','_self')">
                                                 <h1 class="mdc-card__title mdc-card__title--large"><%=e.getAnimeTitle()%>
                                                 </h1>
                                                 <h2 class="mdc-card__subtitle"><%=e.getEpisode()%>
-                                                    /<%=e.getEpisodeCount()%>
+                                                    /
+                                                    <%=e.getEpisodeCount()%>
                                                 </h2>
                                                 <span class="mdc-card__subtitle">
+                                                    <span id="stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>"
+                                                          onmouseenter="over = 'stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>';oldScore = getScore('stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>');"
+                                                          onmousemove="updateStars(event,'stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>');"
+                                                          onclick="event.stopPropagation();updateRating('<%=e.getAnimeKey().replaceAll("\\.", "-")%>');"
+                                                          onmouseleave="over=undefined;updateStarDisplay($('#stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>'), oldScore);">
                                                     <%
                                                         for (int i = 0; i < 5; i++) {
                                                             if (rating < 1) {
@@ -272,12 +280,13 @@
                                                     <%
                                                     } else {
                                                     %>
-                                                    <i class="material-icons watchlist-star">star</i>
+                                                        <i class="material-icons watchlist-star">star</i>
                                                                 <%
                                                                         }
                                                                         rating -= 2;
                                                                     }
                                                                 %>
+                                                    </span>
                                                 </span>
                                             </section>
                                         </div>

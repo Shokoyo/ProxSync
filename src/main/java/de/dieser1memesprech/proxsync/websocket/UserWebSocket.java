@@ -238,7 +238,7 @@ public class UserWebSocket {
                 if (!user.isAnonymous()) {
                     String key = r.getAnime().getAnimeSearchObject().getLink();
                     key = key.substring(key.lastIndexOf("/") + 1);
-                    Database.addToWatchlist(key, r.getPlaylist().peek().getEpisode() + "", "watching", user.getUid());
+                    Database.addToWatchlist(key, r.getPlaylist().peek().getEpisode() - 1 + "", "watching", user.getUid());
                 }
             }
         }
