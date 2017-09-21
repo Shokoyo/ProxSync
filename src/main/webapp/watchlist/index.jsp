@@ -163,6 +163,7 @@
                             <ul class="mdc-grid-list__tiles">
                                 <%
                                     for (WatchlistEntry e : watchlist.getWatching()) {
+                                        int rating = e.getRating();
                                 %>
                                 <li class="mdc-grid-title"
                                     id="card-<%=e.getAnimeKey()%>">
@@ -170,15 +171,21 @@
 
                                         <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
                                              style="background-image:url(<%=e.getPoster()%>);">
-                                            <a href="javascript:void(0);" class="remove-from-watchlist-button-background material-icons mdc-theme--secondary mdc-24">fiber_manual_record</a>
-                                            <a href="#" onclick="removeFromWatchlist('<%=e.getAnimeKey()%>');return false;" class="remove-from-watchlist-button material-icons mdc-theme--secondary">
+                                            <a href="javascript:void(0);"
+                                               class="remove-from-watchlist-button-background material-icons mdc-theme--secondary mdc-24">fiber_manual_record</a>
+                                            <a href="#"
+                                               onclick="removeFromWatchlist('<%=e.getAnimeKey()%>');return false;"
+                                               class="remove-from-watchlist-button material-icons mdc-theme--secondary">
                                                 cancel
                                             </a>
-                                            <a href="javascript:void(0);" class="favorite-button-background material-icons mdc-theme--secondary-light">favorite</a>
-                                            <a href="#" onclick="addToFavorites('<%=e.getAnimeKey()%>');return false;" class="favorite-button material-icons mdc-theme--secondary">
+                                            <a href="javascript:void(0);"
+                                               class="favorite-button-background material-icons mdc-theme--secondary-light">favorite</a>
+                                            <a href="#" onclick="addToFavorites('<%=e.getAnimeKey()%>');return false;"
+                                               class="favorite-button material-icons mdc-theme--secondary">
                                                 favorite_border
                                             </a>
-                                            <section class="mdc-card__primary watchlist-item" onclick="window.open('../?id=<%=e.getAnimeKey()%>&episode=<%=(Integer.parseInt(e.getEpisode())+1)%>','_self')">
+                                            <section class="mdc-card__primary watchlist-item"
+                                                     onclick="window.open('../?id=<%=e.getAnimeKey()%>&episode=<%=(Integer.parseInt(e.getEpisode())+1)%>','_self')">
                                                 <h1 class="mdc-card__title mdc-card__title--large"><%=e.getAnimeTitle()%>
                                                 </h1>
                                                 <h2 class="mdc-card__subtitle"><%=e.getEpisode()%>
@@ -186,11 +193,30 @@
                                                     <%=e.getEpisodeCount()%>
                                                 </h2>
                                                 <span class="mdc-card__subtitle">
-                                                    <i class="material-icons watchlist-star">star</i>
+                                                    <span id="stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>"
+                                                          onmouseenter="over = 'stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>';oldScore = getScore('stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>');"
+                                                          onmousemove="updateStars(event,'stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>');"
+                                                          onclick="event.stopPropagation();updateRating('<%=e.getAnimeKey().replaceAll("\\.", "-")%>');"
+                                                          onmouseleave="over=undefined;updateStarDisplay($('#stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>'), oldScore);">
+                                                    <%
+                                                        for (int i = 0; i < 5; i++) {
+                                                            if (rating < 1) {
+                                                    %>
                                                     <i class="material-icons watchlist-star">star_border</i>
-                                                    <i class="material-icons watchlist-star">star_border</i>
-                                                    <i class="material-icons watchlist-star">star_border</i>
-                                                    <i class="material-icons watchlist-star">star_border</i>
+                                                    <%
+                                                    } else if (rating < 2) {
+                                                    %>
+                                                    <i class="material-icons watchlist-star">star_half</i>
+                                                    <%
+                                                    } else {
+                                                    %>
+                                                        <i class="material-icons watchlist-star">star</i>
+                                                                <%
+                                                                        }
+                                                                        rating -= 2;
+                                                                    }
+                                                                %>
+                                                    </span>
                                                 </span>
                                             </section>
                                         </div>
@@ -207,18 +233,24 @@
                             <ul class="mdc-grid-list__tiles">
                                 <%
                                     for (WatchlistEntry e : watchlist.getCompleted()) {
+                                        int rating = e.getRating();
                                 %>
                                 <li class="mdc-grid-title"
                                     id="card-<%=e.getAnimeKey()%>">
                                     <div class="mdc-grid-tile__primary">
                                         <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
                                              style="background-image:url(<%=e.getPoster()%>);">
-                                            <a href="javascript:void(0);" class="remove-from-watchlist-button-background material-icons mdc-theme--secondary mdc-24">fiber_manual_record</a>
-                                            <a href="#" onclick="removeFromWatchlist('<%=e.getAnimeKey()%>');return false;" class="remove-from-watchlist-button material-icons mdc-theme--secondary">
+                                            <a href="javascript:void(0);"
+                                               class="remove-from-watchlist-button-background material-icons mdc-theme--secondary mdc-24">fiber_manual_record</a>
+                                            <a href="#"
+                                               onclick="removeFromWatchlist('<%=e.getAnimeKey()%>');return false;"
+                                               class="remove-from-watchlist-button material-icons mdc-theme--secondary">
                                                 cancel
                                             </a>
-                                            <a href="javascript:void(0);" class="favorite-button-background material-icons mdc-theme--secondary-light">favorite</a>
-                                            <a href="#" onclick="addToFavorites('<%=e.getAnimeKey()%>');return false;" class="favorite-button material-icons mdc-theme--secondary">
+                                            <a href="javascript:void(0);"
+                                               class="favorite-button-background material-icons mdc-theme--secondary-light">favorite</a>
+                                            <a href="#" onclick="addToFavorites('<%=e.getAnimeKey()%>');return false;"
+                                               class="favorite-button material-icons mdc-theme--secondary">
                                                 favorite_border
                                             </a>
                                             <section class="mdc-card__primary">
@@ -228,11 +260,24 @@
                                                     /<%=e.getEpisodeCount()%>
                                                 </h2>
                                                 <span class="mdc-card__subtitle">
+                                                    <%
+                                                        for (int i = 0; i < 5; i++) {
+                                                            if (rating < 1) {
+                                                    %>
+                                                    <i class="material-icons watchlist-star">star_border</i>
+                                                    <%
+                                                    } else if (rating < 2) {
+                                                    %>
+                                                    <i class="material-icons watchlist-star">star_half</i>
+                                                    <%
+                                                    } else {
+                                                    %>
                                                     <i class="material-icons watchlist-star">star</i>
-                                                    <i class="material-icons watchlist-star">star_border</i>
-                                                    <i class="material-icons watchlist-star">star_border</i>
-                                                    <i class="material-icons watchlist-star">star_border</i>
-                                                    <i class="material-icons watchlist-star">star_border</i>
+                                                                <%
+                                                                        }
+                                                                        rating -= 2;
+                                                                    }
+                                                                %>
                                                 </span>
                                             </section>
                                         </div>
@@ -249,18 +294,24 @@
                             <ul class="mdc-grid-list__tiles">
                                 <%
                                     for (WatchlistEntry e : watchlist.getPlanned()) {
+                                        int rating = e.getRating();
                                 %>
                                 <li class="mdc-grid-title"
                                     id="card-<%=e.getAnimeKey()%>">
                                     <div class="mdc-grid-tile__primary">
                                         <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
                                              style="background-image:url(<%=e.getPoster()%>);">
-                                            <a href="javascript:void(0);" class="remove-from-watchlist-button-background material-icons mdc-theme--secondary mdc-24">fiber_manual_record</a>
-                                            <a href="#" onclick="removeFromWatchlist('<%=e.getAnimeKey()%>');return false;" class="remove-from-watchlist-button material-icons mdc-theme--secondary">
+                                            <a href="javascript:void(0);"
+                                               class="remove-from-watchlist-button-background material-icons mdc-theme--secondary mdc-24">fiber_manual_record</a>
+                                            <a href="#"
+                                               onclick="removeFromWatchlist('<%=e.getAnimeKey()%>');return false;"
+                                               class="remove-from-watchlist-button material-icons mdc-theme--secondary">
                                                 cancel
                                             </a>
-                                            <a href="javascript:void(0);" class="favorite-button-background material-icons mdc-theme--secondary-light">favorite</a>
-                                            <a href="#" onclick="addToFavorites('<%=e.getAnimeKey()%>');return false;" class="favorite-button material-icons mdc-theme--secondary">
+                                            <a href="javascript:void(0);"
+                                               class="favorite-button-background material-icons mdc-theme--secondary-light">favorite</a>
+                                            <a href="#" onclick="addToFavorites('<%=e.getAnimeKey()%>');return false;"
+                                               class="favorite-button material-icons mdc-theme--secondary">
                                                 favorite_border
                                             </a>
                                             <section class="mdc-card__primary">
@@ -270,11 +321,24 @@
                                                     /<%=e.getEpisodeCount()%>
                                                 </h2>
                                                 <span class="mdc-card__subtitle">
+                                                    <%
+                                                        for (int i = 0; i < 5; i++) {
+                                                            if (rating < 1) {
+                                                    %>
+                                                    <i class="material-icons watchlist-star">star_border</i>
+                                                    <%
+                                                    } else if (rating < 2) {
+                                                    %>
+                                                    <i class="material-icons watchlist-star">star_half</i>
+                                                    <%
+                                                    } else {
+                                                    %>
                                                     <i class="material-icons watchlist-star">star</i>
-                                                    <i class="material-icons watchlist-star">star_border</i>
-                                                    <i class="material-icons watchlist-star">star_border</i>
-                                                    <i class="material-icons watchlist-star">star_border</i>
-                                                    <i class="material-icons watchlist-star">star_border</i>
+                                                                <%
+                                                                        }
+                                                                        rating -= 2;
+                                                                    }
+                                                                %>
                                                 </span>
                                             </section>
                                         </div>
@@ -297,6 +361,7 @@
 <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-database.js"></script>
 <script>
     // Initialize Firebase
     var config = {
@@ -344,6 +409,70 @@
         window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + path + loc;
     }
 </script>
-<script src="res/watchlistManager.js"></script>
+<script>
+    var oldScore;
+    var score = 0;
+    var over;
+    function updateStars(event, id) {
+        var elem = $("#" + id);
+        var x = event.pageX - /*event.currentTarget.offsetLeft -*/ elem.offset().left;
+        updateStarDisplayByPos(elem, x);
+    }
+    function getScore(id) {
+        var elem = $("#" + id);
+        var stars = elem.children();
+        var tempScore = 0;
+        for(var i = 0; i < 5; i++) {
+            if(stars[i].innerHTML === "star") {
+                tempScore += 2;
+            } else if(stars[i].innerHTML === "star_half") {
+                tempScore += 1;
+            }
+        }
+        return tempScore;
+    }
+    function updateStarDisplayByPos(elem, pos) {
+        score = Math.floor(pos/(elem.width()/10)) + 1;
+        var stars = elem.children();
+        var tempScore = score;
+        for(var i = 0; i < 5; i++) {
+            if(tempScore > 1) {
+                stars[i].innerHTML = "star";
+            } else if(tempScore > 0) {
+                stars[i].innerHTML = "star_half";
+            } else {
+                stars[i].innerHTML = "star_border";
+            }
+            tempScore -= 2;
+        }
+    }
+
+    function updateStarDisplay(elem, score) {
+        var stars = elem.children();
+        var tempScore = score;
+        for(var i = 0; i < 5; i++) {
+            if(tempScore > 1) {
+                stars[i].innerHTML = "star";
+            } else if(tempScore > 0) {
+                stars[i].innerHTML = "star_half";
+            } else {
+                stars[i].innerHTML = "star_border";
+            }
+            tempScore -= 2;
+        }
+    }
+
+    function updateRating(key) {
+        var submittedScore = score;
+        var ratingRef = firebase.database().ref("/users/" + uid + "/watchlist/" + key + "/rating");
+        ratingRef.once('value', function(snap) {
+            if(over === "stars-" + key) {
+                oldScore = submittedScore;
+            }
+            updateStarDisplay($('#stars-' + key), submittedScore);
+        });
+        ratingRef.set(score);
+    }
+</script>
 </body>
 </html>

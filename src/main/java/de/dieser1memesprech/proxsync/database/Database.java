@@ -13,6 +13,8 @@ import net.thegreshams.firebase4j.service.Firebase;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +55,25 @@ public class Database {
                     JsonObject objectEntry = e.getValue().getAsJsonObject();
                     String episode = objectEntry.get("episode").getAsString();
                     String status = objectEntry.get("status").getAsString();
-                    String animeKey = objectEntry.get("key").getAsString();
+                    String animeKey;
+                    try {
+                        JsonElement animeKeyObject = objectEntry.get("key");
+                        animeKey = animeKeyObject.getAsString();
+                    } catch (NullPointerException ex) {
+                        int ind = animeId.lastIndexOf("-");
+                        String str = animeId;
+                        if (ind >= 0)
+                            str = new StringBuilder(str).replace(ind, ind + 1, ".").toString();
+                        System.out.println(str);
+                        animeKey = str;
+                        Map<String, Object> map = new LinkedHashMap<>();
+                        map.put("key", animeKey);
+                        try {
+                            Configuration.instance.getFirebase().patch("users/" + uid + "/watchlist/" + animeId, map);
+                        } catch (FirebaseException | UnsupportedEncodingException | JacksonUtilityException exx) {
+                            exx.printStackTrace();
+                        }
+                    }
                     int rating = objectEntry.get("rating").getAsInt();
                     String animeTitle = objectEntry.get("title").getAsString();
                     String episodeCount = objectEntry.get("episodeCount").getAsString();
@@ -66,7 +86,7 @@ public class Database {
                     } else {
                         list = res.getPlanned();
                     }
-                    list.add(new WatchlistEntry(animeKey, episode, poster, animeTitle, episodeCount));
+                    list.add(new WatchlistEntry(animeKey, episode, poster, animeTitle, episodeCount, rating));
                 } catch (NullPointerException ex) {
                     ex.printStackTrace();
                     System.out.println("Malformed anime or watchlist entry");
@@ -84,7 +104,8 @@ public class Database {
             animeObject.addProperty("latestEpisode", latestEpisode);
             animeObject.addProperty("episodeCount", episodeCount);
             animeObject.addProperty("poster", poster);
-            Type mapType = new TypeToken<LinkedHashMap<String, Object>>(){}.getType();
+            Type mapType = new TypeToken<LinkedHashMap<String, Object>>() {
+            }.getType();
             Map<String, Object> animeMapObject = new Gson().fromJson(animeObject, mapType);
             FirebaseResponse response = Configuration.instance.getFirebase().put("anime/animeinfo/" + key.replaceAll("\\.", "-"), animeMapObject);
         } catch (FirebaseException e) {
@@ -115,9 +136,9 @@ public class Database {
             FirebaseResponse response = Configuration.instance.getFirebase().patch("users/" + uid, map);
         } catch (FirebaseException e) {
             e.printStackTrace();
-        } catch(UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        } catch(JacksonUtilityException e) {
+        } catch (JacksonUtilityException e) {
             e.printStackTrace();
         }
     }
@@ -131,7 +152,7 @@ public class Database {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        if(response != null && !response.getRawBody().equals("null")) {
+        if (response != null && !response.getRawBody().equals("null")) {
             return new JsonParser().parse(response.getRawBody()).getAsString();
         } else {
             return "null";
@@ -147,7 +168,7 @@ public class Database {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        if(response != null && !response.getRawBody().equals("null")) {
+        if (response != null && !response.getRawBody().equals("null")) {
             return new JsonParser().parse(response.getRawBody()).getAsString();
         } else {
             return "null";
@@ -161,9 +182,9 @@ public class Database {
             FirebaseResponse response = Configuration.instance.getFirebase().patch("users/" + uid, map);
         } catch (FirebaseException e) {
             e.printStackTrace();
-        } catch(UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        } catch(JacksonUtilityException e) {
+        } catch (JacksonUtilityException e) {
             e.printStackTrace();
         }
     }
@@ -171,7 +192,7 @@ public class Database {
     public static JsonObject getAnimeObjectFromDatabase(String key) {
         FirebaseResponse response = getAnimeFromDatabase(key);
         JsonElement animeJson = new JsonParser().parse(response.getRawBody());
-        if(!animeJson.isJsonObject()) {
+        if (!animeJson.isJsonObject()) {
             System.out.println("Malformed anime object: " + response.getRawBody());
             return new JsonObject();
         } else {
@@ -212,11 +233,33 @@ public class Database {
         }
     }
 
+    public static WatchlistEntry getWatchlistEntry(String uid, String key) {
+        try {
+            FirebaseResponse response = Configuration.instance.getFirebase().get("users/" + uid + "/watchlist/" + key.replaceAll("\\.", "-"));
+            JsonElement element = new JsonParser().parse(response.getRawBody());
+            System.out.println(element.toString());
+            return new WatchlistEntry(uid, element.getAsJsonObject());
+        } catch(UnsupportedEncodingException | FirebaseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static int getWatchlistRating(String uid, String key) {
+        WatchlistEntry entry = getWatchlistEntry(uid,key);
+        if(entry == null) {
+            System.out.println("malformed entry or missing entry for uid "+uid+" and key "+ key + ". Returning rating 0");
+            return 0;
+        } else {
+            return entry.getRating();
+        }
+    }
+
     public static void addToWatchlist(String key, String episode, String status, String uid) {
         try {
             Map<String, Object> dataMapWatchlist = new LinkedHashMap<String, Object>();
             dataMapWatchlist.put("episode", episode);
-            dataMapWatchlist.put("rating", "0");
+            dataMapWatchlist.put("rating", getWatchlistRating(uid, key));
             dataMapWatchlist.put("status", status);
             JsonObject animeObject = Database.getAnimeObjectFromDatabase(key.replaceAll("\\.", "-"));
             dataMapWatchlist.put("title", animeObject.get("title").getAsString());

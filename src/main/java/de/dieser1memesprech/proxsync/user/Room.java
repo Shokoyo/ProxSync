@@ -1,13 +1,17 @@
 package de.dieser1memesprech.proxsync.user;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import de.dieser1memesprech.proxsync._9animescraper.Anime;
 import de.dieser1memesprech.proxsync._9animescraper.Episode;
+import de.dieser1memesprech.proxsync._9animescraper.config.Configuration;
 import de.dieser1memesprech.proxsync._9animescraper.util.HtmlUtils;
 import de.dieser1memesprech.proxsync.database.Database;
 import de.dieser1memesprech.proxsync.util.NamespaceContextMap;
 import de.dieser1memesprech.proxsync.util.RandomString;
 import de.dieser1memesprech.proxsync.websocket.UserSessionHandler;
+import net.thegreshams.firebase4j.error.FirebaseException;
 import net.thegreshams.firebase4j.model.FirebaseResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpHead;
