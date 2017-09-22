@@ -25,7 +25,6 @@ public class NotificationUpdater implements Runnable {
                 for (Map.Entry<String, String> entry : watchingMap.entrySet()) {
                     String uid = entry.getKey();
                     String episode = entry.getValue();
-                    System.out.println("checking uid " + uid + " and anime " + key + " for old episode " + episode + " and new episode " + o.getLastEpisode());
                     Notification currentNotification = Database.getNotification(uid, key);
                     boolean notify = false;
                     if (currentNotification != null && currentNotification.getLatestEpisode() != null) {

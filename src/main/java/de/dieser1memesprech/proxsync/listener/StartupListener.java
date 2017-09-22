@@ -59,6 +59,11 @@ public class StartupListener implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         System.out.println("Shutting down!");
         scheduler.shutdown();
+        try {
+            scheduler.awaitTermination(30, TimeUnit.SECONDS);
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+        }
         System.out.println("Scheduler shut down");
         FirebaseApp.getInstance().delete();
         System.out.println("Firebase shut down");

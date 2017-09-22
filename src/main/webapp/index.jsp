@@ -104,16 +104,39 @@
                             </ul>
                         </div>
                     </div>
-                    <span id="welcome-msg" class="mdc-toolbar__title"
-                          style="margin-top:4px;float:right;align-self:center;"></span>
-                    <%--<a href="javascript:void(0);" class="mdc-toolbar__icon">
+                    <i class="material-icons mdc-toolbar__icon"
+                       style="float:right;font-size:40px;padding:8px!important;"
+                       onclick="menuNotifications.open = !menuNotifications.open">
                         <%
                             List<Notification> notifications = Database.getNotifications(uid);
-                            if(notifications.isEmpty()) {
+                            if (notifications.isEmpty()) {
                         %>
                         notifications_none
-                        <
-                    </a>--%>
+                        <%
+                        } else {
+                        %>
+                        notifications_active
+                        <%
+                            }
+                        %>
+                    </i>
+                    <div class="mdc-simple-menu mdc-simple-menu--open-from-top-right" tabindex="-1" id="notification-menu" style="top:64px;right:72px;">
+                        <ul class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
+                            <%
+                                for (int i = 0; i < notifications.size(); i++) {
+                                    Notification n = notifications.get(i);
+                            %>
+                            <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
+                                <span style="align-self:center"><%=n.getTitle()%>: <%=n.getLatestEpisode()%>/<%=n.getEpisodeCount()%></span>
+                            </li>
+                            <% if (i < notifications.size() - 1) {%>
+                            <li role="separator" class="mdc-list-divider"></li>
+                            <%}%>
+                            <%}%>
+                        </ul>
+                    </div>
+                    <span id="welcome-msg" class="mdc-toolbar__title"
+                          style="margin-top:4px;float:right;align-self:center;"></span>
                 </div>
             </section>
         </section>
@@ -235,8 +258,8 @@
                                                     </div>
                                                 </div>
                                                 <label for="auto-next-checkbox" class="mdc-switch-label">Auto
-                                                                                                         next
-                                                                                                         episode</label>
+                                                    next
+                                                    episode</label>
                                             </div>
                                             <div class="mdc-form-field" id="auto-play-container"
                                                  style="margin-right: 10px; margin-top: 10px;">
@@ -290,6 +313,8 @@
 <script src="res/player-script.js?v=0.0.0.4.10"></script>
 <script src="res/tab-switch.js?v=0.1"></script>
 <script>
+    var notificationsEl = document.querySelector('#notification-menu');
+    var menuNotifications = new mdc.menu.MDCSimpleMenu(notificationsEl);
     var timeOut;
     mdc.textfield.MDCTextfield.attachTo(document.querySelector('.mdc-textfield'));
     var menuEl = document.querySelector('#profile-menu');
@@ -317,8 +342,8 @@
 
     function followLink(loc) {
         var path = window.location.pathname;
-        if(path.charAt(path.length -1) === "/") {
-            path = path.substring(0, path.length -1);
+        if (path.charAt(path.length - 1) === "/") {
+            path = path.substring(0, path.length - 1);
         }
         window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + path + loc;
     }

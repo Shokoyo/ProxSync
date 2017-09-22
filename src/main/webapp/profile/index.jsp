@@ -1,5 +1,7 @@
 <%@ page import="de.dieser1memesprech.proxsync.util.LoginUtil" %>
 <%@ page import="de.dieser1memesprech.proxsync.database.Database" %>
+<%@ page import="de.dieser1memesprech.proxsync.database.Notification" %>
+<%@ page import="java.util.List" %>
 <html language="de" class="mdc-typography">
 <head>
     <meta charset="utf-8"/>
@@ -82,6 +84,37 @@
                                 </li>
                             </ul>
                         </div>
+                    </div>
+                    <i class="material-icons mdc-toolbar__icon"
+                       style="float:right;font-size:40px;padding:8px!important;"
+                       onclick="menuNotifications.open = !menuNotifications.open">
+                        <%
+                            List<Notification> notifications = Database.getNotifications(uid);
+                            if (notifications.isEmpty()) {
+                        %>
+                        notifications_none
+                        <%
+                        } else {
+                        %>
+                        notifications_active
+                        <%
+                            }
+                        %>
+                    </i>
+                    <div class="mdc-simple-menu mdc-simple-menu--open-from-top-right" tabindex="-1" id="notification-menu" style="top:64px;right:72px;">
+                        <ul class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
+                            <%
+                                for (int i = 0; i < notifications.size(); i++) {
+                                    Notification n = notifications.get(i);
+                            %>
+                            <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
+                                <span style="align-self:center"><%=n.getTitle()%>: <%=n.getLatestEpisode()%>/<%=n.getEpisodeCount()%></span>
+                            </li>
+                            <% if (i < notifications.size() - 1) {%>
+                            <li role="separator" class="mdc-list-divider"></li>
+                            <%}%>
+                            <%}%>
+                        </ul>
                     </div>
                     <span id="welcome-msg" class="mdc-toolbar__title"
                           style="margin-top:4px;float:right;align-self:center;"></span>
@@ -169,6 +202,8 @@
 <script src="../res/firebase.js"></script>
 <script src="res/avatarChange.js"></script>
 <script>
+    var notificationsEl = document.querySelector('#notification-menu');
+    var menuNotifications = new mdc.menu.MDCSimpleMenu(notificationsEl);
     var timeOut;
     mdc.textfield.MDCTextfield.attachTo(document.querySelector('.mdc-textfield'));
     var menuEl = document.querySelector('#profile-menu');

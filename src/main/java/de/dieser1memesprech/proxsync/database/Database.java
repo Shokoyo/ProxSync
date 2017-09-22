@@ -96,6 +96,7 @@ public class Database {
             DatabaseReference ref = database.getReference(path);
             LoadedValueEventListener listener = new LoadedValueEventListener();
             ref.addListenerForSingleValueEvent(listener);
+            ref.removeEventListener(listener);
             return listener.getData();
         } catch (DatabaseException e) {
             e.printStackTrace();

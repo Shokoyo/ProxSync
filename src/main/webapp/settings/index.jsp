@@ -1,5 +1,7 @@
 <%@ page import="de.dieser1memesprech.proxsync.util.LoginUtil" %>
 <%@ page import="de.dieser1memesprech.proxsync.database.Database" %>
+<%@ page import="de.dieser1memesprech.proxsync.database.Notification" %>
+<%@ page import="java.util.List" %>
 <html language="de" class="mdc-typography">
 <head>
     <meta charset="utf-8"/>
@@ -47,7 +49,8 @@
                 </div>
                 <div id="signout-row" style="align-self: center; margin-right: 16px; margin-left: auto;">
                     <div style="float:right;" onmouseover="clearTimeout(timeOut); menu.open = true;"
-                         onmouseout = "timeOut = setTimeout(function() {menu.open = false;},200);" id="profile-mouseaction">
+                         onmouseout="timeOut = setTimeout(function() {menu.open = false;},200);"
+                         id="profile-mouseaction">
                         <a href="../profile">
                             <img src="<%
                             String url= "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/panda.svg?alt=media&token=6f4d5bf1-af69-4211-994d-66655456d91a";
@@ -62,8 +65,10 @@
                             }
                             %><%=url%>" id="avatar-toolbar" class="user-avatar-toolbar">
                         </a>
-                        <div class="mdc-simple-menu mdc-simple-menu--open-from-top-right" id="profile-menu" tabindex="-1"style="top:64px;right:-14px;">
-                            <ul class="mdc-simple-menu__items mdc-list" role="menu" id="profile-list" aria-hidden="true">
+                        <div class="mdc-simple-menu mdc-simple-menu--open-from-top-right" id="profile-menu"
+                             tabindex="-1" style="top:64px;right:-14px;">
+                            <ul class="mdc-simple-menu__items mdc-list" role="menu" id="profile-list"
+                                aria-hidden="true">
                                 <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
                                     <span style="align-self:center;">Profile</span>
                                 </li>
@@ -79,6 +84,38 @@
                                 </li>
                             </ul>
                         </div>
+                    </div>
+                    <i class="material-icons mdc-toolbar__icon"
+                       style="float:right;font-size:40px;padding:8px!important;"
+                       onclick="menuNotifications.open = !menuNotifications.open">
+                        <%
+                            List<Notification> notifications = Database.getNotifications(uid);
+                            if (notifications.isEmpty()) {
+                        %>
+                        notifications_none
+                        <%
+                        } else {
+                        %>
+                        notifications_active
+                        <%
+                            }
+                        %>
+                    </i>
+                    <div class="mdc-simple-menu mdc-simple-menu--open-from-top-right" tabindex="-1"
+                         id="notification-menu" style="top:64px;right:72px;">
+                        <ul class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
+                            <%
+                                for (int i = 0; i < notifications.size(); i++) {
+                                    Notification n = notifications.get(i);
+                            %>
+                            <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
+                                <span style="align-self:center"><%=n.getTitle()%>: <%=n.getLatestEpisode()%>/<%=n.getEpisodeCount()%></span>
+                            </li>
+                            <% if (i < notifications.size() - 1) {%>
+                            <li role="separator" class="mdc-list-divider"></li>
+                            <%}%>
+                            <%}%>
+                        </ul>
                     </div>
                     <span id="welcome-msg" class="mdc-toolbar__title"
                           style="margin-top:4px;float:right;align-self:center;"></span>
@@ -137,15 +174,17 @@
 <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 <script src="../res/firebase.js"></script>
 <script>
+    var notificationsEl = document.querySelector('#notification-menu');
+    var menuNotifications = new mdc.menu.MDCSimpleMenu(notificationsEl);
     var timeOut;
     mdc.textfield.MDCTextfield.attachTo(document.querySelector('.mdc-textfield'));
     var menuEl = document.querySelector('#profile-menu');
     var menu = new mdc.menu.MDCSimpleMenu(menuEl);
 
-    menuEl.addEventListener('MDCSimpleMenu:selected', function(evt) {
+    menuEl.addEventListener('MDCSimpleMenu:selected', function (evt) {
         menu.open = false;
         var detail = evt.detail;
-        switch(detail.index) {
+        switch (detail.index) {
             case 0:
                 followLink("/profile/");
                 break;
