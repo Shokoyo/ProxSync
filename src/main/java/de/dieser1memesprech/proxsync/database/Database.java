@@ -32,16 +32,21 @@ public class Database {
         Watchlist res = new Watchlist();
         List<WatchlistEntry> list;
         for (DataSnapshot snapshot : data.getChildren()) {
-            WatchlistEntry entry = snapshot.getValue(WatchlistEntry.class);
-            String status = entry.getStatus();
-            if (status.equals("watching")) {
-                list = res.getWatching();
-            } else if (status.equals("completed")) {
-                list = res.getCompleted();
-            } else {
-                list = res.getPlanned();
+            try {
+                WatchlistEntry entry = snapshot.getValue(WatchlistEntry.class);
+                String status = entry.getStatus();
+                if (status.equals("watching")) {
+                    list = res.getWatching();
+                } else if (status.equals("completed")) {
+                    list = res.getCompleted();
+                } else {
+                    list = res.getPlanned();
+                }
+                list.add(entry);
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+                System.out.println(snapshot.toString());
             }
-            list.add(entry);
         }
         return res;
     }
@@ -115,7 +120,7 @@ public class Database {
         dataMapWatchlist.put("poster", poster);
         dataMapWatchlist.put("key", key);
         updateData("users/" + uid + "/watchlist/" + key.replaceAll("\\.", "-"), dataMapWatchlist);
-        if(!"completed".equals(status)) {
+        if (!"completed".equals(status)) {
             Map<String, Object> mapNew = new LinkedHashMap<>();
             mapNew.put(uid, episode);
             updateData("watching/" + key.replaceAll("\\.", "-"), mapNew);
@@ -123,7 +128,7 @@ public class Database {
             database.getReference("watching/" + key.replaceAll("\\.", "-") + "/" + uid).removeValue();
         }
         Notification notification = getNotification(uid, key);
-        if(notification != null && episode.equals(notification.getLatestEpisode())) {
+        if (notification != null && episode.equals(notification.getLatestEpisode())) {
             removeNotification(uid, key);
         }
     }
@@ -152,7 +157,7 @@ public class Database {
     public static List<Notification> getNotifications(String uid) {
         List<Notification> res = new ArrayList<>();
         DataSnapshot data = getDataFromDatabase("notifications/" + uid);
-        if(data != null && data.getChildrenCount() > 0) {
+        if (data != null && data.getChildrenCount() > 0) {
             for (DataSnapshot d : data.getChildren()) {
                 res.add(d.getValue(Notification.class));
             }
@@ -162,7 +167,7 @@ public class Database {
 
     public static Notification getNotification(String uid, String key) {
         DataSnapshot data = getDataFromDatabase("notifications/" + uid + "/" + key.replaceAll("\\.", "-"));
-        if(data != null) {
+        if (data != null) {
             return data.getValue(Notification.class);
         } else {
             return null;
@@ -172,8 +177,8 @@ public class Database {
     public static Map<String, String> getWatchingList(String key) {
         Map<String, String> res = new HashMap<>();
         DataSnapshot data = getDataFromDatabase("watching/" + key.replaceAll("\\.", "-"));
-        if(data != null && data.getChildrenCount() > 0) {
-            for(DataSnapshot d: data.getChildren()) {
+        if (data != null && data.getChildrenCount() > 0) {
+            for (DataSnapshot d : data.getChildren()) {
                 res.put(d.getKey(), (String) d.getValue());
             }
         }
@@ -191,7 +196,7 @@ public class Database {
         dataMapWatchlist.put("poster", entry.getPoster());
         dataMapWatchlist.put("key", key);
         updateData("users/" + uid + "/watchlist/" + key.replaceAll("\\.", "-"), dataMapWatchlist);
-        if(!"completed".equals(status)) {
+        if (!"completed".equals(status)) {
             Map<String, Object> mapNew = new LinkedHashMap<>();
             mapNew.put(uid, episode);
             updateData("watching/" + key.replaceAll("\\.", "-"), mapNew);
@@ -199,7 +204,7 @@ public class Database {
             database.getReference("watching/" + key.replaceAll("\\.", "-") + "/" + uid).removeValue();
         }
         Notification notification = getNotification(uid, key);
-        if(notification != null && episode.equals(notification.getLatestEpisode())) {
+        if (notification != null && episode.equals(notification.getLatestEpisode())) {
             removeNotification(uid, key);
         }
     }
