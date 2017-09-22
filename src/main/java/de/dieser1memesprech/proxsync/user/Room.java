@@ -250,8 +250,8 @@ public class Room {
                 + "," + anime.getAnimeSearchObject().getEpisodeCount() + "," + v.episodePoster);
                 Database.updateAnimeInfo(v.key, anime.getAnimeSearchObject().getLastEpisode() + "",
                         anime.getAnimeSearchObject().getEpisodeCount() + "", v.episodePoster);
-                FirebaseResponse response = Database.getEpisodeTitleFromDatabase(v.key, episode);
-                if (response.getRawBody().equals("null")) {
+                String epTitle = Database.getEpisodeTitleFromDatabase(v.key, episode);
+                if (epTitle == null || epTitle.equals("null")) {
                     int episodeCount;
                     try {
                         episodeCount = Integer.parseInt(anime.getAnimeSearchObject().getLastEpisode());
@@ -261,7 +261,7 @@ public class Room {
                         System.out.println("Couldn't parse episode count");
                     }
                 } else {
-                    v.episodeTitle = response.getRawBody();
+                    v.episodeTitle = epTitle;
                 }
             }
             v.infoGot = true;
@@ -283,11 +283,15 @@ public class Room {
     }
 
     private String getEpisodeTitle(String key, String animeTitle, int episode, int episodeCount) {
+        System.out.println("Getting titles for " + animeTitle);
         String res = "";
         List<String> episodeNames = new ArrayList<String>();
         try {
+            System.out.println("http://anisearch.outrance.pl/?task=search&query=\\"
+                    + URLEncoder.encode(animeTitle, "UTF-8"));
             String content = HtmlUtils.getHtmlContent("http://anisearch.outrance.pl/?task=search&query=\\"
                     + URLEncoder.encode(animeTitle, "UTF-8"));
+            System.out.println(content);
             String aid = evaluateXPath(content, "//anime/@aid");
             System.out.println("Anime ID: " + aid);
             if(aid != "") {

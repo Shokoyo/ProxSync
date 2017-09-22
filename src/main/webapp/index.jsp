@@ -1,5 +1,7 @@
 <%@ page import="de.dieser1memesprech.proxsync.database.Database" %>
 <%@ page import="de.dieser1memesprech.proxsync.util.LoginUtil" %>
+<%@ page import="de.dieser1memesprech.proxsync.database.Notification" %>
+<%@ page import="java.util.List" %>
 <html language="de" class="mdc-typography">
 <head>
     <meta charset="utf-8"/>
@@ -104,6 +106,14 @@
                     </div>
                     <span id="welcome-msg" class="mdc-toolbar__title"
                           style="margin-top:4px;float:right;align-self:center;"></span>
+                    <%--<a href="javascript:void(0);" class="mdc-toolbar__icon">
+                        <%
+                            List<Notification> notifications = Database.getNotifications(uid);
+                            if(notifications.isEmpty()) {
+                        %>
+                        notifications_none
+                        <
+                    </a>--%>
                 </div>
             </section>
         </section>

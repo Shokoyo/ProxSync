@@ -18,6 +18,10 @@ public class AnimeUtils {
         return parseSearchMulti(content);
     }
 
+    public static List<AnimeSearchObject> updatedSearch(String url) {
+        return parseSearchMulti(HtmlUtils.getHtmlContent(url));
+    }
+
     private static List<AnimeSearchObject> parseSearchMulti(String data) {
         List<AnimeSearchObject> animeList = new ArrayList<AnimeSearchObject>();
         Document doc = Jsoup.parse(data);

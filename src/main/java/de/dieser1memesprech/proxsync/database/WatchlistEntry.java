@@ -18,13 +18,14 @@ public class WatchlistEntry {
     private String poster;
     private String title;
     private String episodeCount;
-    private String rating;
+    private long rating;
     private String key;
     private String status;
 
-    public WatchlistEntry() { }
+    public WatchlistEntry() {
+    }
 
-    public WatchlistEntry(String episode, String poster, String title, String episodeCount, String rating, String key, String status) {
+    public WatchlistEntry(String episode, String poster, String title, String episodeCount, long rating, String key, String status) {
         this.episode = episode;
         this.poster = poster;
         this.title = title;
@@ -34,33 +35,13 @@ public class WatchlistEntry {
         this.status = status;
     }
 
-    public WatchlistEntry(String key, String episode, String poster, String title, String episodeCount, int rating) {
+    public WatchlistEntry(String key, String episode, String poster, String title, String episodeCount, long rating) {
         this.episode = episode;
-        this.rating = "" + rating;
+        this.rating = rating;
         this.poster = poster;
         this.title = title;
         this.episodeCount = episodeCount;
         this.key = key;
-    }
-
-    public WatchlistEntry(String uid, JsonObject object) {
-        this.episode = object.get("episode").getAsString();
-        try {
-            this.rating = object.get("rating").getAsString();
-        } catch(ClassCastException | IllegalStateException e) {
-            this.rating = object.get("rating").getAsString();
-            Map<String, Object> map = new LinkedHashMap<>();
-            map.put("rating", rating);
-            try {
-                FirebaseResponse response = Configuration.instance.getFirebase().patch("users/" + uid + "/watchlist/" + object.get("key"), map);
-            } catch(FirebaseException | UnsupportedEncodingException | JacksonUtilityException ex) {
-                e.printStackTrace();
-            }
-        }
-        this.poster = object.get("poster").getAsString();
-        this.title = object.get("title").getAsString();
-        this.episodeCount = object.get("episodeCount").getAsString();
-        this.key = object.get("key").getAsString();
     }
 
     public String getEpisode() {
@@ -79,7 +60,7 @@ public class WatchlistEntry {
         return episodeCount;
     }
 
-    public String getRating() {
+    public long getRating() {
         return rating;
     }
 

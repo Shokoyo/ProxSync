@@ -163,7 +163,7 @@
                             <ul class="mdc-grid-list__tiles">
                                 <%
                                     for (WatchlistEntry e : watchlist.getWatching()) {
-                                        int rating = e.getRating();
+                                        long rating = e.getRating();
                                 %>
                                 <li class="mdc-grid-title"
                                     id="card-<%=e.getKey()%>">
@@ -233,7 +233,7 @@
                             <ul class="mdc-grid-list__tiles">
                                 <%
                                     for (WatchlistEntry e : watchlist.getCompleted()) {
-                                        int rating = e.getRating();
+                                        long rating = e.getRating();
                                 %>
                                 <li class="mdc-grid-title"
                                     id="card-<%=e.getKey()%>">
@@ -303,7 +303,7 @@
                             <ul class="mdc-grid-list__tiles">
                                 <%
                                     for (WatchlistEntry e : watchlist.getPlanned()) {
-                                        int rating = e.getRating();
+                                        long rating = e.getRating();
                                 %>
                                 <li class="mdc-grid-title"
                                     id="card-<%=e.getKey()%>">
