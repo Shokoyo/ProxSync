@@ -7,10 +7,10 @@ public class AnimeSearchObject {
     private String language;
     private String host;
     private String poster;
-    private int lastEpisode;
-    private int episodeCount;
+    private String lastEpisode;
+    private String episodeCount;
 
-    public AnimeSearchObject(String title, String link, String language, String host, String poster, int episodeCount, int currentEpisode) {
+    public AnimeSearchObject(String title, String link, String language, String host, String poster, String episodeCount, String currentEpisode) {
         this.title = title;
         this.link = link;
         this.language = language;
@@ -40,11 +40,11 @@ public class AnimeSearchObject {
         return host;
     }
 
-    public int getLastEpisode() {
+    public String getLastEpisode() {
         return lastEpisode;
     }
 
-    public int getEpisodeCount() {
+    public String getEpisodeCount() {
         return episodeCount;
     }
 }

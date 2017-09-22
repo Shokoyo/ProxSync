@@ -14,4 +14,9 @@
         <filter-name>settingsFilter</filter-name>
         <url-pattern>/settings/*</url-pattern>
     </filter-mapping>-->
+    <listener>
+        <listener-class>
+            de.dieser1memesprech.proxsync.listener.StartupListener
+        </listener-class>
+    </listener>
 </web-app>

@@ -3,7 +3,6 @@
  */
 var dynamicTabBar = window.dynamicTabBar = new mdc.tabs.MDCTabBar(document.querySelector('#dynamic-tab-bar'));
 var panels = document.getElementById("panels");
-
 dynamicTabBar.preventDefaultOnClick = true;
 
 function updatePanel(index) {
@@ -20,8 +19,8 @@ function updatePanel(index) {
 dynamicTabBar.listen('MDCTabBar:change', function (t) {
     var dynamicTabBar = t.detail;
     var nthChildIndex = dynamicTabBar.activeTabIndex;
-
     updatePanel(nthChildIndex);
+    autoSizeText();
 });
 console.log(location.hash);
 if(location.hash === "#completed") {

@@ -166,7 +166,7 @@
                                         int rating = e.getRating();
                                 %>
                                 <li class="mdc-grid-title"
-                                    id="card-<%=e.getAnimeKey()%>">
+                                    id="card-<%=e.getKey()%>">
                                     <div class="mdc-grid-tile__primary">
 
                                         <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
@@ -174,30 +174,30 @@
                                             <a href="javascript:void(0);"
                                                class="remove-from-watchlist-button-background material-icons mdc-theme--secondary mdc-24">fiber_manual_record</a>
                                             <a href="#"
-                                               onclick="removeFromWatchlist('<%=e.getAnimeKey()%>');return false;"
+                                               onclick="removeFromWatchlist('<%=e.getKey()%>');return false;"
                                                class="remove-from-watchlist-button material-icons mdc-theme--secondary">
                                                 cancel
                                             </a>
                                             <a href="javascript:void(0);"
                                                class="favorite-button-background material-icons mdc-theme--secondary-light">favorite</a>
-                                            <a href="#" onclick="addToFavorites('<%=e.getAnimeKey()%>');return false;"
+                                            <a href="#" onclick="addToFavorites('<%=e.getKey()%>');return false;"
                                                class="favorite-button material-icons mdc-theme--secondary">
                                                 favorite_border
                                             </a>
                                             <section class="mdc-card__primary watchlist-item"
-                                                     onclick="window.open('../?id=<%=e.getAnimeKey()%>&episode=<%=(Integer.parseInt(e.getEpisode())+1)%>','_self')">
-                                                <h1 class="mdc-card__title mdc-card__title--large"><%=e.getAnimeTitle()%>
+                                                     onclick="window.open('../?id=<%=e.getKey()%>&episode=<%=(Integer.parseInt(e.getEpisode())+1)%>','_self')">
+                                                <h1 class="mdc-card__title mdc-card__title--large title-container resize"><%=e.getTitle()%>
                                                 </h1>
                                                 <h2 class="mdc-card__subtitle"><%=e.getEpisode()%>
                                                     /
                                                     <%=e.getEpisodeCount()%>
                                                 </h2>
                                                 <span class="mdc-card__subtitle">
-                                                    <span id="stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>"
-                                                          onmouseenter="over = 'stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>';oldScore = getScore('stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>');"
-                                                          onmousemove="updateStars(event,'stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>');"
-                                                          onclick="event.stopPropagation();updateRating('<%=e.getAnimeKey().replaceAll("\\.", "-")%>');"
-                                                          onmouseleave="over=undefined;updateStarDisplay($('#stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>'), oldScore);">
+                                                    <span id="stars-<%=e.getKey().replaceAll("\\.", "-")%>"
+                                                          onmouseenter="over = 'stars-<%=e.getKey().replaceAll("\\.", "-")%>';oldScore = getScore('stars-<%=e.getKey().replaceAll("\\.", "-")%>');"
+                                                          onmousemove="updateStars(event,'stars-<%=e.getKey().replaceAll("\\.", "-")%>');"
+                                                          onclick="event.stopPropagation();updateRating('<%=e.getKey().replaceAll("\\.", "-")%>');"
+                                                          onmouseleave="over=undefined;updateStarDisplay($('#stars-<%=e.getKey().replaceAll("\\.", "-")%>'), oldScore);">
                                                     <%
                                                         for (int i = 0; i < 5; i++) {
                                                             if (rating < 1) {
@@ -236,7 +236,7 @@
                                         int rating = e.getRating();
                                 %>
                                 <li class="mdc-grid-title"
-                                    id="card-<%=e.getAnimeKey()%>">
+                                    id="card-<%=e.getKey()%>">
                                     <div class="mdc-grid-tile__primary">
 
                                         <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
@@ -244,30 +244,30 @@
                                             <a href="javascript:void(0);"
                                                class="remove-from-watchlist-button-background material-icons mdc-theme--secondary mdc-24">fiber_manual_record</a>
                                             <a href="#"
-                                               onclick="removeFromWatchlist('<%=e.getAnimeKey()%>');return false;"
+                                               onclick="removeFromWatchlist('<%=e.getKey()%>');return false;"
                                                class="remove-from-watchlist-button material-icons mdc-theme--secondary">
                                                 cancel
                                             </a>
                                             <a href="javascript:void(0);"
                                                class="favorite-button-background material-icons mdc-theme--secondary-light">favorite</a>
-                                            <a href="#" onclick="addToFavorites('<%=e.getAnimeKey()%>');return false;"
+                                            <a href="#" onclick="addToFavorites('<%=e.getKey()%>');return false;"
                                                class="favorite-button material-icons mdc-theme--secondary">
                                                 favorite_border
                                             </a>
                                             <section class="mdc-card__primary watchlist-item"
-                                                     onclick="window.open('../?id=<%=e.getAnimeKey()%>&episode=<%=(Integer.parseInt(e.getEpisode())+1)%>','_self')">
-                                                <h1 class="mdc-card__title mdc-card__title--large"><%=e.getAnimeTitle()%>
+                                                     onclick="window.open('../?id=<%=e.getKey()%>&episode=<%=(Integer.parseInt(e.getEpisode())+1)%>','_self')">
+                                                <h1 class="mdc-card__title mdc-card__title--large title-container resize"><%=e.getTitle()%>
                                                 </h1>
                                                 <h2 class="mdc-card__subtitle"><%=e.getEpisode()%>
                                                     /
                                                     <%=e.getEpisodeCount()%>
                                                 </h2>
                                                 <span class="mdc-card__subtitle">
-                                                    <span id="stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>"
-                                                          onmouseenter="over = 'stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>';oldScore = getScore('stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>');"
-                                                          onmousemove="updateStars(event,'stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>');"
-                                                          onclick="event.stopPropagation();updateRating('<%=e.getAnimeKey().replaceAll("\\.", "-")%>');"
-                                                          onmouseleave="over=undefined;updateStarDisplay($('#stars-<%=e.getAnimeKey().replaceAll("\\.", "-")%>'), oldScore);">
+                                                    <span id="stars-<%=e.getKey().replaceAll("\\.", "-")%>"
+                                                          onmouseenter="over = 'stars-<%=e.getKey().replaceAll("\\.", "-")%>';oldScore = getScore('stars-<%=e.getKey().replaceAll("\\.", "-")%>');"
+                                                          onmousemove="updateStars(event,'stars-<%=e.getKey().replaceAll("\\.", "-")%>');"
+                                                          onclick="event.stopPropagation();updateRating('<%=e.getKey().replaceAll("\\.", "-")%>');"
+                                                          onmouseleave="over=undefined;updateStarDisplay($('#stars-<%=e.getKey().replaceAll("\\.", "-")%>'), oldScore);">
                                                     <%
                                                         for (int i = 0; i < 5; i++) {
                                                             if (rating < 1) {
@@ -306,25 +306,25 @@
                                         int rating = e.getRating();
                                 %>
                                 <li class="mdc-grid-title"
-                                    id="card-<%=e.getAnimeKey()%>">
+                                    id="card-<%=e.getKey()%>">
                                     <div class="mdc-grid-tile__primary">
                                         <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
                                              style="background-image:url(<%=e.getPoster()%>);">
                                             <a href="javascript:void(0);"
                                                class="remove-from-watchlist-button-background material-icons mdc-theme--secondary mdc-24">fiber_manual_record</a>
                                             <a href="#"
-                                               onclick="removeFromWatchlist('<%=e.getAnimeKey()%>');return false;"
+                                               onclick="removeFromWatchlist('<%=e.getKey()%>');return false;"
                                                class="remove-from-watchlist-button material-icons mdc-theme--secondary">
                                                 cancel
                                             </a>
                                             <a href="javascript:void(0);"
                                                class="favorite-button-background material-icons mdc-theme--secondary-light">favorite</a>
-                                            <a href="#" onclick="addToFavorites('<%=e.getAnimeKey()%>');return false;"
+                                            <a href="#" onclick="addToFavorites('<%=e.getKey()%>');return false;"
                                                class="favorite-button material-icons mdc-theme--secondary">
                                                 favorite_border
                                             </a>
                                             <section class="mdc-card__primary">
-                                                <h1 class="mdc-card__title mdc-card__title--large"><%=e.getAnimeTitle()%>
+                                                <h1 class="mdc-card__title mdc-card__title--large title-container resize"><%=e.getTitle()%>
                                                 </h1>
                                                 <h2 class="mdc-card__subtitle"><%=e.getEpisode()%>
                                                     /<%=e.getEpisodeCount()%>
@@ -383,10 +383,45 @@
     };
     firebase.initializeApp(config);
 </script>
+<script>
+    var autoSizeText;
+
+    autoSizeText = function() {
+        var el, elements, _i, _len, _results;
+        elements = $('.resize');
+        console.log(elements);
+        if (elements.length < 0) {
+            return;
+        }
+        _results = [];
+        for (_i = 0, _len = elements.length; _i < _len; _i++) {
+            el = elements[_i];
+            _results.push((function(el) {
+                var resizeText, _results1;
+                resizeText = function() {
+                    var elNewFontSize;
+                    elNewFontSize = (parseInt($(el).css('font-size').slice(0, -2)) - 1) + 'px';
+                    return $(el).css('font-size', elNewFontSize);
+                };
+                _results1 = [];
+                while (el.scrollHeight > el.offsetHeight) {
+                    _results1.push(resizeText());
+                }
+                return _results1;
+            })(el));
+        }
+        return _results;
+    };
+
+    $(document).ready(function() {
+        return autoSizeText();
+    });
+</script>
 <script src="../res/firebaseauth-normal.js"></script>
 <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 <script src="res/tab-switch.js"></script>
 <script src="../res/firebase.js"></script>
+<script src="res/watchlistManager.js"></script>
 <script>
     var timeOut;
     mdc.textfield.MDCTextfield.attachTo(document.querySelector('.mdc-textfield'));

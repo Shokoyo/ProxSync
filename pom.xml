@@ -65,11 +65,15 @@
             <artifactId>commons-logging</artifactId>
             <version>1.2</version>
         </dependency>
-
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
             <version>1.9.13</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>5.3.1</version>
         </dependency>
     </dependencies>
 

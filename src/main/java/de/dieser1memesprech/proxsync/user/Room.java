@@ -252,7 +252,14 @@ public class Room {
                         anime.getAnimeSearchObject().getEpisodeCount() + "", v.episodePoster);
                 FirebaseResponse response = Database.getEpisodeTitleFromDatabase(v.key, episode);
                 if (response.getRawBody().equals("null")) {
-                    v.episodeTitle = getEpisodeTitle(v.key, v.animeTitle, v.episode, v.episodeCount);
+                    int episodeCount;
+                    try {
+                        episodeCount = Integer.parseInt(anime.getAnimeSearchObject().getLastEpisode());
+                        v.episodeTitle = getEpisodeTitle(v.key, v.animeTitle, v.episode, episodeCount);
+                    } catch(NumberFormatException e) {
+                        v.episodeTitle = "";
+                        System.out.println("Couldn't parse episode count");
+                    }
                 } else {
                     v.episodeTitle = response.getRawBody();
                 }
@@ -279,8 +286,8 @@ public class Room {
         String res = "";
         List<String> episodeNames = new ArrayList<String>();
         try {
-            String content = HtmlUtils.getHtmlContent("http://anisearch.outrance.pl/?task=search&query="
-                    + URLEncoder.encode("\\" + animeTitle, "UTF-8"));
+            String content = HtmlUtils.getHtmlContent("http://anisearch.outrance.pl/?task=search&query=\\"
+                    + URLEncoder.encode(animeTitle, "UTF-8"));
             String aid = evaluateXPath(content, "//anime/@aid");
             System.out.println("Anime ID: " + aid);
             if(aid != "") {

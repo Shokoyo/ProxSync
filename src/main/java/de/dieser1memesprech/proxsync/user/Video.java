@@ -9,14 +9,13 @@ public class Video {
     String episodeTitle;
     String episodePoster;
     boolean infoGot;
-
+    int episode;
+    String episodeCount;
+    public String key;
     public int getEpisode() {
         return episode;
     }
 
-    int episode;
-    int episodeCount;
-    public String key;
 
     public Video(String url, int episode) {
         this.url = url;
@@ -64,6 +63,8 @@ public class Video {
     public String getEpisodePoster() {
         return episodePoster;
     }
+
+    public String getEpisodeCount() { return episodeCount; }
 
     public void setEpisodePoster(String episodePoster) {
         this.episodePoster = episodePoster;

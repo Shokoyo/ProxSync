@@ -446,8 +446,9 @@ function onMessage(event) {
         if (eventJSON.id === "-1") {
             leaveRoom();
         } else {
-            if(!onloadExecuted) {
-                window.onload = function() {};
+            if (!onloadExecuted) {
+                window.onload = function () {
+                };
                 onloadFunction();
             }
             if (!isOwner) {
@@ -494,6 +495,16 @@ function onMessage(event) {
             console.log("old value: " + oldNextEpisode + ", current value: " + checkbox.checked);
         }
         var playListString = buildHtmlPlaylist(eventJSON.playlist);
+        if(eventJSON.playlist[0].episode == eventJSON.playlist[0].episodeCount) {
+            document.getElementById("add-next-watchlist-button").innerHTML = "completed";
+        } else {
+            document.getElementById("add-next-watchlist-button").innerHTML = "watchlist: next";
+        }
+        if(eventJSON.playlist[0].episode > 1) {
+            document.getElementById("add-watchlist-button").innerHTML = "watchlist: this";
+        } else {
+            document.getElementById("add-watchlist-button").innerHTML = "plan to watch";
+        }
         document.getElementById("playlist-list").innerHTML = playListString;
     }
     if (eventJSON.action === "room-list") {
@@ -581,7 +592,7 @@ function buildHtmlListSearch(resultList) {
         if (resultList[i].episodeCount > 0) {
             for (var j = 1; j <= resultList[i].episodeCount; j++) {
                 res += "<a href='#' class='text square-box mdc-toolbar__icon";
-                if (resultList[i].watchlist > j) {
+                if (resultList[i].watchlist + 1 > j) {
                     res += " mdc-theme--secondary-dark-bg'";
                 } else {
                     if (j > resultList[i].lastEpisode) {
@@ -598,7 +609,31 @@ function buildHtmlListSearch(resultList) {
                     res += "<br/>";
                 }
             }
-        } else {
+        } else if (resultList[i].episodeCount === "?") {
+            for (var j = 1; j <= resultList[i].lastEpisode; j++) {
+                res += "<a href='#' class='text square-box mdc-toolbar__icon";
+                if (resultList[i].watchlist + 1 > j) {
+                    res += " mdc-theme--secondary-dark-bg'";
+                } else {
+                    if (j > resultList[i].lastEpisode) {
+                        res += " mdc-theme--primary-bg'";
+                    } else {
+                        res += " mdc-theme--secondary-bg'";
+                    }
+                }
+                res += "onclick='addSearchEpisodeToPlaylist(event,\"" + resultList[i].link + "\"," + j + ");'>" +
+                    "<b> " +
+                    (j).pad(resultList[i].episodeCount.toString().length) +
+                    " </b></a>";
+                if (j % 10 === 0) {
+                    res += "<br/>";
+                }
+            }
+            res += "<a href='#' class='text square-box mdc-toolbar__icon";
+            res += " mdc-theme--primary-bg'";
+            res += "><b> ? </b></a>";
+        }
+        else {
             res += "<a href='#' class='text square-box mdc-toolbar__icon  mdc-theme--secondary-bg' " +
                 "onclick='addSearchResultToPlaylist(\"" + resultList[i].link + "\");'>" +
                 "<b>" +
@@ -643,10 +678,11 @@ function addSearchEpisodeToPlaylist(event, url, episode) {
     event.preventDefault();
 }
 
-function addToWatchlist() {
+function addToWatchlist(next) {
     if (!anonymous) {
         var userAction = {
-            action: "addToWatchlist"
+            action: "addToWatchlist",
+            next: next
         };
         socket.send(JSON.stringify(userAction));
     }

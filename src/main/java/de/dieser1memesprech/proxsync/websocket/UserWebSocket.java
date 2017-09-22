@@ -13,6 +13,7 @@ import javax.json.*;
 import javax.json.spi.JsonProvider;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
+import javax.xml.bind.Element;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
@@ -236,9 +237,21 @@ public class UserWebSocket {
             if (r != null) {
                 User user = r.getUserMap().get(session);
                 if (!user.isAnonymous()) {
+                    int offset = 0;
+                    if(jsonMessage.getBoolean("next")) {
+                        offset = 1;
+                    }
+                    String status = "watching";
+                    if(!jsonMessage.getBoolean("next") && r.getPlaylist().peek().getEpisode() <= 1) {
+                        status = "planned";
+                    }
                     String key = r.getAnime().getAnimeSearchObject().getLink();
                     key = key.substring(key.lastIndexOf("/") + 1);
-                    Database.addToWatchlist(key, r.getPlaylist().peek().getEpisode() - 1 + "", "watching", user.getUid());
+                    int epNum = r.getPlaylist().peek().getEpisode() - 1 + offset;
+                    if(("" + epNum).equals(r.getPlaylist().peek().getEpisodeCount())) {
+                        status = "completed";
+                    }
+                    Database.addToWatchlist(key, epNum + "", status, user.getUid());
                 }
             }
         }

@@ -38,7 +38,20 @@ html {
 }
 
 .watchlist-star {
-    font-size: 22px;
+    font-size: 32px;
+    letter-spacing: 7px;
+}
+
+.title-container {
+    height:60px;
+    max-height:60px;/* vielleicht 72*/
+    min-height:60px;
+    line-height:105%;
+    width:216px;
+    margin-top: -4px!important;
+    margin-bottom: 2px;
+    max-width:216px;
+    min-width:216px;
 }
 
 .main {
@@ -60,55 +73,55 @@ html {
 }
 
 .mdc-grid-title {
-    width: 160px;
-    height: 220px;
-    margin: 4px;
+    width: 240px;
+    height: 320px;
+    margin: 10px;
 }
 
 .watchlist-card {
     background-size: cover;
     background-repeat: no-repeat;
-    width: 160px;
-    height: 220px;
-    margin: 4px;
+    width: 240px;
+    height: 320px;
+    margin: 10px;
 }
 
 .remove-from-watchlist-button {
     position: absolute;
-    top: 2px;
-    right: 2px;
+    top: 8px;
+    right: -2px;
     color: #c30000 !important;
     float: right;
-    font-size: 24px;
+    font-size: 32px;
     text-decoration: none;
 }
 
 .remove-from-watchlist-button-background {
     position: absolute;
-    top: 2px;
-    right: 2px;
+    top: 8px;
+    right: -4px;
     color: white !important;
     text-shadow: 0px 0px 6px rgba(0, 0, 0, 1);
     float: right;
-    font-size: 25px;
+    font-size: 32px;
     text-decoration: none;
 }
 
 .favorite-button {
     position: absolute;
     color: #7d20a5 !important;
-    top: 2px;
-    left: 6px;
-    font-size: 24px;
+    top: 8px;
+    left: 16px;
+    font-size: 32px;
     text-decoration: none;
 }
 
 .favorite-button-background {
     position: absolute;
-    top: 3px;
-    left: 8px;
+    top: 8px;
+    left: 18px;
     color: rgba(216,85,255,0.8) !important;
-    font-size: 20px;
+    font-size: 28px;
     text-decoration: none;
 }
 
@@ -124,7 +137,11 @@ html {
 
 .watchlist-card .mdc-card__primary,
 .watchlist-card .mdc-card__actions {
-    background: rgba(0, 0, 0, .4);
+    background: rgba(0, 0, 0, .5);
+    padding-bottom: 8px;
+    padding-left:12px;
+    padding-top:6px;
+    padding-right:12px;
 }
 
 .watchlist-item:hover {

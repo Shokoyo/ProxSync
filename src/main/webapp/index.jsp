@@ -122,12 +122,12 @@
             </div>
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">
                 <button class="mdc-button mdc-button--raised mdc-theme--secondary-bg"
-                        onclick="watchlistNext()"
+                        onclick="addToWatchlist(true)"
                         id="add-next-watchlist-button"
                         style="align-self: center;float: right;">watchlist: next
                 </button>
                 <button class="mdc-button mdc-button--raised mdc-theme--secondary-bg"
-                        onclick="addToWatchlist()"
+                        onclick="addToWatchlist(false)"
                         id="add-watchlist-button"
                         style="align-self: center;float: right;margin-right: 16px;">watchlist: this
                 </button>

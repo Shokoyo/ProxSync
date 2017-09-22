@@ -15,7 +15,7 @@ public class Anime {
     private String title;
     private String source;
     private Document document;
-    private int episodeCount;
+    private String episodeCount;
     private List<Episode> episodeList;
     private AnimeSearchObject animeSearchObject;
 
@@ -24,11 +24,12 @@ public class Anime {
         this.document = Jsoup.parse(source);
         this.title = getTitleString();
         initializeEpisodeList();
-        this.episodeCount = getEpisodeCountInt();
+        this.episodeCount = "" + getEpisodeCountInt();
         List<AnimeSearchObject> animeSearchObjectList = AnimeUtils.search(title);
         for (AnimeSearchObject animeSearchObject : animeSearchObjectList) {
             if (url.contains(animeSearchObject.getLink())) {
                 this.animeSearchObject = animeSearchObject;
+                this.episodeCount = animeSearchObject.getEpisodeCount();
                 break;
             }
         }
@@ -87,7 +88,7 @@ public class Anime {
         return title;
     }
 
-    public int getEpisodeCount() {
+    public String getEpisodeCount() {
         return episodeCount;
     }
 

@@ -1,6 +1,5 @@
 package de.dieser1memesprech.proxsync.database;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.dieser1memesprech.proxsync._9animescraper.config.Configuration;
 import net.thegreshams.firebase4j.error.FirebaseException;
@@ -17,26 +16,39 @@ import java.util.Map;
 public class WatchlistEntry {
     private String episode;
     private String poster;
-    private String animeTitle;
+    private String title;
     private String episodeCount;
-    private int rating;
-    private String animeKey;
+    private String rating;
+    private String key;
+    private String status;
 
-    public WatchlistEntry(String animeKey, String episode, String poster, String animeTitle, String episodeCount, int rating) {
+    public WatchlistEntry() { }
+
+    public WatchlistEntry(String episode, String poster, String title, String episodeCount, String rating, String key, String status) {
         this.episode = episode;
-        this.rating = rating;
         this.poster = poster;
-        this.animeTitle = animeTitle;
+        this.title = title;
         this.episodeCount = episodeCount;
-        this.animeKey = animeKey;
+        this.rating = rating;
+        this.key = key;
+        this.status = status;
+    }
+
+    public WatchlistEntry(String key, String episode, String poster, String title, String episodeCount, int rating) {
+        this.episode = episode;
+        this.rating = "" + rating;
+        this.poster = poster;
+        this.title = title;
+        this.episodeCount = episodeCount;
+        this.key = key;
     }
 
     public WatchlistEntry(String uid, JsonObject object) {
         this.episode = object.get("episode").getAsString();
         try {
-            this.rating = object.get("rating").getAsInt();
+            this.rating = object.get("rating").getAsString();
         } catch(ClassCastException | IllegalStateException e) {
-            this.rating = Integer.parseInt(object.get("rating").getAsString());
+            this.rating = object.get("rating").getAsString();
             Map<String, Object> map = new LinkedHashMap<>();
             map.put("rating", rating);
             try {
@@ -46,13 +58,9 @@ public class WatchlistEntry {
             }
         }
         this.poster = object.get("poster").getAsString();
-        this.animeTitle = object.get("title").getAsString();
+        this.title = object.get("title").getAsString();
         this.episodeCount = object.get("episodeCount").getAsString();
-        this.animeKey = object.get("key").getAsString();
-    }
-
-    public int getRating() {
-        return rating;
+        this.key = object.get("key").getAsString();
     }
 
     public String getEpisode() {
@@ -63,15 +71,23 @@ public class WatchlistEntry {
         return poster;
     }
 
-    public String getAnimeTitle() {
-        return animeTitle;
+    public String getTitle() {
+        return title;
     }
 
     public String getEpisodeCount() {
         return episodeCount;
     }
 
-    public String getAnimeKey() {
-        return animeKey;
+    public String getRating() {
+        return rating;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

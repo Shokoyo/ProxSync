@@ -1,5 +1,6 @@
 package de.dieser1memesprech.proxsync.database;
 
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -20,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Database {
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
     public static void addAnimeinfoToDatabase(String key, String title, List<String> res) {
         try {
             Map<String, Object> dataMapEpisodeNames = new LinkedHashMap<String, Object>();
@@ -108,11 +111,7 @@ public class Database {
             }.getType();
             Map<String, Object> animeMapObject = new Gson().fromJson(animeObject, mapType);
             FirebaseResponse response = Configuration.instance.getFirebase().put("anime/animeinfo/" + key.replaceAll("\\.", "-"), animeMapObject);
-        } catch (FirebaseException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (JacksonUtilityException e) {
+        } catch (FirebaseException | UnsupportedEncodingException | JacksonUtilityException e) {
             e.printStackTrace();
         }
     }
@@ -121,9 +120,7 @@ public class Database {
         FirebaseResponse response = null;
         try {
             response = Configuration.instance.getFirebase().get("anime/animeinfo/" + key.replaceAll("\\.", "-"));
-        } catch (FirebaseException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (FirebaseException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return response;
@@ -134,11 +131,7 @@ public class Database {
         map.put("avatar", url);
         try {
             FirebaseResponse response = Configuration.instance.getFirebase().patch("users/" + uid, map);
-        } catch (FirebaseException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (JacksonUtilityException e) {
+        } catch (FirebaseException | JacksonUtilityException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
     }
@@ -147,9 +140,7 @@ public class Database {
         FirebaseResponse response = null;
         try {
             response = Configuration.instance.getFirebase().get("users/" + uid + "/banner");
-        } catch (FirebaseException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (FirebaseException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         if (response != null && !response.getRawBody().equals("null")) {
@@ -163,9 +154,7 @@ public class Database {
         FirebaseResponse response = null;
         try {
             response = Configuration.instance.getFirebase().get("users/" + uid + "/avatar");
-        } catch (FirebaseException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (FirebaseException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         if (response != null && !response.getRawBody().equals("null")) {
@@ -180,11 +169,7 @@ public class Database {
         map.put("banner", url);
         try {
             FirebaseResponse response = Configuration.instance.getFirebase().patch("users/" + uid, map);
-        } catch (FirebaseException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (JacksonUtilityException e) {
+        } catch (FirebaseException | UnsupportedEncodingException | JacksonUtilityException e) {
             e.printStackTrace();
         }
     }
@@ -204,9 +189,7 @@ public class Database {
         FirebaseResponse response = null;
         try {
             response = Configuration.instance.getFirebase().get("anime/animeinfo/" + key.replaceAll("\\.", "-") + "/episodenames/" + (episode - 1));
-        } catch (FirebaseException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (FirebaseException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return response;
@@ -224,11 +207,7 @@ public class Database {
             dataMapWatchlist.put("poster", poster);
             dataMapWatchlist.put("key", key);
             FirebaseResponse response = Configuration.instance.getFirebase().put("users/" + uid + "/watchlist/" + key.replaceAll("\\.", "-"), dataMapWatchlist);
-        } catch (FirebaseException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (JacksonUtilityException e) {
+        } catch (FirebaseException | UnsupportedEncodingException | JacksonUtilityException e) {
             e.printStackTrace();
         }
     }
@@ -238,7 +217,9 @@ public class Database {
             FirebaseResponse response = Configuration.instance.getFirebase().get("users/" + uid + "/watchlist/" + key.replaceAll("\\.", "-"));
             JsonElement element = new JsonParser().parse(response.getRawBody());
             System.out.println(element.toString());
-            return new WatchlistEntry(uid, element.getAsJsonObject());
+            if(element.isJsonObject()) {
+                return new WatchlistEntry(uid, element.getAsJsonObject());
+            }
         } catch(UnsupportedEncodingException | FirebaseException e) {
             e.printStackTrace();
         }
@@ -251,7 +232,7 @@ public class Database {
             System.out.println("malformed entry or missing entry for uid "+uid+" and key "+ key + ". Returning rating 0");
             return 0;
         } else {
-            return entry.getRating();
+            return Integer.parseInt(entry.getRating());
         }
     }
 
@@ -267,11 +248,7 @@ public class Database {
             dataMapWatchlist.put("poster", animeObject.get("poster").getAsString());
             dataMapWatchlist.put("key", key);
             FirebaseResponse response = Configuration.instance.getFirebase().put("users/" + uid + "/watchlist/" + key.replaceAll("\\.", "-"), dataMapWatchlist);
-        } catch (FirebaseException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (JacksonUtilityException e) {
+        } catch (FirebaseException | UnsupportedEncodingException | JacksonUtilityException e) {
             e.printStackTrace();
         }
     }
@@ -282,9 +259,7 @@ public class Database {
         try {
             Firebase firebase = Configuration.instance.getFirebase();
             response = firebase.get("users/" + uid + "/watchlist");
-        } catch (FirebaseException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (FirebaseException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return response;

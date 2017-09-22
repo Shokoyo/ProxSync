@@ -35,25 +35,13 @@ public class AnimeUtils {
         Element nameAnchor = item.select("a[class=name]").first();
         Element lang = item.select("div[class=lang]").first();
         Element status = item.select("div[class=status]").first();
-        int episodeCount = 0;
-        int lastEpisode = 0;
+        String episodeCount = "1";
+        String lastEpisode = "1";
         if(status != null && !"".equals(status)) {
             String[] statusArray = status.text().split("/");
             if(statusArray.length == 2) {
-                if (!isInteger(statusArray[0]) && !isInteger(statusArray[1])) {
-                    statusArray[0] = "0";
-                    statusArray[1] = "1";
-                } else if (!isInteger(statusArray[0])) {
-                    statusArray[0] = statusArray[1];
-                } else if (!isInteger(statusArray[1])) {
-                    statusArray[1] = statusArray[0];
-                }
-                try {
-                    episodeCount = Integer.parseInt(statusArray[1]);
-                    lastEpisode = Integer.parseInt(statusArray[0]);
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
+                episodeCount = statusArray[1];
+                lastEpisode = statusArray[0];
             }
         }
         String langStr = lang == null ? "sub" : lang.text();
