@@ -13,5 +13,43 @@ function removeFromWatchlist(key) {
 }
 
 function addToFavorites(key) {
+    var favoritesRef = firebase.database().ref("/users/" + uid + "/favorites");
+    var oldKey = key;
+    key = key.split(".").join("-");
+    favoritesRef.once('value', function(snapshot) {
+        var favorites = snapshot.val();
+        if(favorites === null) {
+            favorites = {
+            };
+        }
+        favorites[key] = "true";
+        favoritesRef.set(favorites);
+        favoritesRef.once('value', function(snapshot) {
+            var favEl = document.getElementById("favorites-" + oldKey);
+            favEl.onclick=function() {
+                removeFromFavorites(oldKey);
+                return false;
+            };
+            favEl.innerHTML = "favorite";
+        });
+    });
+}
 
+function removeFromFavorites(key) {
+    var oldKey = key;
+    key = key.split(".").join("-");
+    if(key !== "") {
+        var favRef = firebase.database().ref("/users/" + uid + "/favorites/" + key);
+        favRef.remove();
+        favRef.once('value', function(snapshot) {
+            var favEl = document.getElementById("favorites-" + oldKey);
+            favEl.onclick=function() {
+                addToFavorites(oldKey);
+                return false;
+            };
+            favEl.innerHTML = "favorite_border";
+        });
+    } else {
+        console.log("corrupted favorite entry");
+    }
 }

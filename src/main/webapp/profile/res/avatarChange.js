@@ -9,7 +9,7 @@ function uploadAvatar(file) {
             firebase.database().ref("/users/" + uid + "/avatar").set(url);
             console.log(url);
             var starCountRef = firebase.database().ref("/users/" + uid + "/avatar");
-            starCountRef.on('value', function(snapshot) {
+            starCountRef.once('value', function(snapshot) {
                 //TODO: avatar change notification
                 document.getElementById("avatar-toolbar").src = url;
                 document.getElementById("avatar-on-card").src = url;

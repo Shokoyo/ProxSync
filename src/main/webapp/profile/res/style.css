@@ -1,7 +1,6 @@
 /* Ensure layout covers the entire screen. */
 html {
     height: 100%;
-    width: 100%;
 }
 
 /* Stack toolbar and content on top of each other. */
@@ -21,22 +20,6 @@ html {
     margin-bottom: 0px;
 }
 
-.profile-list {
-    height: 48px;
-    min-height: 48px;
-    max-height: 48px;
-    line-height: 48px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-}
-
-#banner-button {
-    margin-right: 12px;
-    margin-top: 12px;
-    margin-left: auto;
-    margin-bottom: auto;
-}
-
 .mdc-list-item__start-detail {
     align-self: center;
 }
@@ -50,17 +33,134 @@ html {
     display: flex;
     flex: 1 1 auto;
     height: 100%;
+    width: 100%;
     box-sizing: border-box;
 }
 
 .watchlist-star {
-    font-size: 22px;
+    font-size: 32px;
+    letter-spacing: 7px;
+}
+
+.title-container {
+    height:60px;
+    max-height:60px;/* vielleicht 72*/
+    min-height:60px;
+    line-height:105%;
+    width:216px;
+    margin-top: -4px!important;
+    margin-bottom: 2px;
+    max-width:216px;
+    min-width:216px;
 }
 
 .main {
     margin-left: 48px;
-    width: 100%;
+}
+
+.mdc-grid-list {
+    margin-top: 16px;
+}
+
+.user-avatar-toolbar {
+    background: #bdbdbd;
+    align-self: center;
+    height: 48px;
+    width: 48px;
+    margin-top: 5px;
+    margin-left: 10px;
+    border-radius: 50%;
+}
+
+.mdc-grid-title {
+    width: 240px;
+    height: 320px;
+    margin: 10px;
+}
+
+.watchlist-card {
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 240px;
+    height: 320px;
+    margin: 10px;
+}
+
+.remove-from-watchlist-button {
+    position: absolute;
+    top: 8px;
+    right: -2px;
+    color: #c30000 !important;
+    float: right;
+    font-size: 32px;
+    text-decoration: none;
+}
+
+.remove-from-watchlist-button-background {
+    position: absolute;
+    top: 8px;
+    right: -4px;
+    color: white !important;
+    text-shadow: 0px 0px 6px rgba(0, 0, 0, 1);
+    float: right;
+    font-size: 32px;
+    text-decoration: none;
+}
+
+.favorite-button {
+    position: absolute;
+    color: #7d20a5 !important;
+    top: 8px;
+    left: 16px;
+    font-size: 32px;
+    text-decoration: none;
+}
+
+.favorite-button-background {
+    position: absolute;
+    top: 8px;
+    left: 18px;
+    color: rgba(216,85,255,0.8) !important;
+    font-size: 28px;
+    text-decoration: none;
+}
+
+.mdc-card__title .mdc-card__title--large {
+    font-size: small;
+}
+
+.mdc-grid-list__tiles {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.watchlist-card .mdc-card__primary,
+.watchlist-card .mdc-card__actions {
+    background: rgba(0, 0, 0, .5);
+    padding-bottom: 8px;
+    padding-left:12px;
+    padding-top:6px;
+    padding-right:12px;
+}
+
+.watchlist-item:hover {
+    cursor: pointer;
+}
+
+.user-image {
+    /*max-width:100%;
+    max-height:100%;
+    margin: 0 auto;
+    vertical-align: middle;*/
     box-sizing: border-box;
+    object-fit: scale-down; /* Do not scale the image */
+    object-position: 50% 50%; /* Center the image within the element */
+}
+
+.user-card .mdc-card__primary,
+.user-card .mdc-card__actions {
+    background: rgba(0, 0, 0, .4);
 }
 
 .user-card {
@@ -92,47 +192,9 @@ html {
     border-radius: 50%;
 }
 
-.user-avatar-toolbar {
-    background: #bdbdbd;
-    align-self: center;
-    height: 48px;
-    width: 48px;
-    margin-top: 5px;
-    margin-left: 10px;
-    border-radius: 50%;
-}
-
-.user-image {
-    /*max-width:100%;
-    max-height:100%;
-    margin: 0 auto;
-    vertical-align: middle;*/
-    box-sizing: border-box;
-    object-fit: scale-down; /* Do not scale the image */
-    object-position: 50% 50%; /* Center the image within the element */
-}
-
-.mdc-grid-title {
-    width: 160px;
-    height: 220px;
-    margin: 4px;
-}
-
-.watchlist-card {
-    background-size: cover;
-    background-repeat: no-repeat;
-    width: 160px;
-    height: 220px;
-    margin: 4px;
-}
-
-.mdc-grid-list__tiles {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-.user-card .mdc-card__primary,
-.user-card .mdc-card__actions {
-    background: rgba(0, 0, 0, .4);
+#banner-button {
+    margin-right: 12px;
+    margin-top: 12px;
+    margin-left: auto;
+    margin-bottom: auto;
 }

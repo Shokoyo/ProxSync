@@ -190,6 +190,7 @@
                     <%
                     } else {
                         Watchlist watchlist = Database.getWatchlistObjectFromDatabase(uid);
+                        List<String> favoriteKeys = Database.getFavoriteKeys(uid);
                     %>
                     <div class="panel active" id="panel-watching" role="tabpanel" aria-hidden="false">
                         <div class="mdc-grid-list">
@@ -213,10 +214,19 @@
                                             </a>
                                             <a href="javascript:void(0);"
                                                class="favorite-button-background material-icons mdc-theme--secondary-light">favorite</a>
+                                            <%if(favoriteKeys.contains(e.getKey().replaceAll("\\.", "-"))) {%>
+                                            <a href="#" onclick="removeFromFavorites('<%=e.getKey()%>');return false;"
+                                               class="favorite-button material-icons mdc-theme--secondary"
+                                               id="favorites-<%=e.getKey()%>">
+                                                favorite
+                                            </a>
+                                            <%} else {%>
                                             <a href="#" onclick="addToFavorites('<%=e.getKey()%>');return false;"
-                                               class="favorite-button material-icons mdc-theme--secondary">
+                                               class="favorite-button material-icons mdc-theme--secondary"
+                                               id="favorites-<%=e.getKey()%>">
                                                 favorite_border
                                             </a>
+                                            <%}%>
                                             <section class="mdc-card__primary watchlist-item"
                                                      onclick="window.open('../?id=<%=e.getKey()%>&episode=<%=(Integer.parseInt(e.getEpisode())+1)%>','_self')">
                                                 <h1 class="mdc-card__title mdc-card__title--large title-container resize"><%=e.getTitle()%>
@@ -283,10 +293,19 @@
                                             </a>
                                             <a href="javascript:void(0);"
                                                class="favorite-button-background material-icons mdc-theme--secondary-light">favorite</a>
+                                            <%if(favoriteKeys.contains(e.getKey().replaceAll("\\.", "-"))) {%>
+                                            <a href="#" onclick="removeFromFavorites('<%=e.getKey()%>');return false;"
+                                               class="favorite-button material-icons mdc-theme--secondary"
+                                               id="favorites-<%=e.getKey()%>">
+                                                favorite
+                                            </a>
+                                            <%} else {%>
                                             <a href="#" onclick="addToFavorites('<%=e.getKey()%>');return false;"
-                                               class="favorite-button material-icons mdc-theme--secondary">
+                                               class="favorite-button material-icons mdc-theme--secondary"
+                                               id="favorites-<%=e.getKey()%>">
                                                 favorite_border
                                             </a>
+                                            <%}%>
                                             <section class="mdc-card__primary watchlist-item"
                                                      onclick="window.open('../?id=<%=e.getKey()%>&episode=<%=(Integer.parseInt(e.getEpisode())+1)%>','_self')">
                                                 <h1 class="mdc-card__title mdc-card__title--large title-container resize"><%=e.getTitle()%>
@@ -352,10 +371,19 @@
                                             </a>
                                             <a href="javascript:void(0);"
                                                class="favorite-button-background material-icons mdc-theme--secondary-light">favorite</a>
+                                            <%if(favoriteKeys.contains(e.getKey().replaceAll("\\.", "-"))) {%>
+                                            <a href="#" onclick="removeFromFavorites('<%=e.getKey()%>');return false;"
+                                               class="favorite-button material-icons mdc-theme--secondary"
+                                               id="favorites-<%=e.getKey()%>">
+                                                favorite
+                                            </a>
+                                            <%} else {%>
                                             <a href="#" onclick="addToFavorites('<%=e.getKey()%>');return false;"
-                                               class="favorite-button material-icons mdc-theme--secondary">
+                                               class="favorite-button material-icons mdc-theme--secondary"
+                                               id="favorites-<%=e.getKey()%>">
                                                 favorite_border
                                             </a>
+                                            <%}%>
                                             <section class="mdc-card__primary">
                                                 <h1 class="mdc-card__title mdc-card__title--large title-container resize"><%=e.getTitle()%>
                                                 </h1>

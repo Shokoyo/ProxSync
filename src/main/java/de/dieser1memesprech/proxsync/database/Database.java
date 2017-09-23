@@ -1,6 +1,7 @@
 package de.dieser1memesprech.proxsync.database;
 
 import com.google.firebase.database.*;
+import de.dieser1memesprech.proxsync._9animescraper.Anime;
 
 import java.util.*;
 
@@ -75,6 +76,46 @@ public class Database {
         String res = data.getValue(String.class);
         if(res == null) {
             res = "null";
+        }
+        return res;
+    }
+
+    public static List<String> getFavoriteKeys(String uid) {
+        DataSnapshot data = getDataFromDatabase("users/" + uid + "/favorites");
+        List<String> res = new ArrayList<>();
+        if(data == null) {
+            return res;
+        }
+        try {
+            for (Map.Entry<String, Object> d : ((Map<String, Object>) data.getValue()).entrySet()) {
+                String key = d.getKey();
+                if (key != null) {
+                    res.add(key);
+                }
+            }
+        } catch(ClassCastException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    public static List<WatchlistEntry> getFavorites(String uid) {
+        DataSnapshot data = getDataFromDatabase("users/" + uid + "/favorites");
+        List<WatchlistEntry> res = new ArrayList<>();
+        if(data == null) {
+            return res;
+        }
+        try {
+            for (Map.Entry<String, Object> d : ((Map<String, Object>) data.getValue()).entrySet()) {
+                String key = d.getKey();
+                System.out.println(key);
+                WatchlistEntry entry = getWatchlistEntry(uid, key);
+                if (entry != null) {
+                    res.add(entry);
+                }
+            }
+        } catch(ClassCastException e) {
+            e.printStackTrace();
         }
         return res;
     }

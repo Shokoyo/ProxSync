@@ -1,7 +1,7 @@
 <%@ page import="de.dieser1memesprech.proxsync.util.LoginUtil" %>
-<%@ page import="de.dieser1memesprech.proxsync.database.Database" %>
-<%@ page import="de.dieser1memesprech.proxsync.database.Notification" %>
 <%@ page import="java.util.List" %>
+<%@ page import="de.dieser1memesprech.proxsync.database.*" %>
+<!--TODO make responsive! fit to screen-->
 <html language="de" class="mdc-typography">
 <head>
     <meta charset="utf-8"/>
@@ -101,7 +101,8 @@
                             }
                         %>
                     </i>
-                    <div class="mdc-simple-menu mdc-simple-menu--open-from-top-right" tabindex="-1" id="notification-menu" style="top:64px;right:72px;">
+                    <div class="mdc-simple-menu mdc-simple-menu--open-from-top-right" tabindex="-1"
+                         id="notification-menu" style="top:64px;right:72px;">
                         <ul class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
                             <%
                                 for (int i = 0; i < notifications.size(); i++) {
@@ -175,6 +176,37 @@
                 <h2 class="mdc-card__subtitle">10000000000 Punkte (Kami-Sama)</h2>
             </section>
         </div>
+        <h2>Favorites</h2>
+        <div class="mdc-grid-list">
+            <ul class="mdc-grid-list__tiles">
+                <%
+                    for (WatchlistEntry e : Database.getFavorites(uid)) {
+                %>
+                <li class="mdc-grid-title"
+                    id="card-<%=e.getKey()%>">
+                    <div class="mdc-grid-tile__primary">
+
+                        <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
+                             style="background-image:url(<%=e.getPoster()%>);">
+                            <a href="javascript:void(0);"
+                               class="remove-from-watchlist-button-background material-icons mdc-theme--secondary mdc-24">fiber_manual_record</a>
+                            <a href="#"
+                               onclick="removeFromFavorites('<%=e.getKey()%>');return false;"
+                               class="remove-from-watchlist-button material-icons mdc-theme--secondary">
+                                cancel
+                            </a>
+                            <section class="mdc-card__primary watchlist-item">
+                                <h1 class="mdc-card__title mdc-card__title--large title-container resize"><%=e.getTitle()%>
+                                </h1>
+                            </section>
+                        </div>
+                    </div>
+                </li>
+                <%
+                    }
+                %>
+            </ul>
+        </div>
         <%} else {%>
         <h4>Please log in</h4>
         <%}%>
@@ -201,6 +233,7 @@
 <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 <script src="../res/firebase.js"></script>
 <script src="res/avatarChange.js"></script>
+<script src="res/manageFavorites.js"></script>
 <script>
     var notificationsEl = document.querySelector('#notification-menu');
     var menuNotifications = new mdc.menu.MDCSimpleMenu(notificationsEl);
@@ -261,7 +294,7 @@
     firebase.auth().onAuthStateChanged(function (authData) {
         if (authData) {
             console.log("Logged in as:", authData.uid);
-            if(getCookie("anonymous") === "true" && !authData.isAnonymous) {
+            if (getCookie("anonymous") === "true" && !authData.isAnonymous) {
                 console.log("non anonymous login");
                 setCookie("loginData", authData.uid, 10000);
                 setCookie("anonymous", "false", 10000);
@@ -284,6 +317,40 @@
                 console.error("Anonymous authentication failed:", error);
             });
         }
+    });
+</script>
+<script>
+    var autoSizeText;
+
+    autoSizeText = function () {
+        var el, elements, _i, _len, _results;
+        elements = $('.resize');
+        console.log(elements);
+        if (elements.length < 0) {
+            return;
+        }
+        _results = [];
+        for (_i = 0, _len = elements.length; _i < _len; _i++) {
+            el = elements[_i];
+            _results.push((function (el) {
+                var resizeText, _results1;
+                resizeText = function () {
+                    var elNewFontSize;
+                    elNewFontSize = (parseInt($(el).css('font-size').slice(0, -2)) - 1) + 'px';
+                    return $(el).css('font-size', elNewFontSize);
+                };
+                _results1 = [];
+                while (el.scrollHeight > el.offsetHeight) {
+                    _results1.push(resizeText());
+                }
+                return _results1;
+            })(el));
+        }
+        return _results;
+    };
+
+    $(document).ready(function () {
+        return autoSizeText();
     });
 </script>
 </body>
