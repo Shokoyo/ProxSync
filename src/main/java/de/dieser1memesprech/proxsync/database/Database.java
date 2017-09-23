@@ -87,10 +87,12 @@ public class Database {
             return res;
         }
         try {
-            for (Map.Entry<String, Object> d : ((Map<String, Object>) data.getValue()).entrySet()) {
-                String key = d.getKey();
-                if (key != null) {
-                    res.add(key);
+            if (data.getValue() != null) {
+                for (Map.Entry<String, Object> d : ((Map<String, Object>) data.getValue()).entrySet()) {
+                    String key = d.getKey();
+                    if (key != null) {
+                        res.add(key);
+                    }
                 }
             }
         } catch(ClassCastException e) {
