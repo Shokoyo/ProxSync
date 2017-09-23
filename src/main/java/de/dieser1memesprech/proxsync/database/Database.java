@@ -72,7 +72,11 @@ public class Database {
 
     public static String getAvatarFromDatabase(String uid) {
         DataSnapshot data = getDataFromDatabase("users/" + uid + "/avatar");
-        return data.getValue(String.class);
+        String res = data.getValue(String.class);
+        if(res == null) {
+            res = "null";
+        }
+        return res;
     }
 
     public static void setBanner(String uid, String url) {

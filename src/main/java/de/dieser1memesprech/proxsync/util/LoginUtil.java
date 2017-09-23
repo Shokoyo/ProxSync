@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class LoginUtil {
     public static String getUid(HttpServletRequest request) {
-        boolean anonymous = false;
+        boolean anonymous = true;
         String res = "";
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {

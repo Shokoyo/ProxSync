@@ -1,7 +1,7 @@
 firebase.auth().onAuthStateChanged(function (authData) {
     if (authData) {
         console.log("Logged in as:", authData.uid);
-        if(getCookie("anonymous") === "true" && !authData.isAnonymous) {
+        if(!authData.isAnonymous && (getCookie("anonymous") === "true" || getCookie("loginData") !== authData.uid)) {
             console.log("non anonymous login");
             setCookie("loginData", authData.uid, 10000);
             setCookie("anonymous", "false", 10000);

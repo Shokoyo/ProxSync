@@ -25,8 +25,9 @@ function register() {
 
 function signout() {
     console.log("signout");
+    setCookie("anonymous", "true", 10000);
+    setCookie("loginData", "", 10000);
     firebase.auth().signOut().then(function () {
-
     }).catch(function (error) {// Sign-out successful.
         // An error happened.
     });
