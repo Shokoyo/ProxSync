@@ -195,16 +195,22 @@ public class Database {
 
     //Note that the key must be a valid 9anime key
     public static void addNotification(String key, String uid, String title, String latestEp, String epCount) {
-        Notification n = new Notification(key, title, latestEp, epCount);
-        database.getReference("notifications/" + uid + "/" + key.replaceAll("\\.", "-")).setValue(n);
+        DataSnapshot data = getDataFromDatabase("users/" + uid + "/notifications/" + key.replaceAll("\\.", "-") + "/hidden");
+        if(!(data != null && data.exists() && data.getValue(Boolean.class))) {
+            Notification n = new Notification(key, title, latestEp, epCount, false);
+            database.getReference("users/" + uid + "/notifications/" + key.replaceAll("\\.", "-")).setValue(n);
+        }
     }
 
     public static List<Notification> getNotifications(String uid) {
         List<Notification> res = new ArrayList<>();
-        DataSnapshot data = getDataFromDatabase("notifications/" + uid);
+        DataSnapshot data = getDataFromDatabase("users/" + uid + "/notifications");
         if (data != null && data.getChildrenCount() > 0) {
             for (DataSnapshot d : data.getChildren()) {
-                res.add(d.getValue(Notification.class));
+                Notification n = d.getValue(Notification.class);
+                if(!n.isHidden()) {
+                    res.add(n);
+                }
             }
         }
         return res;
@@ -255,6 +261,6 @@ public class Database {
     }
 
     public static void removeNotification(String uid, String key) {
-        database.getReference("notifications/" + uid + "/" + key.replaceAll("\\.", "-")).removeValue();
+        database.getReference("users/" + uid + "/notifications/" + key.replaceAll("\\.", "-")).removeValue();
     }
 }

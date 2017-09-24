@@ -110,7 +110,7 @@
                                     Notification n = notifications.get(i);
                             %>
                             <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
-                                <span style="align-self:center"><%=n.getTitle()%>: <%=n.getLatestEpisode()%>/<%=n.getEpisodeCount()%></span>
+                                <span style="align-self:center"><a href="javascript:function() {watchNext('<%=n.getKey()%>');return false;}" style="text-decoration:none;color:inherit;"><%=n.getTitle()%>: <%=n.getLatestEpisode()%>/<%=n.getEpisodeCount()%></a><i onclick="removeNotification('<%=n.getKey()%>');return false;" class="material-icons remove-notification">clear</i></span>
                             </li>
                             <% if (i < notifications.size() - 1) {%>
                             <li role="separator" class="mdc-list-divider"></li>

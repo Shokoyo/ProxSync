@@ -8,10 +8,11 @@ public class Notification {
     private String title;
     private String latestEpisode;
     private String episodeCount;
+    private boolean hidden;
 
     public Notification() {}
 
-    public Notification(String key, String title, String latestEpisode, String episodeCount) {
+    public Notification(String key, String title, String latestEpisode, String episodeCount, boolean hidden) {
         this.key = key;
         this.title = title;
         this.latestEpisode = latestEpisode;
@@ -32,5 +33,9 @@ public class Notification {
 
     public String getEpisodeCount() {
         return episodeCount;
+    }
+
+    public boolean isHidden() {
+        return hidden;
     }
 }
