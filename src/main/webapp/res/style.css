@@ -96,7 +96,9 @@
 }
 
 .remove-notification {
-    margin-left:4px;
+    margin-right:4px;
+    padding-left:4px;
+    margin-left:auto;
     vertical-align: middle;
     margin-top:-4px;
 }

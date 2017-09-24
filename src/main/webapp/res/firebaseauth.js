@@ -47,6 +47,7 @@ firebase.auth().onAuthStateChanged(function (authData) {
     }
     else {
         console.log("Not logged in; going to log in as anonymous");
+        setCookie("anonymous", "true", 10000);
         currentUser = null;
         firebase.auth().signInAnonymously().catch(function (error) {
             console.error("Anonymous authentication failed:", error);

@@ -103,19 +103,21 @@
                     </i>
                     <div class="mdc-simple-menu mdc-simple-menu--open-from-top-right" tabindex="-1"
                          id="notification-menu" style="top:64px;right:72px;">
+                        <%if(!notifications.isEmpty()&& ! "".equals(uid)) {%>
                         <ul class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
                             <%
                                 for (int i = 0; i < notifications.size(); i++) {
                                     Notification n = notifications.get(i);
                             %>
-                            <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
-                                <span style="align-self:center"><a href="javascript:function() {watchNext('<%=n.getKey()%>');return false;}" style="text-decoration:none;color:inherit;"><%=n.getTitle()%>: <%=n.getLatestEpisode()%>/<%=n.getEpisodeCount()%></a><i onclick="removeNotification('<%=n.getKey()%>');return false;" class="material-icons remove-notification">clear</i></span>
+                            <li class="mdc-list-item profile-list" role="menuitem" aria-disabled="true" id="notifications-<%=n.getKey()%>">
+                                <span style="align-self:center"><a href="javascript:void(0)" onclick="watchNext(event,'<%=n.getKey()%>');return false;" style="text-decoration:none;color:inherit;"><%=n.getTitle()%>: <%=n.getLatestEpisode()%>/<%=n.getEpisodeCount()%></a><i onclick="removeNotification('<%=n.getKey()%>');return false;" class="material-icons remove-notification">clear</i></span>
                             </li>
                             <% if (i < notifications.size() - 1) {%>
-                            <li role="separator" class="mdc-list-divider"></li>
+                            <li role="separator" class="mdc-list-divider" id="divider-<%=n.getKey()%>"></li>
                             <%}%>
                             <%}%>
                         </ul>
+                        <%}%>
                     </div>
                     <span id="welcome-msg" class="mdc-toolbar__title"
                           style="margin-top:4px;float:right;align-self:center;"></span>
