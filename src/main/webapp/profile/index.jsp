@@ -103,8 +103,8 @@
                     </i>
                     <div class="mdc-simple-menu mdc-simple-menu--open-from-top-right" tabindex="-1"
                          id="notification-menu" style="top:64px;right:72px;">
-                        <%if(!notifications.isEmpty()&& ! "".equals(uid)) {%>
                         <ul class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
+                            <%if(!notifications.isEmpty()&& ! "".equals(uid)) {%>
                             <%
                                 for (int i = 0; i < notifications.size(); i++) {
                                     Notification n = notifications.get(i);
@@ -116,8 +116,8 @@
                             <li role="separator" class="mdc-list-divider" id="divider-<%=n.getKey()%>"></li>
                             <%}%>
                             <%}%>
+                            <%}%>
                         </ul>
-                        <%}%>
                     </div>
                     <span id="welcome-msg" class="mdc-toolbar__title"
                           style="margin-top:4px;float:right;align-self:center;"></span>
@@ -216,10 +216,10 @@
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-storage.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-storage.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-database.js"></script>
 <script>
     // Initialize Firebase
     var config = {
@@ -236,39 +236,8 @@
 <script src="../res/firebase.js"></script>
 <script src="res/avatarChange.js"></script>
 <script src="res/manageFavorites.js"></script>
-<script>
-    var notificationsEl = document.querySelector('#notification-menu');
-    var menuNotifications = new mdc.menu.MDCSimpleMenu(notificationsEl);
-    var timeOut;
-    mdc.textfield.MDCTextfield.attachTo(document.querySelector('.mdc-textfield'));
-    var menuEl = document.querySelector('#profile-menu');
-    var menu = new mdc.menu.MDCSimpleMenu(menuEl);
-
-    menuEl.addEventListener('MDCSimpleMenu:selected', function (evt) {
-        menu.open = false;
-        var detail = evt.detail;
-        switch (detail.index) {
-            case 0:
-                followLink("/profile/");
-                break;
-            case 1:
-                followLink("/watchlist/");
-                break;
-            case 2:
-                followLink("/settings/");
-                break;
-            case 3:
-                signout();
-        }
-    });
-
-    function followLink(loc) {
-        var path = window.location.pathname;
-        path = path.substring(0, path.lastIndexOf("/"));
-        path = path.substring(0, path.lastIndexOf("/"));
-        window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + path + loc;
-    }
-</script>
+<script src="../res/firebaseauth-normal.js"></script>
+<script src="../res/menus.js"></script>
 <script>
     $("#avatar-on-card").click(function () {
         $("#files").click();
@@ -293,33 +262,6 @@
     if (document.getElementById("files") != null) {
         document.getElementById('files').addEventListener('change', handleAvatarSelect, false);
     }
-    firebase.auth().onAuthStateChanged(function (authData) {
-        if (authData) {
-            console.log("Logged in as:", authData.uid);
-            if (getCookie("anonymous") === "true" && !authData.isAnonymous) {
-                console.log("non anonymous login");
-                setCookie("loginData", authData.uid, 10000);
-                setCookie("anonymous", "false", 10000);
-                location.reload();
-                return;
-            }
-            currentUser = authData.currentUser;
-            uid = authData.uid;
-            anonymous = authData.isAnonymous;
-            if (!anonymous) {
-                document.getElementById("user-name").innerHTML = "" + authData.displayName;
-            }
-            updateAuthButtons(authData);
-        }
-        else {
-            console.log("Not logged in; going to log in as anonymous");
-            currentUser = null;
-            setCookie("anonymous", "true", 10000);
-            firebase.auth().signInAnonymously().catch(function (error) {
-                console.error("Anonymous authentication failed:", error);
-            });
-        }
-    });
 </script>
 <script>
     var autoSizeText;

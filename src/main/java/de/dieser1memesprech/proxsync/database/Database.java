@@ -116,7 +116,7 @@ public class Database {
                     res.add(entry);
                 }
             }
-        } catch(ClassCastException e) {
+        } catch(ClassCastException | NullPointerException e) {
             e.printStackTrace();
         }
         return res;

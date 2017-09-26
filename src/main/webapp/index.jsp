@@ -122,8 +122,8 @@
                     </i>
                     <div class="mdc-simple-menu mdc-simple-menu--open-from-top-right" tabindex="-1"
                          id="notification-menu" style="top:64px;right:72px;">
-                        <%if(!notifications.isEmpty()&& ! "".equals(uid)) {%>
                         <ul class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
+                            <%if(!notifications.isEmpty()&& ! "".equals(uid)) {%>
                             <%
                                 for (int i = 0; i < notifications.size(); i++) {
                                     Notification n = notifications.get(i);
@@ -135,8 +135,8 @@
                             <li role="separator" class="mdc-list-divider" id="divider-<%=n.getKey()%>"></li>
                             <%}%>
                             <%}%>
+                            <%}%>
                         </ul>
-                        <%}%>
                     </div>
                     <span id="welcome-msg" class="mdc-toolbar__title"
                           style="margin-top:4px;float:right;align-self:center;"></span>
@@ -295,8 +295,8 @@
 </main>
 <p id="invite-link"></p>
 <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-auth.js"></script>
 <script>
     // Initialize Firebase
     var config = {
@@ -317,39 +317,44 @@
 <script src="res/tab-switch.js?v=0.1"></script>
 <script>
     var notificationsEl = document.querySelector('#notification-menu');
-    var menuNotifications = new mdc.menu.MDCSimpleMenu(notificationsEl);
+    if(notificationsEl != null) {
+        var menuNotifications = new mdc.menu.MDCSimpleMenu(notificationsEl);
+    }
     var timeOut;
     mdc.textfield.MDCTextfield.attachTo(document.querySelector('.mdc-textfield'));
     var menuEl = document.querySelector('#profile-menu');
-    var menuTop = new mdc.menu.MDCSimpleMenu(menuEl);
-    var urlFieldEl = document.querySelector('#url-field');
-    var urlField = new mdc.textfield.MDCTextfield(urlFieldEl);
-
-    menuEl.addEventListener('MDCSimpleMenu:selected', function (evt) {
-        menuTop.open = false;
-        var detail = evt.detail;
-        switch (detail.index) {
-            case 0:
-                followLink("/profile/");
-                break;
-            case 1:
-                followLink("/watchlist/");
-                break;
-            case 2:
-                followLink("/settings/");
-                break;
-            case 3:
-                signout();
-        }
-    });
+    if(menuEl != null) {
+        var menuTop = new mdc.menu.MDCSimpleMenu(menuEl);
+        menuEl.addEventListener('MDCSimpleMenu:selected', function (evt) {
+            menuTop.open = false;
+            var detail = evt.detail;
+            switch (detail.index) {
+                case 0:
+                    followLink("/profile/");
+                    break;
+                case 1:
+                    followLink("/watchlist/");
+                    break;
+                case 2:
+                    followLink("/settings/");
+                    break;
+                case 3:
+                    signout();
+            }
+        });
+    }
 
     function followLink(loc) {
         var path = window.location.pathname;
-        if (path.charAt(path.length - 1) === "/") {
+        console.log(path);
+        if (path.indexOf("/") !== -1) {
             path = path.substring(0, path.length - 1);
         }
+        console.log(path);
         window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + path + loc;
     }
+    var urlFieldEl = document.querySelector('#url-field');
+    var urlField = new mdc.textfield.MDCTextfield(urlFieldEl);
 </script>
 </body>
 </html>
