@@ -219,7 +219,7 @@ public class Database {
     }
 
     public static Notification getNotification(String uid, String key) {
-        DataSnapshot data = getDataFromDatabase("notifications/" + uid + "/" + key.replaceAll("\\.", "-"));
+        DataSnapshot data = getDataFromDatabase("users/" + uid + "/notifications/" + key.replaceAll("\\.", "-"));
         if (data != null) {
             return data.getValue(Notification.class);
         } else {

@@ -42,11 +42,9 @@
     <orderEntry type="library" name="GlassFish 4.1.2 - RESTful Web Service" level="application_server_libraries" />
     <orderEntry type="library" scope="PROVIDED" name="GlassFish 4.1.2 - Batch Applications" level="application_server_libraries" />
     <orderEntry type="library" scope="PROVIDED" name="GlassFish 4.1.2 - JSF" level="application_server_libraries" />
-    <orderEntry type="library" name="Java EE 6-Java EE 6" level="project" />
     <orderEntry type="library" name="javax.servlet:servlet-api:2.4" level="project" />
     <orderEntry type="library" name="jquery" level="application" />
     <orderEntry type="library" name="video" level="application" />
-    <orderEntry type="library" name="_9animescrapper" level="project" />
     <orderEntry type="library" name="firebase" level="application" />
     <orderEntry type="library" name="firebase-app" level="application" />
     <orderEntry type="library" name="firebase-auth" level="application" />
