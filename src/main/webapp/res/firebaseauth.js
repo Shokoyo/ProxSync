@@ -26,7 +26,7 @@ firebase.auth().onAuthStateChanged(function (authData) {
                 var id = getQueryVariable("id");
                 var episode = getQueryVariable("episode");
                 if (id !== null) {
-                    loadVideo("https://9anime.to/watch/" + id, episode === null ? 1 : parseInt(episode));
+                    loadVideoByEpisode("https://9anime.to/watch/" + id, episode === null ? 1 : parseInt(episode));
                 }
             } else {
                 if (socket.readyState === socket.OPEN) {

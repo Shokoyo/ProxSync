@@ -328,6 +328,7 @@
 <script src="res/player-script.js?v=0.0.0.4.10"></script>
 <script src="res/tab-switch.js?v=0.1"></script>
 <script src="res/Youtube.js"></script>
+<script src="res/notification-script.js"></script>
 <script>
     var notificationsEl = document.querySelector('#notification-menu');
     if(notificationsEl != null) {

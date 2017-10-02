@@ -327,7 +327,7 @@ function loadVideo() {
     socket.send(JSON.stringify(userAction));
 }
 
-function loadVideoByUrl(url, episode) {
+function loadVideoByEpisode(url, episode) {
     if (isOwner) {
         var userAction = {
             action: "episodeLink",
@@ -409,11 +409,8 @@ function onMessage(event) {
         myPlayer.reset();
         myPlayer.src(SourceObject);
         myPlayer.pause();
-        myPlayer.play();
-        myPlayer.pause();
         bindTimeUpdate();
         bindPauseEvent();
-        firstVideo = false;
         if (!isYT) {
             if (!firstVideo && isOwner && document.getElementById("auto-play-checkbox").checked) {
                 myPlayer.one('canplay', function () {
@@ -430,6 +427,7 @@ function onMessage(event) {
                 });
             }
         }
+        firstVideo = false;
         //syncing = true;
         //setTimeout(myPlayer.play,20);
         //setTimeout(function() { syncing = false; }, 20);
