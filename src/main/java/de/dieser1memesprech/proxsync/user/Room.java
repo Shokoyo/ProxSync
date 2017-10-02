@@ -258,6 +258,7 @@ public class Room {
                         v.episodeTitle = getEpisodeTitle(v.key, v.animeTitle, v.episode, episodeCount);
                     } catch(NumberFormatException e) {
                         v.episodeTitle = "";
+                        Database.addAnimeinfoToDatabase(v.key, v.animeTitle, new ArrayList<>());
                         System.out.println("Couldn't parse episode count");
                     }
                 } else {
