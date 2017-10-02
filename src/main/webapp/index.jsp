@@ -172,7 +172,7 @@
         <div class="mdc-layout-grid__inner">
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
                 <video id="my-player" class="video-js vjs-default-skin" controls preload="auto"
-                       data-setup='{}'></video>
+                       data-setup='{ "techOrder": ["html5", "youtube"]}'></video>
             </div>
             <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">
                 <div class="mdc-layout-grid__inner">
@@ -315,6 +315,7 @@
 <script src="res/videojs.disableProgress.js"></script>
 <script src="res/player-script.js?v=0.0.0.4.10"></script>
 <script src="res/tab-switch.js?v=0.1"></script>
+<script src="res/Youtube.js"></script>
 <script>
     var notificationsEl = document.querySelector('#notification-menu');
     if(notificationsEl != null) {

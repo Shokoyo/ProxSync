@@ -41,6 +41,10 @@ function updateAuthButtons(user) {
         var name = user.displayName;
         console.log(name);
         document.getElementById("welcome-msg").textContent = "Welcome " + name + "!";
+        var nameField = document.getElementById("user-name");
+        if(nameField !== null) {
+            nameField.innerHTML = name;
+        }
     } else {
         document.getElementById("register-row").style.display = '';
         document.getElementById("signout-row").style.display = 'none';

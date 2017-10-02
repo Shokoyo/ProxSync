@@ -11,6 +11,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 import de.dieser1memesprech.proxsync._9animescraper.config.Configuration;
 import de.dieser1memesprech.proxsync.database.Database;
+import de.dieser1memesprech.proxsync.util.AiringUpdater;
 import de.dieser1memesprech.proxsync.util.NotificationUpdater;
 import net.thegreshams.firebase4j.error.FirebaseException;
 
@@ -46,6 +47,7 @@ public class StartupListener implements ServletContextListener {
             System.out.println("Database initialized");
 
             Runnable updater = new NotificationUpdater();
+            scheduler.scheduleAtFixedRate(new AiringUpdater(), 0, 1, TimeUnit.DAYS);
             scheduler.scheduleAtFixedRate(updater, 0, 5, TimeUnit.MINUTES);
 
             System.out.println("Notification updater initialized");

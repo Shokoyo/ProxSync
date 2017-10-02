@@ -1,6 +1,7 @@
 package de.dieser1memesprech.proxsync.database;
 
 import com.google.firebase.database.*;
+import com.google.firebase.tasks.Task;
 import de.dieser1memesprech.proxsync._9animescraper.Anime;
 
 import java.util.*;
@@ -215,6 +216,41 @@ public class Database {
                 }
             }
         }
+        return res;
+    }
+
+    public static void addAiringInfo(List<AiringEntry> l) {
+        database.getReference("anime/airing").removeValue((databaseError, databaseReference) -> {
+            for(AiringEntry e : l) {
+                database.getReference("anime/airing/" + e.getId()).setValue(e);
+            }
+        });
+    }
+
+    public static AiringList getAiringList() {
+        AiringList res = new AiringList();
+        DataSnapshot data = getDataFromDatabase("anime/airing");
+        if(data!= null) {
+            for (DataSnapshot d : data.getChildren()) {
+                AiringEntry entry = d.getValue(AiringEntry.class);
+                String format = entry.getFormat();
+                List<AiringEntry> list;
+                if("TV".equals(format)) {
+                    list = res.getTvList();
+                } else if("MOVIE".equals(format)) {
+                    list = res.getMovieList();
+                } else if("TV_SHORT".equals(format)) {
+                    list = res.getShortList();
+                } else {
+                    list = res.getOvaList();
+                }
+                list.add(entry);
+            }
+        }
+        res.getOvaList().sort(Comparator.reverseOrder());
+        res.getMovieList().sort(Comparator.reverseOrder());
+        res.getTvList().sort(Comparator.reverseOrder());
+        res.getShortList().sort(Comparator.reverseOrder());
         return res;
     }
 

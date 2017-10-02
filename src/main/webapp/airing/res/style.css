@@ -1,0 +1,148 @@
+/* Ensure layout covers the entire screen. */
+html {
+    height: 100%;
+}
+
+/* Stack toolbar and content on top of each other. */
+.adjusted-body {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    min-height: 100%;
+}
+
+.left-list {
+    height: 48px;
+    min-height: 48px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.mdc-list-item__start-detail {
+    align-self: center;
+}
+
+.text-in-list {
+    align-self: center;
+}
+
+/* Place drawer and main next to each other. */
+.content {
+    display: flex;
+    flex: 1 1 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.watchlist-star {
+    font-size: 32px;
+    letter-spacing: 7px;
+}
+
+.title-container {
+    height:60px;
+    max-height:60px;/* vielleicht 72*/
+    min-height:60px;
+    line-height:105%;
+    width:216px;
+    margin-top: -4px!important;
+    margin-bottom: 2px;
+    max-width:216px;
+    min-width:216px;
+}
+
+.main {
+    margin-left: 48px;
+}
+
+.mdc-grid-list {
+    margin-top: 16px;
+}
+
+.user-avatar-toolbar {
+    background: #bdbdbd;
+    align-self: center;
+    height: 48px;
+    width: 48px;
+    margin-top: 5px;
+    margin-left: 10px;
+    border-radius: 50%;
+}
+
+.mdc-grid-title {
+    width: 240px;
+    height: 320px;
+    margin: 10px;
+}
+
+.watchlist-card {
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 240px;
+    height: 320px;
+    margin: 10px;
+}
+
+.remove-from-watchlist-button {
+    position: absolute;
+    top: 8px;
+    right: -2px;
+    color: #c30000 !important;
+    float: right;
+    font-size: 32px;
+    text-decoration: none;
+}
+
+.remove-from-watchlist-button-background {
+    position: absolute;
+    top: 8px;
+    right: -4px;
+    color: white !important;
+    text-shadow: 0px 0px 6px rgba(0, 0, 0, 1);
+    float: right;
+    font-size: 32px;
+    text-decoration: none;
+}
+
+.favorite-button {
+    position: absolute;
+    color: #7d20a5 !important;
+    top: 8px;
+    left: 16px;
+    font-size: 32px;
+    text-decoration: none;
+}
+
+.favorite-button-background {
+    position: absolute;
+    top: 8px;
+    left: 18px;
+    color: rgba(216,85,255,0.8) !important;
+    font-size: 28px;
+    text-decoration: none;
+}
+
+.mdc-card__title .mdc-card__title--large {
+    font-size: small;
+}
+
+.mdc-grid-list__tiles {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.watchlist-card .mdc-card__primary,
+.watchlist-card .mdc-card__actions {
+    background: rgba(0, 0, 0, .5);
+    padding-bottom: 8px;
+    padding-left:12px;
+    padding-top:6px;
+    padding-right:12px;
+}
+
+.watchlist-item:hover {
+    cursor: pointer;
+}

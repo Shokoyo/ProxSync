@@ -264,10 +264,16 @@
                     break;
 
                 case YT.PlayerState.ENDED:
+                    if(this.readyState() === 4) {
+                        this.trigger('canplaythrough');
+                    }
                     this.trigger('ended');
                     break;
 
                 case YT.PlayerState.PLAYING:
+                    if(this.readyState() === 4) {
+                        this.trigger('canplaythrough');
+                    }
                     this.trigger('timeupdate');
                     this.trigger('durationchange');
                     this.trigger('playing');
@@ -279,6 +285,9 @@
                     break;
 
                 case YT.PlayerState.PAUSED:
+                    if(this.readyState() === 4) {
+                        this.trigger('canplaythrough');
+                    }
                     this.trigger('canplay');
                     if (this.isSeeking) {
                         this.onSeeked();
@@ -288,8 +297,18 @@
                     break;
 
                 case YT.PlayerState.BUFFERING:
+                    if(this.readyState() === 4) {
+                        this.trigger('canplaythrough');
+                    }
                     this.player_.trigger('timeupdate');
                     this.player_.trigger('waiting');
+                    break;
+
+                case YT.PlayerState.CUED:
+                    this.trigger('canplay');
+                    if(this.readyState() === 4) {
+                        this.trigger('canplaythrough');
+                    }
                     break;
             }
         },
@@ -462,14 +481,15 @@
 
         readyState: function() {
             if(this.ytPlayer) {
-                console.log(this.ytPlayer.getPlayerState());
-                var playState = this.ytPlayer.getPlayerState();
-                if(playState === 3) {
-                    return 1;
-                } else {
+                if(this.ytPlayer.getVideoLoadedFraction() > (this.ytPlayer.getCurrentTime() / this.ytPlayer.getDuration()) * 1.02) {
                     return 4;
+                } else {
+                    console.log(this.ytPlayer.getVideoLoadedFraction());
+                    console.log(this.ytPlayer.getCurrentTime()/this.ytPlayer.getDuration());
+                    return 1;
                 }
             }
+            return 1;
         },
 
         paused: function() {

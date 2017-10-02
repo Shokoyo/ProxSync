@@ -608,6 +608,9 @@ public class Room {
 
     private boolean checkDirectLink(String url) {
         boolean res = false;
+        if(url.contains("youtube") || url.contains("youtu.be")) {
+            return true;
+        }
         HttpHead head = new HttpHead(url);
         try {
             CloseableHttpResponse response = httpClient.execute(head);
@@ -676,6 +679,7 @@ public class Room {
         for (Session s : sessions) {
             if (!readyStates.get(s)) {
                 sendBufferedRequest(s);
+                buffering = true;
                 flag = false;
             }
         }

@@ -326,7 +326,7 @@ function loadVideo() {
     socket.send(JSON.stringify(userAction));
 }
 
-function loadVideo(url, episode) {
+function loadVideoByUrl(url, episode) {
     if (isOwner) {
         var userAction = {
             action: "episodeLink",
@@ -393,28 +393,42 @@ function onMessage(event) {
             return;
         }
         var SourceObject;
+        var isYT = false;
         startTime = eventJSON.current;
-        SourceObject = {src: SourceString, type: 'video/mp4'};
+        if(SourceString.includes("youtube") || SourceString.includes("youtu.be")) {
+            isYT = true;
+            SourceObject = {src: SourceString, type: 'video/youtube'};
+            setTimeout(function() {
+                document.getElementsByClassName("vjs-poster")[0].click();
+                setTimeout(myPlayer.pause, 100);
+            }, 1000);
+        } else {
+            SourceObject = {src: SourceString, type: 'video/mp4'};
+        }
         myPlayer.reset();
         myPlayer.src(SourceObject);
         myPlayer.pause();
+        myPlayer.play();
+        myPlayer.pause();
         bindTimeUpdate();
         bindPauseEvent();
-        if (!firstVideo && document.getElementById("auto-play-checkbox").checked) {
-            myPlayer.one('canplay', function () {
-                setStartTime();
-                bindFinishedEvent();
-                setTimeout(function () {
-                    myPlayer.play();
-                }, 1000)
-            });
-        } else {
-            myPlayer.one('canplay', function () {
-                bindFinishedEvent();
-                setStartTime();
-            });
-        }
         firstVideo = false;
+        if(!isYT) {
+            if (!firstVideo && isOwner && document.getElementById("auto-play-checkbox").checked) {
+                myPlayer.one('canplay', function () {
+                    setStartTime();
+                    bindFinishedEvent();
+                    setTimeout(function () {
+                        myPlayer.play();
+                    }, 1000);
+                });
+            } else {
+                myPlayer.one('canplay', function () {
+                    bindFinishedEvent();
+                    setStartTime();
+                });
+            }
+        }
         //syncing = true;
         //setTimeout(myPlayer.play,20);
         //setTimeout(function() { syncing = false; }, 20);

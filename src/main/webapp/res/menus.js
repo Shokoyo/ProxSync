@@ -34,7 +34,7 @@ function followLink(loc) {
     }
     console.log(path);
     if (path.lastIndexOf("/") !== -1) {
-        path = path.substring(0, path.lastIndexOf("/")- 1);
+        path = path.substring(0, path.lastIndexOf("/"));
     }
     console.log(path);
     window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + path + loc;
