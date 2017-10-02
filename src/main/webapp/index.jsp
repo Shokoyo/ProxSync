@@ -129,7 +129,10 @@
                                     Notification n = notifications.get(i);
                             %>
                             <li class="mdc-list-item profile-list" role="menuitem" aria-disabled="true" id="notifications-<%=n.getKey()%>">
-                                <span style="align-self:center"><a href="javascript:void(0)" onclick="watchNext(event,'<%=n.getKey()%>');return false;" style="text-decoration:none;color:inherit;"><%=n.getTitle()%>: <%=n.getLatestEpisode()%>/<%=n.getEpisodeCount()%></a><i onclick="removeNotification('<%=n.getKey()%>');return false;" class="material-icons remove-notification">clear</i></span>
+                                <span style="align-self:center;z-index:5; ">
+                                    <a href="javascript:void(0)" onclick="watchNext(event,'<%=n.getKey()%>');return false;" style="color:inherit;text-decoration: none"><%=n.getTitle()%>: <%=n.getLatestEpisode()%>/<%=n.getEpisodeCount()%></a>
+                                    <a onclick="removeNotification('<%=n.getKey()%>');return false;" class="material-icons remove-notification">clear</a>
+                                </span>
                             </li>
                             <% if (i < notifications.size() - 1) {%>
                             <li role="separator" class="mdc-list-divider" id="divider-<%=n.getKey()%>"></li>
