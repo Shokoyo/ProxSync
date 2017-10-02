@@ -12,8 +12,9 @@ import java.util.List;
 
 public class AnimeUtils {
     public static List<AnimeSearchObject> search(String keyword) {
-        keyword = keyword.replaceAll(" ", "%20");
+        keyword = keyword.replaceAll(" ", "+");
         String url = Configuration.instance.BASE_URL + "/search?keyword=" + keyword;
+        System.out.println(url);
         String content = HtmlUtils.getHtmlContent(url);
         return parseSearchMulti(content);
     }

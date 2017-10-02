@@ -115,7 +115,6 @@ public class UserWebSocket {
                 e.printStackTrace();
             }
             for (AnimeSearchObject animeSearchObject : animeSearchObjectList) {
-                System.out.println(animeSearchObject.getTitle());
                 jsonArray.add(Json.createObjectBuilder()
                         .add("title", animeSearchObject.getTitle())
                         .add("link", animeSearchObject.getLink())
@@ -270,7 +269,6 @@ public class UserWebSocket {
         int num = -1;
         String key = link.substring(link.lastIndexOf("/") + 1);
         key = key.replaceAll("\\.", "-");
-        System.out.println(key);
         if (dataMap.size() > 0) {
             Map map = (Map) dataMap.get(key);
             if (map != null) {
