@@ -27,6 +27,7 @@ var pauseFlag = true;
 var finishedFlag = false;
 var oldNextEpisode = true;
 let menu = new mdc.menu.MDCSimpleMenu(document.querySelector('#search-menu'));
+const snackbar = mdc.snackbar.MDCSnackbar.attachTo(document.querySelector('.mdc-snackbar'));
 var userCount = 0;
 //add onload function
 if (window.attachEvent) {
@@ -395,10 +396,10 @@ function onMessage(event) {
         var SourceObject;
         var isYT = false;
         startTime = eventJSON.current;
-        if(SourceString.includes("youtube") || SourceString.includes("youtu.be")) {
+        if (SourceString.includes("youtube") || SourceString.includes("youtu.be")) {
             isYT = true;
             SourceObject = {src: SourceString, type: 'video/youtube'};
-            setTimeout(function() {
+            setTimeout(function () {
                 document.getElementsByClassName("vjs-poster")[0].click();
                 setTimeout(myPlayer.pause, 100);
             }, 1000);
@@ -413,7 +414,7 @@ function onMessage(event) {
         bindTimeUpdate();
         bindPauseEvent();
         firstVideo = false;
-        if(!isYT) {
+        if (!isYT) {
             if (!firstVideo && isOwner && document.getElementById("auto-play-checkbox").checked) {
                 myPlayer.one('canplay', function () {
                     setStartTime();
@@ -509,12 +510,12 @@ function onMessage(event) {
             console.log("old value: " + oldNextEpisode + ", current value: " + checkbox.checked);
         }
         var playListString = buildHtmlPlaylist(eventJSON.playlist);
-        if(eventJSON.playlist[0].episode == eventJSON.playlist[0].episodeCount) {
+        if (eventJSON.playlist[0].episode == eventJSON.playlist[0].episodeCount) {
             document.getElementById("add-next-watchlist-button").innerHTML = "completed";
         } else {
             document.getElementById("add-next-watchlist-button").innerHTML = "watchlist: next";
         }
-        if(eventJSON.playlist[0].episode > 1) {
+        if (eventJSON.playlist[0].episode > 1) {
             document.getElementById("add-watchlist-button").innerHTML = "watchlist: this";
         } else {
             document.getElementById("add-watchlist-button").innerHTML = "plan to watch";
@@ -534,6 +535,13 @@ function onMessage(event) {
     if (eventJSON.action === "search-result") {
         var resultSearchString = buildHtmlListSearch(eventJSON.result);
         document.getElementById("mdc-search-list").innerHTML = resultSearchString;
+    }
+    if (eventJSON.action === "watchlist-oncomplete") {
+
+        const dataObj = {
+            message: "Successfully added " + eventJSON.anime + " to your watchlist"
+        };
+        snackbar.show(dataObj);
     }
 }
 

@@ -292,6 +292,15 @@
             </div>
         </div>
     </div>
+    <div class="mdc-snackbar"
+         aria-live="assertive"
+         aria-atomic="true"
+         aria-hidden="true">
+        <div class="mdc-snackbar__text"></div>
+        <div class="mdc-snackbar__action-wrapper">
+            <button type="button" class="mdc-button mdc-snackbar__action-button"></button>
+        </div>
+    </div>
 </main>
 <p id="invite-link"></p>
 <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>

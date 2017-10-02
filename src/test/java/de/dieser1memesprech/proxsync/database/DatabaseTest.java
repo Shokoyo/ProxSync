@@ -166,7 +166,7 @@ public class DatabaseTest {
     @org.junit.Test
     public void addToWatchlist() throws Exception {
         setUp();
-        Database.addToWatchlist("test-anime-test123", "1", "watching", "test-user");
+        Database.addToWatchlist("test-anime-test123", "1", "watching", "test-user", null);
         sleep();
         DataSnapshot data = Database.getDataFromDatabase("users/test-user/watchlist/test-anime-test123");
         assertEquals("1", data.child("episode").getValue());

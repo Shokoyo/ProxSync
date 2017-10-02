@@ -258,7 +258,7 @@ public class UserWebSocket {
                     if (("" + epNum).equals(r.getPlaylist().peek().getEpisodeCount())) {
                         status = "completed";
                     }
-                    Database.addToWatchlist(key, epNum + "", status, user.getUid());
+                    Database.addToWatchlist(key, epNum + "", status, user.getUid(), session);
                 }
             }
         }

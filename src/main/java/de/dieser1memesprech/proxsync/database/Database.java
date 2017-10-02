@@ -1,9 +1,14 @@
 package de.dieser1memesprech.proxsync.database;
 
 import com.google.firebase.database.*;
+import com.google.firebase.tasks.OnCompleteListener;
 import com.google.firebase.tasks.Task;
 import de.dieser1memesprech.proxsync._9animescraper.Anime;
+import de.dieser1memesprech.proxsync.websocket.UserSessionHandler;
 
+import javax.json.JsonObject;
+import javax.json.spi.JsonProvider;
+import javax.websocket.Session;
 import java.util.*;
 
 public class Database {
@@ -274,7 +279,7 @@ public class Database {
         return res;
     }
 
-    public static void addToWatchlist(String key, String episode, String status, String uid) {
+    public static void addToWatchlist(String key, String episode, String status, String uid, Session session) {
         Map<String, Object> dataMapWatchlist = new LinkedHashMap<String, Object>();
         dataMapWatchlist.put("episode", episode);
         dataMapWatchlist.put("rating", getWatchlistRating(uid, key));
@@ -284,7 +289,18 @@ public class Database {
         dataMapWatchlist.put("episodeCount", entry.getEpisodeCount());
         dataMapWatchlist.put("poster", entry.getPoster());
         dataMapWatchlist.put("key", key);
-        updateData("users/" + uid + "/watchlist/" + key.replaceAll("\\.", "-"), dataMapWatchlist);
+        DatabaseReference ref = database.getReference("users/" + uid + "/watchlist/" + key.replaceAll("\\.", "-"));
+        ref.updateChildren(dataMapWatchlist).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(Task<Void> task) {
+                JsonProvider provider = JsonProvider.provider();
+                JsonObject messageJson = provider.createObjectBuilder()
+                        .add("action", "watchlist-oncomplete")
+                        .add("anime", entry.title)
+                        .build();
+                UserSessionHandler.getInstance().sendToSession(session, messageJson);
+            }
+        });
         if (!"completed".equals(status)) {
             Map<String, Object> mapNew = new LinkedHashMap<>();
             mapNew.put(uid, episode);
