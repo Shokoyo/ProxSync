@@ -309,6 +309,7 @@
 <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-database.js"></script>
 <script>
     // Initialize Firebase
     var config = {

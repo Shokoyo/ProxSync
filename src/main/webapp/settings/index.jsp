@@ -176,5 +176,6 @@
 <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 <script src="../res/firebase.js"></script>
 <script src="../res/menus.js"></script>
+<script src="../res/search-script.js"></script>
 </body>
 </html>

@@ -1,7 +1,6 @@
 <%@ page import="de.dieser1memesprech.proxsync.util.LoginUtil" %>
 <%@ page import="java.util.List" %>
 <%@ page import="de.dieser1memesprech.proxsync.database.*" %>
-<!--TODO make responsive! fit to screen-->
 <html language="de" class="mdc-typography">
 <head>
     <meta charset="utf-8"/>
@@ -298,5 +297,6 @@
     });
 </script>
 <script src="../res/notification-script.js"></script>
+<script src="../res/search-script.js"></script>
 </body>
 </html>

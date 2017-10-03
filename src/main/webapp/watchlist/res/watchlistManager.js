@@ -5,7 +5,8 @@ function removeFromWatchlist(key) {
     console.log("/users/" + uid + "/watchlist/" + key);
     if(key !== "") {
         firebase.database().ref("/users/" + uid + "/watchlist/" + key).remove();
-        firebase.database().ref("/notifications/" + uid + "/" + key).remove();
+        firebase.database().ref("/users/" + uid + "/notifications/" + key).remove();
+        firebase.database().ref("/watching/" + key + "/" + uid).remove();
         document.getElementById("card-" + oldKey).style.display = 'none';
     } else {
         console.log("corrupted watchlist entry");

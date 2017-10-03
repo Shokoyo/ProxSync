@@ -481,10 +481,10 @@
         return autoSizeText();
     });
 </script>
-<script src="../res/firebaseauth-normal.js"></script>
 <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 <script src="res/tab-switch.js"></script>
 <script src="../res/firebase.js"></script>
+<script src="../res/firebaseauth-normal.js"></script>
 <script src="res/watchlistManager.js"></script>
 <script src="../res/menus.js"></script>
 <script>
@@ -552,5 +552,6 @@
         ratingRef.set(score);
     }
 </script>
+<script src="../res/search-script.js"></script>
 </body>
 </html>

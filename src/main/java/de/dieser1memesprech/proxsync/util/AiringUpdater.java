@@ -134,7 +134,10 @@ public class AiringUpdater implements Runnable {
                 res = "";
             }
             entry.setStartDate(res);
-            String source = object.get("source").getAsString();
+            String source = "";
+            if(!object.get("source").isJsonNull()) {
+                source = object.get("source").getAsString();
+            }
             source = source.replaceAll("_", " ");
             source = WordUtils.capitalizeFully(source);
             entry.setSource(source);

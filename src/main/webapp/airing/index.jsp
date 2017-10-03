@@ -389,5 +389,6 @@
 <script src="res/tab-switch.js"></script>
 <script src="../res/firebase.js"></script>
 <script src="../res/menus.js"></script>
+<script src="../res/search-script.js"></script>
 </body>
 </html>
