@@ -16,6 +16,7 @@ socket.onmessage = onMessage;
 var inSearchField = false;
 var isOwner = true;
 var roomJoined = false;
+var blurred = true;
 var syncing = false;
 var startTime;
 var roomId;
@@ -46,11 +47,13 @@ if (window.attachEvent) {
 }
 
 function blurredSearch() {
-    if (!menu.open) {
+    if (!menu.open && !blurred) {
         console.log("resetting search");
+        document.getElementById("tf-box-search-field").focus();
         document.getElementById("tf-box-search-field").value = '';
         $('#tf-box-search-field').blur();
-    } else {
+        blurred = true;
+    } else if(menu.open) {
         $('#tf-box-search-field').focus();
         console.log("search menu is open!");
     }
@@ -582,15 +585,20 @@ function addSearchResultToPlaylist(url) {
 
 $(document).on('click', function (e) {
     if ($(e.target).closest("#mdc-search-list").length === 0 && $(e.target).closest("#tf-box-search").length === 0) {
-        menu.open = false;
+        //menu.open = false;
         blurredSearch();
     } else if ($(e.target).closest("#tf-box-search").length === 0) {
         // TODO: do not close when clicked
         inSearchField = true;
+        console.log("not blurred");
+        blurred = false;
         menu.open = true;
     } else {
+        console.log("not blurred");
+        blurred = false;
         inSearchField = false;
     }
+    return true;
 });
 
 Number.prototype.pad = function (size) {

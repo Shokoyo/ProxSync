@@ -1,7 +1,7 @@
 /**
  * Created by Jeremias on 24.09.2017.
  */
-function removeNotification(event, key) {
+function removeNotification(key) {
     console.log(key);
     var watchRef = firebase.database().ref("/users/" + uid + "/notifications/" + key.split(".").join("-") + "/hidden");
     watchRef.set(true);
@@ -12,17 +12,32 @@ function removeNotification(event, key) {
             div.style.display='none';
         }
     });
-    event.stopPropagation();
 }
 
 function watchNext(event, key) {
-    event.stopPropagation();
+    var nextEpisodeRef = firebase.database().ref("users/" + uid + "/watchlist/" + key.replace(".", "-") + "/episode");
+    var newWindow = window.open('', '_blank');
+    nextEpisodeRef.once('value', function(snapshot) {
+        var nextEpisode = parseInt(snapshot.val());
+        nextEpisode += 1;
+        if(!(window.location.pathname.includes("ProxSync") || window.location.pathname.includes("AniSync") || window.location.pathname === "/")) {
+            newWindow.location.href=window.location.href.substring(0, window.location.href.lastIndexOf("/")) + "/?id=" + key + "&episode=" + nextEpisode, "_blank";
+        } else {
+            loadVideoByEpisode("https://9anime.to/watch/" + key);
+        }
+    });
 }
 
 $(document).on('click', function (e) {
-    if ($(e.target).closest("#notification-menu").length === 0 && menuNotifications.open) {
-        menuNotifications.open = true;
-    } else {
+    if ($(e.target).closest("#notification-menu").length === 0 && !menuNotifications.open) {
+        console.log("false");
         menuNotifications.open = false;
+    } else {
+        menuNotifications.open = true;
+        console.log("true");
     }
+});
+
+$("#notification-menu").on('click', function(e) {
+    e.stopPropagation();
 });

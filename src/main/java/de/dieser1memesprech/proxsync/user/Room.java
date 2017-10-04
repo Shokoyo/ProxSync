@@ -411,7 +411,7 @@ public class Room {
         try {
             URL url = new URL(video);
             if (url.getHost().equals("proxer.me")) {
-                website = getProxerLink();
+                website = getProxerLink(video);
                 if (website == null || website.equals("")) {
                     sendDebugToHost("Couldn't find video URL. May be my fault or your fault");
                 }
@@ -525,8 +525,8 @@ public class Room {
         return website;
     }
 
-    private String getProxerLink() {
-        String content = getWebsiteContent(video, "");
+    private String getProxerLink(String video) {
+        String content = HtmlUtils.getHtmlContent(video);
         if (content.equals(ripLink)) {
             return ripLink;
         }
@@ -609,7 +609,12 @@ public class Room {
 
     private boolean checkDirectLink(String url) {
         boolean res = false;
+        if(url.contains("proxer.me/watch")) {
+            return false;
+        }
         if(url.contains("youtube") || url.contains("youtu.be")) {
+            return true;
+        } else if(url.contains("mp4upload") && url.contains("video.mp4")) {
             return true;
         }
         HttpHead head = new HttpHead(url);

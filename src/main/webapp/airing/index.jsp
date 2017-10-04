@@ -131,6 +131,11 @@
     </div>
 </header>
 <div class="content mdc-toolbar-fixed-adjust">
+    <div class="mdc-simple-menu" id="search-menu" tabindex="-1">
+        <ul class="mdc-dialog__body--scrollable mdc-simple-menu__items mdc-list mdc-list--avatar-list menu-search"
+            role="menu" id="mdc-search-list">
+        </ul>
+    </div>
     <nav class="mdc-permanent-drawer">
         <nav class="mdc-list">
             <a class="mdc-list-item left-list mdc-permanent-drawer--selected" href="../profile">
@@ -333,6 +338,15 @@
             </section>
         </div>
     </main>
+    <div class="mdc-snackbar"
+         aria-live="assertive"
+         aria-atomic="true"
+         aria-hidden="true">
+        <div class="mdc-snackbar__text"></div>
+        <div class="mdc-snackbar__action-wrapper">
+            <button type="button" class="mdc-button mdc-snackbar__action-button"></button>
+        </div>
+    </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-app.js"></script>
