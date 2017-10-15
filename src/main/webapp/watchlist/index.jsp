@@ -35,7 +35,7 @@
             </div>
         </section>
         <section class="mdc-toolbar__section mdc-toolbar__section--align-middle">
-            <span class="mdc-toolbar__title">ProxSync</span>
+            <span class="mdc-toolbar__title"><a href="../" style="color:inherit;text-decoration:none;">ProxSync</a></span>
         </section>
         <section class="mdc-toolbar__section mdc-toolbar__section--align-end">
             <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
@@ -239,7 +239,7 @@
                                             </a>
                                             <%}%>
                                             <section class="mdc-card__primary watchlist-item"
-                                                     onclick="window.open('../?id=<%=e.getKey()%>&episode=<%=(Integer.parseInt(e.getEpisode())+1)%>','_self')">
+                                                     onclick="window.open('../?id=<%=e.getKey()%>&episode=<%=(Integer.parseInt(e.getEpisode())+1)%>','_blank')">
                                                 <h1 class="mdc-card__title mdc-card__title--large title-container resize"><%=e.getTitle()%>
                                                 </h1>
                                                 <h2 class="mdc-card__subtitle"><%=e.getEpisode()%>
@@ -370,7 +370,8 @@
                                 %>
                                 <li class="mdc-grid-title"
                                     id="card-<%=e.getKey()%>">
-                                    <div class="mdc-grid-tile__primary">
+                                    <div class="mdc-grid-tile__primary"
+                                         onclick="window.open('../?id=<%=e.getKey()%>&episode=1')">
                                         <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
                                              style="background-image:url(<%=e.getPoster()%>);">
                                             <a href="javascript:void(0);"

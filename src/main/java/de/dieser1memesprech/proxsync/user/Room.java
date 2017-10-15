@@ -451,6 +451,9 @@ public class Room {
             if(anime == null) {
                 anime = new Anime(video);
             }
+            if(anime.getEpisodeList().isEmpty()) {
+                return "";
+            }
             Episode episode = anime.getEpisodeList().get(this.episode - 1);
             if (episode != null) {
                 String episodeSource = episode.getSourceUrl();

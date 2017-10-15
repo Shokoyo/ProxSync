@@ -3,7 +3,6 @@ package de.dieser1memesprech.proxsync.database;
 import com.google.firebase.database.*;
 import com.google.firebase.tasks.OnCompleteListener;
 import com.google.firebase.tasks.Task;
-import de.dieser1memesprech.proxsync._9animescraper.Anime;
 import de.dieser1memesprech.proxsync.websocket.UserSessionHandler;
 
 import javax.json.JsonObject;
@@ -154,8 +153,9 @@ public class Database {
             DatabaseReference ref = database.getReference(path);
             LoadedValueEventListener listener = new LoadedValueEventListener();
             ref.addListenerForSingleValueEvent(listener);
+            DataSnapshot data = listener.getData();
             ref.removeEventListener(listener);
-            return listener.getData();
+            return data;
         } catch (DatabaseException e) {
             e.printStackTrace();
         }

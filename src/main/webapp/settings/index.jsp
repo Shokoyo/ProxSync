@@ -33,7 +33,7 @@
             </div>
         </section>
         <section class="mdc-toolbar__section mdc-toolbar__section--align-middle">
-            <span class="mdc-toolbar__title">ProxSync</span>
+            <span class="mdc-toolbar__title"><a href="../" style="color:inherit;text-decoration:none;">ProxSync</a></span>
         </section>
         <section class="mdc-toolbar__section mdc-toolbar__section--align-end">
             <section class="mdc-toolbar__section mdc-toolbar__section--align-start">

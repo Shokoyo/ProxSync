@@ -16,14 +16,16 @@ function removeNotification(key) {
 
 function watchNext(event, key) {
     var nextEpisodeRef = firebase.database().ref("users/" + uid + "/watchlist/" + key.replace(".", "-") + "/episode");
-    var newWindow = window.open('', '_blank');
+    if(!(window.location.pathname === "/ProxSync/" || window.location.pathname === "/AniSync/" || window.location.pathname === "/")) {
+        var newWindow = window.open('', '_blank');
+    }
     nextEpisodeRef.once('value', function(snapshot) {
         var nextEpisode = parseInt(snapshot.val());
         nextEpisode += 1;
-        if(!(window.location.pathname.includes("ProxSync") || window.location.pathname.includes("AniSync") || window.location.pathname === "/")) {
-            newWindow.location.href=window.location.href.substring(0, window.location.href.lastIndexOf("/")) + "/?id=" + key + "&episode=" + nextEpisode, "_blank";
+        if(!(window.location.pathname === "/ProxSync/" || window.location.pathname === "/AniSync/" || window.location.pathname === "/")) {
+            newWindow.location = "../?id=" + key + "&episode=" + nextEpisode;
         } else {
-            loadVideoByEpisode("https://9anime.to/watch/" + key);
+            loadVideoByEpisode("https://9anime.to/watch/" + key, nextEpisode);
         }
     });
 }
