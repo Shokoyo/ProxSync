@@ -55,7 +55,7 @@ public class AiringUpdater implements Runnable {
             "      }\\n" +
             "      averageScore\\n" +
             "      popularity\\n" +
-            "      youtubeId\\n" +
+            //"      youtubeId\\n" +
             "      description\\n" +
             "      studios {\\n" +
             "        nodes {\\n" +
@@ -92,6 +92,7 @@ public class AiringUpdater implements Runnable {
      */
     private boolean addPageContentToList(List<AiringEntry> l, int page) {
         String content = getPageContent(page);
+        System.out.println(content);
         JsonElement el = new JsonParser().parse(content);
         boolean hasNextPage = false;
         try {
@@ -163,11 +164,11 @@ public class AiringUpdater implements Runnable {
             } else {
                 entry.setPopularity(0);
             }
-            if (!object.get("youtubeId").isJsonNull()) {
+            /*if (!object.get("youtubeId").isJsonNull()) {
                 entry.setYoutubeId(object.get("youtubeId").getAsString());
-            } else {
+            } else {*/
                 entry.setYoutubeId("");
-            }
+            //}
             if(!object.get("description").isJsonNull()) {
                 entry.setDescription(object.get("description").getAsString());
             } else {

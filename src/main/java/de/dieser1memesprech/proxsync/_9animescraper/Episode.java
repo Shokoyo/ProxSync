@@ -50,7 +50,7 @@ public class Episode {
         Element body = document.select("body").first();
         String ts = body.attr("data-ts");
         String update = "0";
-        for (Element server : servers) {
+        /*for (Element server : servers) {
             if (server.attr("data-id").equals("34")) {
                 Elements episodes = server.select("li");
                 for (Element elEpisode : episodes) {
@@ -63,7 +63,7 @@ public class Episode {
                 }
                 break;
             }
-        }
+        }*/
         if(sourceUrl.equals("")) {
             for (Element server : servers) {
                 if (server.attr("data-id").equals("33")) {
