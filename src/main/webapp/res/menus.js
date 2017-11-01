@@ -5,11 +5,12 @@ if(notificationsEl != null) {
 var timeOut;
 mdc.textfield.MDCTextfield.attachTo(document.querySelector('.mdc-textfield'));
 var menuEl = document.querySelector('#profile-menu');
-if(menuEl != null) {
+var menu;
+if(menuEl !== null) {
     var menu = new mdc.menu.MDCSimpleMenu(menuEl);
     menuEl.addEventListener('MDCSimpleMenu:selected', function (evt) {
         console.log("menu clicked");
-        menu.open = false;
+        profileMenu.open = false;
         var detail = evt.detail;
         switch (detail.index) {
             case 0:

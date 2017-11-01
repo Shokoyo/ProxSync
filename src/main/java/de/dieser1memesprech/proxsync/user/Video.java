@@ -71,4 +71,8 @@ public class Video {
     public void setEpisodePoster(String episodePoster) {
         this.episodePoster = episodePoster;
     }
+
+    public String getKey() {
+        return key;
+    }
 }

@@ -64,6 +64,7 @@ public class Room {
     private JsonNumber timestamp;
     private Random random = new Random();
     private Anime anime;
+    private Video lastVideo;
     private static RandomString randomString = new RandomString(10);
 
     public Room(Session host, String hostname, String hostuid, boolean hostanonymous) {
@@ -77,6 +78,8 @@ public class Room {
         RoomHandler.getInstance().addRoom(this);
         httpClient = HttpClients.createDefault();
     }
+
+    public Video getLastVideo() {return lastVideo;}
 
     public void setId(String id) {
         this.id = id;
@@ -287,11 +290,10 @@ public class Room {
         System.out.println("Getting titles for " + animeTitle);
         String res = "";
         List<String> episodeNames = new ArrayList<String>();
-        try {
             System.out.println("http://anisearch.outrance.pl/?task=search&query=\\"
-                    + URLEncoder.encode(animeTitle, "UTF-8"));
+                    + animeTitle);
             String content = HtmlUtils.getHtmlContent("http://anisearch.outrance.pl/?task=search&query=\\"
-                    + URLEncoder.encode(animeTitle, "UTF-8"));
+                    + animeTitle);
             System.out.println(content);
             String aid = evaluateXPath(content, "//anime/@aid");
             System.out.println("Anime ID: " + aid);
@@ -304,9 +306,6 @@ public class Room {
                 res = evaluateXPath(content, "//episode[epno=\"" + episode + "\"]/title[@xml:lang=\"en\"]/text()");
                 System.out.println(res);
             }
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
         Database.addAnimeinfoToDatabase(key, animeTitle, episodeNames);
         return res;
     }
@@ -666,6 +665,7 @@ public class Room {
 
     public void loadNextVideo() {
         Video v = playlist.poll();
+        lastVideo = v;
         timestamp = null;
         if (playlist.isEmpty() && autoNext && !_9animeLink.equals("")) {
             episode++;

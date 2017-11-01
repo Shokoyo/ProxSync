@@ -52,7 +52,7 @@
             </button>
         </section>
         <section class="mdc-toolbar__section mdc-toolbar__section--align-middle">
-            <span class="mdc-toolbar__title"><a href="/" style="color:inherit;text-decoration:none;">ProxSync</a></span>
+            <span class="mdc-toolbar__title"><a href="." style="color:inherit;text-decoration:none;">ProxSync</a></span>
         </section>
         <section class="mdc-toolbar__section mdc-toolbar__section--align-end">
             <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
@@ -88,17 +88,20 @@
                              tabindex="-1" style="top:64px;right:-14px;">
                             <ul class="mdc-simple-menu__items mdc-list" role="menu" id="profile-list"
                                 aria-hidden="true">
-                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
+                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0" onclick="followLink('/profile/');">
                                     <span style="align-self:center;">Profile</span>
                                 </li>
-                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
+                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0" onclick="followLink('/watchlist/');">
                                     <span style="align-self:center;">Watchlist</span>
                                 </li>
-                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
+                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0" onclick="followLink('/airing/');">
+                                    <span style="align-self:center;">Airing</span>
+                                </li>
+                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0" onclick="followLink('/settings/');">
                                     <span style="align-self:center;">Settings</span>
                                 </li>
                                 <li class="mdc-list-divider" role="separator"></li>
-                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0">
+                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0" onclick="signout();">
                                     <span style="align-self:center;">Sign Out</span>
                                 </li>
                             </ul>

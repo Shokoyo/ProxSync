@@ -7,6 +7,7 @@ import de.dieser1memesprech.proxsync.database.Database;
 import de.dieser1memesprech.proxsync.user.Room;
 import de.dieser1memesprech.proxsync.user.RoomHandler;
 import de.dieser1memesprech.proxsync.user.User;
+import de.dieser1memesprech.proxsync.user.Video;
 import net.thegreshams.firebase4j.model.FirebaseResponse;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -243,18 +244,26 @@ public class UserWebSocket {
             if (r != null) {
                 User user = r.getUserMap().get(session);
                 if (!user.isAnonymous()) {
+                    Video video;
+                    if(r.getPlaylist().isEmpty()) {
+                        video = r.getLastVideo();
+                        if(video == null) {
+                            return;
+                        }
+                    } else {
+                        video = r.getPlaylist().peek();
+                    }
                     int offset = 0;
                     if (jsonMessage.getBoolean("next")) {
                         offset = 1;
                     }
                     String status = "watching";
-                    if (!jsonMessage.getBoolean("next") && r.getPlaylist().peek().getEpisode() <= 1) {
+                    if (!jsonMessage.getBoolean("next") && video.getEpisode() <= 1) {
                         status = "planned";
                     }
-                    String key = r.getAnime().getAnimeSearchObject().getLink();
-                    key = key.substring(key.lastIndexOf("/") + 1);
-                    int epNum = r.getPlaylist().peek().getEpisode() - 1 + offset;
-                    if (("" + epNum).equals(r.getPlaylist().peek().getEpisodeCount())) {
+                    String key = video.getKey();
+                    int epNum = video.getEpisode() - 1 + offset;
+                    if (("" + epNum).equals(video.getEpisodeCount())) {
                         status = "completed";
                     }
                     Database.addToWatchlist(key, epNum + "", status, user.getUid(), session);
