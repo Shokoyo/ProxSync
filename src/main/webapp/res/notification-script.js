@@ -41,5 +41,7 @@ $(document).on('click', function (e) {
 });
 
 $("#notification-menu").on('click', function(e) {
-    e.stopPropagation();
+    if(menuNotifications.open) {
+        e.stopPropagation();
+    }
 });

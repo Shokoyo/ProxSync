@@ -51,7 +51,7 @@ public class Episode {
         String ts = body.attr("data-ts");
         String update = "0";
         /*for (Element server : servers) {
-            if (server.attr("data-id").equals("34")) {
+            if (server.attr("data-id").equals("35")) {
                 Elements episodes = server.select("li");
                 for (Element elEpisode : episodes) {
                     Element anchor = elEpisode.select("a").first();

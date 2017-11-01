@@ -40,7 +40,7 @@ public class Anime {
         Elements servers = document.select("div[class=server row");
         Element body = document.select("body").first();
         for (Element server : servers) {
-            if (/*server.attr("data-id").equals("34") ||*/ server.attr("data-id").equals("33")) {
+            if (/*server.attr("data-id").equals("35") ||*/ server.attr("data-id").equals("33")) {
                 Elements episodes = server.select("li");
                 for (Element elEpisode : episodes) {
                     Element anchor = elEpisode.select("a").first();

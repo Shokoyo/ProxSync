@@ -8,6 +8,7 @@ var menuEl = document.querySelector('#profile-menu');
 if(menuEl != null) {
     var menu = new mdc.menu.MDCSimpleMenu(menuEl);
     menuEl.addEventListener('MDCSimpleMenu:selected', function (evt) {
+        console.log("menu clicked");
         menu.open = false;
         var detail = evt.detail;
         switch (detail.index) {

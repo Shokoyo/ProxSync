@@ -454,11 +454,15 @@ public class Room {
             if(anime.getEpisodeList().isEmpty()) {
                 return "";
             }
-            Episode episode = anime.getEpisodeList().get(this.episode - 1);
-            if (episode != null) {
-                String episodeSource = episode.getSourceUrl();
-                return episodeSource;
-            } else {
+            try {
+                Episode episode = anime.getEpisodeList().get(this.episode - 1);
+                if (episode != null) {
+                    String episodeSource = episode.getSourceUrl();
+                    return episodeSource;
+                } else {
+                    return "";
+                }
+            } catch(IndexOutOfBoundsException e) {
                 return "";
             }
         }
