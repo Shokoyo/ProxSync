@@ -17,7 +17,7 @@ public class NotificationUpdater implements Runnable {
     @Override
     public void run() {
         System.out.println("Updating notifications");
-        List<AnimeSearchObject> objects = AnimeUtils.updatedSearch("https://9anime.to/updated");
+        List<AnimeSearchObject> objects = AnimeUtils.updatedSearch("https://9anime.is/updated");
         for (AnimeSearchObject o : objects) {
             String key = o.getLink().substring(o.getLink().lastIndexOf("/") + 1);
             Map<String, String> watchingMap = Database.getWatchingList(key);

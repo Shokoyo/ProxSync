@@ -414,7 +414,7 @@ public class Room {
                 if (website == null || website.equals("")) {
                     sendDebugToHost("Couldn't find video URL. May be my fault or your fault");
                 }
-            } else if (url.getHost().equals("9anime.to")) {
+            } else if (url.getHost().equals(Configuration.instance.SITE_NAME)) {
                 _9animeLink = video;
                 System.out.println("getting 9anime link");
                 website = get9animeLink(video);

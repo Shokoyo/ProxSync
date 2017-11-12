@@ -25,7 +25,7 @@ function watchNext(event, key) {
         if(!(window.location.pathname === "/ProxSync/" || window.location.pathname === "/AniSync/" || window.location.pathname === "/")) {
             newWindow.location = "../?id=" + key + "&episode=" + nextEpisode;
         } else {
-            loadVideoByEpisode("https://9anime.to/watch/" + key, nextEpisode);
+            loadVideoByEpisode("https://9anime.is/watch/" + key, nextEpisode);
         }
     });
 }
