@@ -23,13 +23,13 @@
     <div class="mdc-toolbar__row">
         <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
             <div id="tf-box-search"
-                 class="mdc-textfield mdc-textfield--box">
+                 class="mdc-text-field mdc-text-field--box">
                 <input type="text" id="tf-box-search-field"
-                       class="mdc-textfield__input mdc-theme--primary-light"
+                       class="mdc-text-field__input mdc-theme--primary-light"
                        style="color: rgba(255,255,255,0.7)!important;">
-                <label for="tf-box-search-field" class="mdc-textfield__label mdc-theme--primary-light"
+                <label for="tf-box-search-field" class="mdc-text-field__label mdc-theme--primary-light"
                        style="color: rgba(255,255,255,0.7)!important;">SEARCH</label>
-                <div class="mdc-textfield__bottom-line"></div>
+                <div class="mdc-text-field__bottom-line"></div>
             </div>
         </section>
         <section class="mdc-toolbar__section mdc-toolbar__section--align-middle">

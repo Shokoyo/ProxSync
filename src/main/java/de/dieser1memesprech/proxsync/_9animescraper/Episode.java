@@ -50,8 +50,9 @@ public class Episode {
         Element body = document.select("body").first();
         String ts = body.attr("data-ts");
         String update = "0";
-        /*for (Element server : servers) {
-            if (server.attr("data-id").equals("35")) {
+        for (Element server : servers) {
+            //currently server F4
+            if (server.attr("data-id").equals("30")) {
                 Elements episodes = server.select("li");
                 for (Element elEpisode : episodes) {
                     Element anchor = elEpisode.select("a").first();
@@ -63,8 +64,8 @@ public class Episode {
                 }
                 break;
             }
-        }*/
-        if(sourceUrl.equals("")) {
+        }
+        /*if(sourceUrl.equals("")) {
             for (Element server : servers) {
                 if (server.attr("data-id").equals("33")) {
                     Elements episodes = server.select("li");
@@ -81,7 +82,7 @@ public class Episode {
                     break;
                 }
             }
-        }
+        }*/
         return sourceUrl;
     }
 

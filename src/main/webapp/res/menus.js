@@ -3,7 +3,7 @@ if(notificationsEl != null) {
     var menuNotifications = new mdc.menu.MDCSimpleMenu(notificationsEl);
 }
 var timeOut;
-mdc.textfield.MDCTextfield.attachTo(document.querySelector('.mdc-textfield'));
+mdc.textField.MDCTextField.attachTo(document.querySelector('.mdc-text-field'));
 var menuEl = document.querySelector('#profile-menu');
 var menu;
 if(menuEl !== null) {

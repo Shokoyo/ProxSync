@@ -85,12 +85,12 @@
     width:48px;
 }
 
-.mdc-textfield {
+.mdc-text-field {
     margin-bottom: 0;
     align-self: center;
 }
 
-.mdc-textfield--box {
+.mdc-text-field--box {
     margin-left: 8px;
     background-color: rgba(0,0,0,0.15);
 }

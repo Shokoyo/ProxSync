@@ -35,15 +35,15 @@
     <div class="mdc-toolbar__row">
         <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
             <div id="tf-box-search"
-                 class="mdc-textfield mdc-textfield--box mdc-textfield--upgraded mdc-ripple-upgraded"
+                 class="mdc-text-field mdc-text-field--box mdc-text-field--upgraded mdc-ripple-upgraded"
                  data-demo-no-auto-js=""
                  style="--mdc-ripple-surface-width:214px; --mdc-ripple-surface-height:56px; --mdc-ripple-fg-size:128.4px; --mdc-ripple-fg-scale:1.80067; --mdc-ripple-fg-translate-start:22.8px, -28.6375px; --mdc-ripple-fg-translate-end:42.8px, -36.2px;">
                 <input type="text" id="tf-box-search-field"
-                       class="mdc-textfield__input mdc-theme--primary-light"
+                       class="mdc-text-field__input mdc-theme--primary-light"
                        style="color: rgba(255,255,255,0.7)!important;">
-                <label for="tf-box-search-field" class="mdc-textfield__label mdc-theme--primary-light"
+                <label for="tf-box-search-field" class="mdc-text-field__label mdc-theme--primary-light"
                        style="color: rgba(255,255,255,0.7)!important;">SEARCH</label>
-                <div class="mdc-textfield__bottom-line"></div>
+                <div class="mdc-text-field__bottom-line"></div>
             </div>
             <button class="mdc-button mdc-button--raised mdc-theme--secondary-bg"
                     onclick="leaveRoom()"
@@ -189,11 +189,11 @@
                                          style="height:0;">
                                     <div id='room-name-field' class="mdc-toolbar__title light-font"
                                          style='display: none;float:left;'>
-                                        <div class="mdc-textfield light-font">
+                                        <div class="mdc-text-field light-font">
                                             <input onfocus="this.select();" onblur="enterRoomName();" type="text"
-                                                   id="room-name-in" class="mdc-textfield__input light-font">
-                                            <label for="room-name-in" class="mdc-textfield__label light-font"></label>
-                                            <div class="mdc-textfield__bottom-line mdc-theme--background"
+                                                   id="room-name-in" class="mdc-text-field__input light-font">
+                                            <label for="room-name-in" class="mdc-text-field__label light-font"></label>
+                                            <div class="mdc-text-field__bottom-line mdc-theme--background"
                                                  style="height:1px;"></div>
                                         </div>
                                     </div>
@@ -248,11 +248,11 @@
                                                 Load Video URL
                                             </button>
                                             <div class="mdc-form-field">
-                                                <div id="url-field" class="mdc-textfield"
+                                                <div id="url-field" class="mdc-text-field"
                                                      data-mdc-auto-init="MDCTextfield">
-                                                    <input type="text" id="url" class="mdc-textfield__input"
+                                                    <input type="text" id="url" class="mdc-text-field__input"
                                                            onclick="this.focus();this.select()">
-                                                    <label for="url" class="mdc-textfield__label">URL</label>
+                                                    <label for="url" class="mdc-text-field__label">URL</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -339,7 +339,7 @@
         var menuNotifications = new mdc.menu.MDCSimpleMenu(notificationsEl);
     }
     var timeOut;
-    mdc.textfield.MDCTextfield.attachTo(document.querySelector('.mdc-textfield'));
+    mdc.textField.MDCTextField.attachTo(document.querySelector('.mdc-text-field'));
     var menuEl = document.querySelector('#profile-menu');
     if(menuEl != null) {
         var menuTop = new mdc.menu.MDCSimpleMenu(menuEl);
@@ -372,7 +372,7 @@
         window.location = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + path + loc;
     }
     var urlFieldEl = document.querySelector('#url-field');
-    var urlField = new mdc.textfield.MDCTextfield(urlFieldEl);
+    var urlField = new mdc.textField.MDCTextField(urlFieldEl);
 </script>
 </body>
 </html>

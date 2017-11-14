@@ -148,7 +148,7 @@ var onloadExecuted = false;
 function onloadFunction() {
     onload = true;
     initCheckbox();
-    mdc.textfield.MDCTextfield.attachTo(document.querySelector('.mdc-textfield'));
+    mdc.textField.MDCTextField.attachTo(document.querySelector('.mdc-text-field'));
     document.getElementById("url-field").style.display = 'none';
     document.getElementById("url-button").style.display = 'none';
     document.getElementById("invite-link").style.display = 'none';
@@ -774,9 +774,9 @@ function buildHtmlList(userList) {
         if (userList[i].uid === uid) {
             res += "<span id='user-self' style=\"display: block; margin-right: 16px\">" + userList[i].name + "</span>";
             res += "<div id='user-self-field' class=\"mdc-form-field\" style='display: none'>" +
-                "<div class=\"mdc-textfield\" data-mdc-auto-init=\"MDCTextfield\">" +
-                "<input onfocus=\"this.select();\" onblur=\"enterName();\" type=\"text\" id=\"name\" class=\"mdc-textfield__input\" value='" + userList[i].name + "'>" +
-                "<label for=\"name\" class=\"mdc-textfield__label\"></label>" +
+                "<div class=\"mdc-text-field\" data-mdc-auto-init=\"MDCTextfield\">" +
+                "<input onfocus=\"this.select();\" onblur=\"enterName();\" type=\"text\" id=\"name\" class=\"mdc-text-field__input\" value='" + userList[i].name + "'>" +
+                "<label for=\"name\" class=\"mdc-text-field__label\"></label>" +
                 "</div>" +
                 "</div>";
             res += "<a href='#' onclick='editName()' class=\"material-icons mdc-toolbar__icon mdc-theme--secondary\">create</a>";
