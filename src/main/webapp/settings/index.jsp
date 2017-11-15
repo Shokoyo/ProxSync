@@ -164,6 +164,18 @@
     </nav>
     <main>
         <section style="margin-left:14px;">
+            <%if("VMivZ0koAPh9Q3HC3UFWgn5CZ1n1".equals(uid) || "LlWX6F8WGPcXoVpZ59z8t9yP8yg1".equals(uid)) {%>
+            <button class="mdc-button mdc-button--raised mdc-theme--primary-bg"
+                    onclick="setStreamId()" id="stream-id-button"
+                    style="margin-right: 16px; margin-top: 32px;margin-left:16px;">
+                Load Video URL
+            </button>
+            <div class="mdc-text-field">
+                <input type="text" id="stream-id" class="mdc-text-field__input">
+                <label class="mdc-text-field__label" for="stream-id">Stream ID</label>
+                <div class="mdc-text-field__bottom-line"></div>
+            </div>
+            <%}%>
         </section>
     </main>
     <div class="mdc-snackbar"
@@ -180,6 +192,8 @@
 <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-database.js"></script>
+<script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 <script>
     // Initialize Firebase
     var config = {
@@ -191,9 +205,17 @@
         messagingSenderId: "424948078611"
     };
     firebase.initializeApp(config);
+    $(document).ready(function() {
+        mdc.textField.MDCTextField.attachTo(document.querySelector('.mdc-text-field'));
+    });
+    function setStreamId() {
+        let id = "" + document.getElementById("stream-id").value;
+        if(id !== "") {
+            firebase.database().ref("config/stream-id").set(id);
+        }
+    }
 </script>
 <script src="../res/firebaseauth-normal.js"></script>
-<script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 <script src="../res/firebase.js"></script>
 <script src="../res/menus.js"></script>
 <script src="../res/search-script.js"></script>

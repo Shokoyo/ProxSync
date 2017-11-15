@@ -45,6 +45,7 @@ public class StartupListener implements ServletContextListener {
             FirebaseApp.initializeApp(options);
             Database.database = FirebaseDatabase.getInstance();
             System.out.println("Database initialized");
+            Database.initStreamIdListener();
 
             Runnable updater = new NotificationUpdater();
             //scheduler.scheduleAtFixedRate(new AiringUpdater(), 0, 1, TimeUnit.DAYS);

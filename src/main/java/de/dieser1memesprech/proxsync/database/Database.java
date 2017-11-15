@@ -3,7 +3,9 @@ package de.dieser1memesprech.proxsync.database;
 import com.google.firebase.database.*;
 import com.google.firebase.tasks.OnCompleteListener;
 import com.google.firebase.tasks.Task;
+import de.dieser1memesprech.proxsync._9animescraper.config.Configuration;
 import de.dieser1memesprech.proxsync.websocket.UserSessionHandler;
+import sun.security.krb5.Config;
 
 import javax.json.JsonObject;
 import javax.json.spi.JsonProvider;
@@ -12,6 +14,25 @@ import java.util.*;
 
 public class Database {
     public static FirebaseDatabase database;
+
+    public static void updateStreamId(String id) {
+        database.getReference("config/stream-id").setValueAsync(id);
+    }
+
+    public static void initStreamIdListener() {
+        database.getReference("config/stream-id").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("value event received");
+                Configuration.instance.setStreamServerId(dataSnapshot.getValue(String.class));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     public static void addAnimeinfoToDatabase(String key, String title, List<String> res) {
         Map<String, Object> dataMapEpisodeNames = new LinkedHashMap<String, Object>();

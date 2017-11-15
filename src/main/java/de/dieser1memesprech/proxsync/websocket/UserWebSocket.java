@@ -53,6 +53,10 @@ public class UserWebSocket {
         JsonReader reader = Json.createReader(new StringReader(message));
         JsonObject jsonMessage = reader.readObject();
 
+        if("streamId".equals(jsonMessage.getString("action"))) {
+            Database.updateStreamId(jsonMessage.getString("id"));
+        }
+
         if ("changeName".equals(jsonMessage.getString("action"))) {
             Room old = RoomHandler.getInstance().getRoomBySession(session);
             String name = jsonMessage.getString("name");

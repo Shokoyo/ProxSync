@@ -52,7 +52,7 @@ public class Episode {
         String update = "0";
         for (Element server : servers) {
             //currently server F4
-            if (server.attr("data-id").equals("30")) {
+            if (server.attr("data-id").equals(Configuration.instance.getStreamServerId())) {
                 Elements episodes = server.select("li");
                 for (Element elEpisode : episodes) {
                     Element anchor = elEpisode.select("a").first();
