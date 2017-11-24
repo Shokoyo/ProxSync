@@ -59,6 +59,11 @@ public class Episode {
                     String id = anchor.attr("data-id");
                     if (episodeUrl.contains(id)) {
                         sourceUrl =  parseServerSingleEpisode(elEpisode, ts, update, id);
+                        if(sourceUrl.contains("openload")) {
+                            sourceUrl = scrapeOpenload(sourceUrl);
+                        } else if(sourceUrl.contains("rapidvideo")) {
+                            sourceUrl = scrapeRapid(sourceUrl);
+                        }
                         break;
                     }
                 }
@@ -96,14 +101,24 @@ public class Episode {
         String url = Configuration.instance.INFO_API_URL + "?ts=" + ts + "&_=" + _9AnimeUrlExtender.getExtraUrlParameter(id, ts, update, serverid) + "&id=" + id + "&server=" + serverid + "&update=" + update;
         String content = HtmlUtils.getHtmlContent(url);
         System.out.println(content);
-        if(!content.contains("rapidvideo")) {
-            return scrapeSourceUrl(content);
+        if(content.contains("rapidvideo") || content.contains("openload")) {
+            return scrapeEmbed(content);
         } else {
-            return scrapeRapidEmbed(content);
+            return scrapeSourceUrl(content);
         }
     }
 
-    private String scrapeRapidEmbed(String content) {
+    private String scrapeOpenload(String embedUrl) {
+        String iFrameContent = HtmlUtils.getHtmlContent(embedUrl);
+        System.out.println(iFrameContent);
+        //Document iFrameDocument = Jsoup.parse(iFrameContent);
+        //Element vidElem = iFrameDocument.select("video").first();
+        //episodeUrl = vidElem.select("source").attr("src");
+        //System.out.println(episodeUrl);
+        return episodeUrl;
+    }
+
+    private String scrapeEmbed(String content) {
         JsonElement jsonElementSource = new JsonParser().parse(content);
         JsonObject jsonObjectSource = jsonElementSource.getAsJsonObject();
         return jsonObjectSource.get("target").getAsString();
