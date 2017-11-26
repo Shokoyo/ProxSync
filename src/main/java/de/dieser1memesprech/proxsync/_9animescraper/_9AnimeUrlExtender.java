@@ -1,6 +1,15 @@
 package de.dieser1memesprech.proxsync._9animescraper;
 
+import de.dieser1memesprech.proxsync._9animescraper.config.Configuration;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+
 public class _9AnimeUrlExtender {
+    private static ArrayList<Character> tsTable;
+    private static ArrayList<Character> cusbMapTable;
     // TODO
     public static String getExtraUrlParameter(String id, String ts, String update, String server) {
         String DD = "gIXCaNh";
@@ -14,7 +23,66 @@ public class _9AnimeUrlExtender {
         for (int i = 0; i < params.length; i++) {
             o += _s(_a(DD + paramNames[i], params[i]));
         }
+
+        System.out.println(Integer.toString(o - 33));
         return Integer.toString(o - 33);
+    }
+
+    public static String decodeTs(String ts) {
+        if(_9AnimeUrlExtender.tsTable == null) {
+            initArrays();
+        }
+        String decoded = "";
+        for(char c: ts.toCharArray()) {
+            if(!tsTable.contains(c)) {
+                decoded += c;
+            } else {
+                decoded += (char) (65 + tsTable.indexOf(c));
+            }
+        }
+        int missingPadding = decoded.length() % 4;
+        if(missingPadding != 0) {
+            for(int i = 0; i < missingPadding; i++) {
+                decoded += '=';
+            }
+        }
+        System.out.println(decoded);
+        byte[] byteArray = Base64.getDecoder().decode(decoded);
+        String res = "";
+        try {
+            res = new String(byteArray, "UTF-8");
+        } catch(UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    private static void initArrays() {
+        ArrayList<Character> l = new ArrayList<>();
+        for(int i = 65; i <= 90; i++) {
+            if(i%2 != 0) {
+                l.add((char) i);
+            }
+        }
+        for(int i = 65; i <= 90; i++) {
+            if(i%2 == 0) {
+                l.add((char) i);
+            }
+        }
+        String str = l.toString().replaceAll(",","");
+        _9AnimeUrlExtender.tsTable = l;
+        l = new ArrayList<>();
+        for(int i = 97; i <= 172; i++) {
+            if(i%2 != 0) {
+                l.add((char) i);
+            }
+        }
+        for(int i = 97; i <= 172; i++) {
+            if(i%2 == 0) {
+                l.add((char) i);
+            }
+        }
+        _9AnimeUrlExtender.cusbMapTable = l;
     }
 
     private static int _s(String t) {

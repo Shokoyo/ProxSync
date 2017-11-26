@@ -71,8 +71,10 @@ public class Anime {
 
     private String scrapeEpisodeInfo(String id, String ts, String update, String serverid) {
         String url = Configuration.instance.INFO_API_URL + "?ts=" + ts + "&_=" + _9AnimeUrlExtender.getExtraUrlParameter(id, ts, update, serverid) + "&id=" + id + "&server=" + serverid + "&update=" + update;
+        System.out.println(url);
         String content = HtmlUtils.getHtmlContent(url);
         // TODO
+        System.out.println(content);
         return content;
     }
 

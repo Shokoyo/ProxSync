@@ -11,6 +11,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import javax.validation.constraints.Null;
+
 public class Episode {
     private String id;
     private String episodeName;
@@ -45,10 +47,12 @@ public class Episode {
 
     public String scrapeSource() {
         String sourceUrl = "";
-        Document document = Jsoup.parse(HtmlUtils.getHtmlContent(episodeUrl));
+        Document document = Jsoup.parse(HtmlUtils.getHtmlContent(episodeUrl/*.substring(0, episodeUrl.lastIndexOf("/"))*/));
         Elements servers = document.select("div[class=server row");
         Element body = document.select("body").first();
         String ts = body.attr("data-ts");
+        ts = _9AnimeUrlExtender.decodeTs(ts);
+        System.out.println(ts);
         String update = "0";
         for (Element server : servers) {
             //currently server F4
@@ -57,8 +61,9 @@ public class Episode {
                 for (Element elEpisode : episodes) {
                     Element anchor = elEpisode.select("a").first();
                     String id = anchor.attr("data-id");
+                    String serverId = server.attr("data-id");
                     if (episodeUrl.contains(id)) {
-                        sourceUrl =  parseServerSingleEpisode(elEpisode, ts, update, id);
+                        sourceUrl =  parseServerSingleEpisode(elEpisode, ts, update, serverId);
                         if(sourceUrl.contains("openload")) {
                             sourceUrl = scrapeOpenload(sourceUrl);
                         } else if(sourceUrl.contains("rapidvideo")) {
@@ -100,6 +105,7 @@ public class Episode {
     private String scrapeEpisodeInfo(String id, String ts, String update, String serverid) {
         String url = Configuration.instance.INFO_API_URL + "?ts=" + ts + "&_=" + _9AnimeUrlExtender.getExtraUrlParameter(id, ts, update, serverid) + "&id=" + id + "&server=" + serverid + "&update=" + update;
         String content = HtmlUtils.getHtmlContent(url);
+        System.out.println(url);
         System.out.println(content);
         if(content.contains("rapidvideo") || content.contains("openload")) {
             return scrapeEmbed(content);
@@ -144,7 +150,12 @@ public class Episode {
         JsonElement jsonElementUrls = new JsonParser().parse(episodeUrls);
         JsonObject jsonObjectUrls = jsonElementUrls.getAsJsonObject();
         JsonArray jsonArrayUrlsData = jsonObjectUrls.getAsJsonArray("data");
-        episodeUrl = jsonArrayUrlsData.get(jsonArrayUrlsData.size() - 1).getAsJsonObject().get("file").getAsString();
+        try {
+            episodeUrl = jsonArrayUrlsData.get(jsonArrayUrlsData.size() - 1).getAsJsonObject().get("file").getAsString();
+        } catch(NullPointerException e) {
+            e.printStackTrace();
+            episodeUrl = "";
+        }
         return episodeUrl;
     }
 }
