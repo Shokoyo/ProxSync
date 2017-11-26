@@ -29,6 +29,7 @@ public class _9AnimeUrlExtender {
     }
 
     public static String decodeTs(String ts) {
+        System.out.println(ts);
         if(_9AnimeUrlExtender.tsTable == null) {
             initArrays();
         }
@@ -42,7 +43,7 @@ public class _9AnimeUrlExtender {
         }
         int missingPadding = decoded.length() % 4;
         if(missingPadding != 0) {
-            for(int i = 0; i < missingPadding; i++) {
+            for(int i = 0; i < 4 - missingPadding; i++) {
                 decoded += '=';
             }
         }
@@ -72,12 +73,12 @@ public class _9AnimeUrlExtender {
         String str = l.toString().replaceAll(",","");
         _9AnimeUrlExtender.tsTable = l;
         l = new ArrayList<>();
-        for(int i = 97; i <= 172; i++) {
+        for(int i = 97; i <= 122; i++) {
             if(i%2 != 0) {
                 l.add((char) i);
             }
         }
-        for(int i = 97; i <= 172; i++) {
+        for(int i = 97; i <= 122; i++) {
             if(i%2 == 0) {
                 l.add((char) i);
             }
@@ -100,5 +101,48 @@ public class _9AnimeUrlExtender {
             n += i < t.length() ? (int) t.charAt(i) : 0;
         }
         return Integer.toHexString(n);
+    }
+
+    public static String decodeExtraParameter(String param) {
+        if(param.charAt(0) == '-') {
+            return decodeCusb(param.substring(1));
+        } else {
+            return rotString(param.substring(1));
+        }
+    }
+
+    private static String rotString(String param) {
+        //int rotBy = 8;
+        return new StringTranslator("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "ijklmnopqrstuvwxyzabcdefghIJKLMNOPQRSTUVWXYZABCDEFGH").translate(param);
+    }
+
+    private static String decodeCusb(String param) {
+        System.out.println(param);
+        if(_9AnimeUrlExtender.cusbMapTable == null) {
+            initArrays();
+        }
+        String decoded = "";
+        for(char c: param.toCharArray()) {
+            if(!cusbMapTable.contains(c)) {
+                decoded += c;
+            } else {
+                decoded += (char) (97 + cusbMapTable.indexOf(c));
+            }
+        }
+        int missingPadding = decoded.length() % 4;
+        if(missingPadding != 0) {
+            for(int i = 0; i < 4 - missingPadding; i++) {
+                decoded += '=';
+            }
+        }
+        System.out.println(decoded);
+        byte[] byteArray = Base64.getDecoder().decode(decoded.trim());
+        String res = "";
+        try {
+            res = new String(byteArray, "UTF-8");
+        } catch(UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return res;
     }
 }
