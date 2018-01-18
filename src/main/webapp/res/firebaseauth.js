@@ -11,6 +11,16 @@ firebase.auth().onAuthStateChanged(function (authData) {
             location.reload();
             return;
         }
+        if(!authData.isAnonymous) {
+            db.collection("users").doc(uid).onSnapshot(function (doc) {
+                let userDoc = doc.data();
+                document.getElementById("avatar-toolbar").src = userDoc.avatar;
+                if(window.location.pathname.indexOf("profile") !== -1) {
+                    document.getElementById("avatar-on-card").src = userDoc.avatar;
+                    document.getElementById("banner-div").style.backgroundImage = "url(" + userDoc.banner + ")";
+                }
+            });
+        }
         currentUser = authData.currentUser;
         uid = authData.uid;
         anonymous = authData.isAnonymous;
@@ -23,10 +33,10 @@ firebase.auth().onAuthStateChanged(function (authData) {
                 } else {
                     socket.onopen = createRoom;
                 }
-                var id = getQueryVariable("id");
+                var title = getQueryVariable("title");
                 var episode = getQueryVariable("episode");
-                if (id !== null) {
-                    loadVideoByEpisode("https://9anime.is/watch/" + id, episode === null ? 1 : parseInt(episode));
+                if (title !== null) {
+                    loadVideoByEpisode(title, episode === null ? 1 : parseInt(episode));
                 }
             } else {
                 if (socket.readyState === socket.OPEN) {

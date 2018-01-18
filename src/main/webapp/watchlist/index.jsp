@@ -6,134 +6,10 @@
 <%@ page import="java.util.List" %>
 <html language="de" class="mdc-typography">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet"
-          href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
-    <link rel="stylesheet" href="../res/theme-standard.css">
-    <link rel="stylesheet" href="../res/style.css">
-    <link rel="stylesheet" href="res/style.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <title>Prox-Sync</title>
+    <%@include file="../res/template/head.jsp" %>
 </head>
 <body class="mdc-theme--background mdc-typography adjusted-body">
-<header id="page-header"
-        class="mdc-toolbar mdc-toolbar--fixed">
-    <div class="mdc-toolbar__row">
-        <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
-            <div id="tf-box-search"
-                 class="mdc-text-field mdc-text-field--box">
-                <input type="text" id="tf-box-search-field"
-                       class="mdc-text-field__input mdc-theme--primary-light"
-                       style="color: rgba(255,255,255,0.7)!important;">
-                <label for="tf-box-search-field" class="mdc-text-field__label mdc-theme--primary-light"
-                       style="color: rgba(255,255,255,0.7)!important;">SEARCH</label>
-                <div class="mdc-text-field__bottom-line"></div>
-            </div>
-        </section>
-        <section class="mdc-toolbar__section mdc-toolbar__section--align-middle">
-            <span class="mdc-toolbar__title"><a href="../" style="color:inherit;text-decoration:none;">ProxSync</a></span>
-        </section>
-        <section class="mdc-toolbar__section mdc-toolbar__section--align-end">
-            <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
-                <div id="register-row"
-                     style="align-self:center;float:right;margin-right:16px;margin-left:auto;">
-                    <button class="mdc-button mdc-button--raised mdc-theme--secondary-bg mdc-button--align-middle"
-                            onclick="register()"
-                            id="register-button"
-                            style="
-                                    align-self: center;
-                                    margin-left:10px;">Sign in
-                    </button>
-                </div>
-                <div id="signout-row" style="align-self: center; margin-right: 16px; margin-left: auto;">
-                    <div style="float:right;" onmouseover="clearTimeout(timeOut); menu.open = true;"
-                         onmouseout="timeOut = setTimeout(function() {menu.open = false;},200);"
-                         id="profile-mouseaction">
-                        <a href="../profile">
-                            <img src="<%
-                            String url= "https://firebasestorage.googleapis.com/v0/b/proxsync.appspot.com/o/panda.svg?alt=media&token=6f4d5bf1-af69-4211-994d-66655456d91a";
-                            String uid = LoginUtil.getUid(request);
-                            if (!"".equals(uid)) {
-                            String databaseUrl = Database.getAvatarFromDatabase(uid);
-                            if(databaseUrl.equals("null")) {
-                                Database.setAvatar(uid, url);
-                            } else {
-                                url = databaseUrl;
-                            }
-                            }
-                            %><%=url%>" id="avatar-toolbar" class="user-avatar-toolbar">
-                        </a>
-                        <div class="mdc-simple-menu mdc-simple-menu--open-from-top-right" id="profile-menu"
-                             tabindex="-1" style="top:64px;right:-14px;">
-                            <ul class="mdc-simple-menu__items mdc-list" role="menu" id="profile-list"
-                                aria-hidden="true">
-                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0" onclick="followLink('/profile/');">
-                                    <span style="align-self:center;">Profile</span>
-                                </li>
-                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0" onclick="followLink('/watchlist/');">
-                                    <span style="align-self:center;">Watchlist</span>
-                                </li>
-                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0" onclick="followLink('/airing/');">
-                                    <span style="align-self:center;">Airing</span>
-                                </li>
-                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0" onclick="followLink('/settings/');">
-                                    <span style="align-self:center;">Settings</span>
-                                </li>
-                                <li class="mdc-list-divider" role="separator"></li>
-                                <li class="mdc-list-item profile-list" role="menuitem" tabindex="0" onclick="signout();">
-                                    <span style="align-self:center;">Sign Out</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <i class="material-icons mdc-toolbar__icon"
-                       style="float:right;font-size:40px;padding:8px!important;"
-                       onclick="menuNotifications.open = !menuNotifications.open">
-                        <%
-                            List<Notification> notifications = Database.getNotifications(uid);
-                            if (notifications.isEmpty()) {
-                        %>
-                        notifications_none
-                        <%
-                        } else {
-                        %>
-                        notifications_active
-                        <%
-                            }
-                        %>
-                    </i>
-                    <div class="mdc-simple-menu mdc-simple-menu--open-from-top-right" tabindex="-1"
-                         id="notification-menu" style="top:64px;right:72px;">
-                        <ul class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
-                            <%if(!notifications.isEmpty()&& ! "".equals(uid)) {%>
-                            <%
-                                for (int i = 0; i < notifications.size(); i++) {
-                                    Notification n = notifications.get(i);
-                            %>
-                            <li class="mdc-list-item profile-list" role="menuitem" aria-disabled="true" id="notifications-<%=n.getKey()%>">
-                                <span style="align-self:center;z-index:5; ">
-                                    <a href="javascript:void(0)" onclick="watchNext(event,'<%=n.getKey()%>');return false;" style="color:inherit;text-decoration: none"><%=n.getTitle()%>: <%=n.getLatestEpisode()%>/<%=n.getEpisodeCount()%></a>
-                                    <i onclick="removeNotification('<%=n.getKey()%>');return false;" class="material-icons remove-notification">clear</i>
-                                </span>
-                            </li>
-                            <% if (i < notifications.size() - 1) {%>
-                            <li role="separator" class="mdc-list-divider" id="divider-<%=n.getKey()%>"></li>
-                            <%}%>
-                            <%}%>
-                            <%}%>
-                        </ul>
-                    </div>
-                    <span id="welcome-msg" class="mdc-toolbar__title"
-                          style="margin-top:4px;float:right;align-self:center;"></span>
-                </div>
-            </section>
-        </section>
-    </div>
-</header>
+<%@include file="../res/template/header.jsp" %>
 <div class="content mdc-toolbar-fixed-adjust">
     <div class="mdc-simple-menu" id="search-menu" tabindex="-1">
         <ul class="mdc-dialog__body--scrollable mdc-simple-menu__items mdc-list mdc-list--avatar-list menu-search"
@@ -242,7 +118,7 @@
                                             </a>
                                             <%}%>
                                             <section class="mdc-card__primary watchlist-item"
-                                                     onclick="window.open('../?id=<%=e.getKey()%>&episode=<%=(Integer.parseInt(e.getEpisode())+1)%>','_blank')">
+                                                     onclick="window.open('../?title=<%=e.getTitle()%>&episode=<%=(Integer.parseInt(e.getEpisode())+1)%>','_blank')">
                                                 <h1 class="mdc-card__title mdc-card__title--large title-container resize"><%=e.getTitle()%>
                                                 </h1>
                                                 <h2 class="mdc-card__subtitle"><%=e.getEpisode()%>
@@ -321,7 +197,7 @@
                                             </a>
                                             <%}%>
                                             <section class="mdc-card__primary watchlist-item"
-                                                     onclick="window.open('../?id=<%=e.getKey()%>&episode=<%=(Integer.parseInt(e.getEpisode())+1)%>','_self')">
+                                                     onclick="window.open('../?title=<%=e.getTitle()%>&episode=<%=(Integer.parseInt(e.getEpisode())+1)%>','_self')">
                                                 <h1 class="mdc-card__title mdc-card__title--large title-container resize"><%=e.getTitle()%>
                                                 </h1>
                                                 <h2 class="mdc-card__subtitle"><%=e.getEpisode()%>
@@ -374,7 +250,7 @@
                                 <li class="mdc-grid-title"
                                     id="card-<%=e.getKey()%>">
                                     <div class="mdc-grid-tile__primary"
-                                         onclick="window.open('../?id=<%=e.getKey()%>&episode=1')">
+                                         onclick="window.open('../?title=<%=e.getTitle()%>&episode=1')">
                                         <div class="mdc-card mdc-card--theme-dark watchlist-card mdc-grid-title__primary-content"
                                              style="background-image:url(<%=e.getPoster()%>);">
                                             <a href="javascript:void(0);"
@@ -452,13 +328,13 @@
         </div>
     </div>
 </div>
-<script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.3.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.8.2/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.8.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.8.2/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.8.2/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.8.2/firebase-firestore.js"></script>
 <script>
-    // Initialize Firebase
-    var config = {
+    var oldConfig = {
         apiKey: "AIzaSyDDD68tM8V5yNi3aiZco8FnK6IiXTOAhi8",
         authDomain: "proxsync.firebaseapp.com",
         databaseURL: "https://proxsync.firebaseio.com",
@@ -466,7 +342,17 @@
         storageBucket: "",
         messagingSenderId: "424948078611"
     };
+    var config = {
+        apiKey: "AIzaSyCHMFCl1SAsC9VDeunRsIU3UpuCQ5JQdA4",
+        authDomain: "anisync-be184.firebaseapp.com",
+        databaseURL: "https://anisync-be184.firebaseio.com",
+        projectId: "anisync-be184",
+        storageBucket: "anisync-be184.appspot.com",
+        messagingSenderId: "908197635545"
+    };
     firebase.initializeApp(config);
+    firebase.initializeApp(oldConfig, "oldFirebase");
+    var db = firebase.firestore();
 </script>
 <script>
     var autoSizeText;
@@ -502,7 +388,7 @@
         return autoSizeText();
     });
 </script>
-<script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+<script src="https://unpkg.com/material-components-web@0.26.0/dist/material-components-web.min.js"></script>
 <script src="res/tab-switch.js"></script>
 <script src="../res/firebase.js"></script>
 <script src="../res/firebaseauth-normal.js"></script>
@@ -562,7 +448,7 @@
     }
 
     function updateRating(key) {
-        var submittedScore = score;
+        /*var submittedScore = score;
         var ratingRef = firebase.database().ref("/users/" + uid + "/watchlist/" + key + "/rating");
         ratingRef.once('value', function(snap) {
             if(over === "stars-" + key) {
@@ -570,7 +456,7 @@
             }
             updateStarDisplay($('#stars-' + key), submittedScore);
         });
-        ratingRef.set(score);
+        ratingRef.set(score);*/
     }
 </script>
 <script src="../res/search-script.js"></script>

@@ -1,5 +1,5 @@
 function removeFromWatchlist(key) {
-    var oldKey = key;
+    /*var oldKey = key;
     key = key.split(".").join("-");
     console.log(key);
     console.log("/users/" + uid + "/watchlist/" + key);
@@ -10,11 +10,11 @@ function removeFromWatchlist(key) {
         document.getElementById("card-" + oldKey).style.display = 'none';
     } else {
         console.log("corrupted watchlist entry");
-    }
+    }*/
 }
 
 function addToFavorites(key) {
-    var favoritesRef = firebase.database().ref("/users/" + uid + "/favorites");
+    /*var favoritesRef = firebase.database().ref("/users/" + uid + "/favorites");
     var oldKey = key;
     key = key.split(".").join("-");
     favoritesRef.once('value', function(snapshot) {
@@ -33,11 +33,11 @@ function addToFavorites(key) {
             };
             favEl.innerHTML = "favorite";
         });
-    });
+    });*/
 }
 
 function removeFromFavorites(key) {
-    var oldKey = key;
+    /*var oldKey = key;
     key = key.split(".").join("-");
     if(key !== "") {
         var favRef = firebase.database().ref("/users/" + uid + "/favorites/" + key);
@@ -52,5 +52,5 @@ function removeFromFavorites(key) {
         });
     } else {
         console.log("corrupted favorite entry");
-    }
+    }*/
 }

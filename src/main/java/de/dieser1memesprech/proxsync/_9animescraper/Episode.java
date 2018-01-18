@@ -133,7 +133,9 @@ public class Episode {
     }
 
     private String scrapeRapid(String embedUrl) {
+        System.out.println(embedUrl);
         String iFrameContent = HtmlUtils.getHtmlContent(embedUrl + "?q=720p");
+        System.out.println(iFrameContent);
         Document iFrameDocument = Jsoup.parse(iFrameContent);
         Element vidElem = iFrameDocument.select("video").first();
         episodeUrl = vidElem.select("source").attr("src");
@@ -145,27 +147,31 @@ public class Episode {
         JsonElement jsonElementSource = new JsonParser().parse(content);
         JsonObject jsonObjectSource = jsonElementSource.getAsJsonObject();
         String grabber = jsonObjectSource.get("grabber").getAsString();
-        JsonObject params = jsonObjectSource.getAsJsonObject("params");
-        String token = params.get("token").getAsString();
-        String options = params.get("options").getAsString();
+        if(Configuration.instance.getStreamServerId().equals("33")) {
+            episodeUrl = _9AnimeUrlExtender.decodeExtraParameter(jsonObjectSource.get("target").getAsString());
+        } else {
+            JsonObject params = jsonObjectSource.getAsJsonObject("params");
+            String token = params.get("token").getAsString();
+            String options = params.get("options").getAsString();
 
-        token = _9AnimeUrlExtender.decodeExtraParameter(token);
-        options = _9AnimeUrlExtender.decodeExtraParameter(options);
+            token = _9AnimeUrlExtender.decodeExtraParameter(token);
+            options = _9AnimeUrlExtender.decodeExtraParameter(options);
 
-        String url;
+            String url;
 
-        url = grabber + "&token=" + token + "&options=" + options + "&id=" + params.get("id").getAsString();
-        System.out.println(url);
-        String episodeUrls = HtmlUtils.getHtmlContent(url);
-        System.out.println(episodeUrls);
-        JsonElement jsonElementUrls = new JsonParser().parse(episodeUrls);
-        JsonObject jsonObjectUrls = jsonElementUrls.getAsJsonObject();
-        JsonArray jsonArrayUrlsData = jsonObjectUrls.getAsJsonArray("data");
-        try {
-            episodeUrl = jsonArrayUrlsData.get(jsonArrayUrlsData.size() - 1).getAsJsonObject().get("file").getAsString();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            episodeUrl = "";
+            url = grabber + "&token=" + token + "&options=" + options + "&id=" + params.get("id").getAsString();
+            System.out.println(url);
+            String episodeUrls = HtmlUtils.getHtmlContent(url);
+            System.out.println(episodeUrls);
+            JsonElement jsonElementUrls = new JsonParser().parse(episodeUrls);
+            JsonObject jsonObjectUrls = jsonElementUrls.getAsJsonObject();
+            JsonArray jsonArrayUrlsData = jsonObjectUrls.getAsJsonArray("data");
+            try {
+                episodeUrl = jsonArrayUrlsData.get(jsonArrayUrlsData.size() - 1).getAsJsonObject().get("file").getAsString();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+                episodeUrl = "";
+            }
         }
         return episodeUrl;
     }

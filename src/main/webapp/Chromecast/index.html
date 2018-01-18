@@ -12,11 +12,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 </head>
 <body>
+<cast-media-player></cast-media-player>
 <video id="my-player" class="video-js vjs-default-skin" controls preload="auto" style="width:1280px!important;height:720px!important;" data-setup='{}'></video>
 <script>
     const context = cast.framework.CastReceiverContext.getInstance();
 
     context.addEventListener(cast.framework.system.EventType.READY, () => {
+        loadSampleVideo();
         if(socket.readyState === socket.OPEN) {
             joinRoom("bastard");
         } else {
@@ -24,7 +26,7 @@
         }
     });
 
-    context.start();
+    context.start({maxInactivity: 15000});
     //context.start({queue: myCastQueue, playbackConfig: playbackConfig});
 </script>
 <script src="player-script.js"></script>

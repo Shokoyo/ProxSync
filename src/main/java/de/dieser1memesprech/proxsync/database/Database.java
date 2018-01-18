@@ -5,7 +5,6 @@ import com.google.firebase.tasks.OnCompleteListener;
 import com.google.firebase.tasks.Task;
 import de.dieser1memesprech.proxsync._9animescraper.config.Configuration;
 import de.dieser1memesprech.proxsync.websocket.UserSessionHandler;
-import sun.security.krb5.Config;
 
 import javax.json.JsonObject;
 import javax.json.spi.JsonProvider;

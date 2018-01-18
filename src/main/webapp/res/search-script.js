@@ -148,7 +148,7 @@ Number.prototype.pad = function (size) {
 };
 
 function addPlanToWatch(key, poster, title, episodeCount) {
-    var entry = {
+    /*var entry = {
         episode: "0",
         episodeCount: episodeCount,
         key: key,
@@ -168,5 +168,5 @@ function addPlanToWatch(key, poster, title, episodeCount) {
             document.getElementsByClassName("mdc-snackbar")[0].classList.remove("mdc-snackbar--active");
         }, 2750);
     });
-    ref.set(entry);
+    ref.set(entry);*/
 }

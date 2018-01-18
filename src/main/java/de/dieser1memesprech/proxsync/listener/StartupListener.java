@@ -48,7 +48,7 @@ public class StartupListener implements ServletContextListener {
             Database.initStreamIdListener();
 
             Runnable updater = new NotificationUpdater();
-            //scheduler.scheduleAtFixedRate(new AiringUpdater(), 0, 1, TimeUnit.DAYS);
+            scheduler.scheduleAtFixedRate(new AiringUpdater(), 0, 1, TimeUnit.DAYS);
             scheduler.scheduleAtFixedRate(updater, 0, 5, TimeUnit.MINUTES);
 
             System.out.println("Notification updater initialized");

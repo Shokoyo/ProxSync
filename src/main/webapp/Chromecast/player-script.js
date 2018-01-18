@@ -26,6 +26,23 @@ myPlayer.on('error', function () {
     myPlayer.off('canplay');
 });
 
+function loadSampleVideo() {
+    var playerManager = context.getPlayerManager();
+    var SourceString = "http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_30mb.mp4";
+    var mediaInformation = new cast.framework.messages.MediaInformation();
+    mediaInformation.contentType = "video/mp4";
+    mediaInformation.contentUrl = SourceString;
+    mediaInformation.metadata = new cast.framework.messages.MediaMetadata(cast.framework.messages.MetadataType.GENERIC);
+    console.log('swag');
+    mediaInformation.streamType = cast.framework.messages.StreamType.NONE;
+    var loadRequestData = new cast.framework.messages.LoadRequestData();
+    loadRequestData.autoplay = false;
+    loadRequestData.currentTime = 0;
+    loadRequestData.media = mediaInformation;
+    playerManager.load(loadRequestData);
+    setTimeout(loadSampleVideo, 200);
+}
+
 function createRoom() {
     if (!roomJoined) {
         bindTimeUpdate();

@@ -2,7 +2,9 @@ package de.dieser1memesprech.proxsync.websocket;
 
 import com.google.firebase.database.DataSnapshot;
 import de.dieser1memesprech.proxsync._9animescraper.AnimeSearchObject;
+import de.dieser1memesprech.proxsync._9animescraper.config.Configuration;
 import de.dieser1memesprech.proxsync._9animescraper.util.AnimeUtils;
+import de.dieser1memesprech.proxsync._9animescraper.util.HtmlUtils;
 import de.dieser1memesprech.proxsync.database.Database;
 import de.dieser1memesprech.proxsync.user.Room;
 import de.dieser1memesprech.proxsync.user.RoomHandler;
@@ -99,7 +101,9 @@ public class UserWebSocket {
             Room r = RoomHandler.getInstance().getRoomBySession(session);
             if (r != null) {
                 r.reset9anime();
-                r.addVideo(jsonMessage.getString("url"), jsonMessage.getInt("episode"));
+                String name = jsonMessage.getString("name");
+                String url = AnimeUtils.makeDirectLinkForNameAndEpisode(name, jsonMessage.getInt("episode"));
+                r.addVideo(url);
             }
         }
 
@@ -125,7 +129,7 @@ public class UserWebSocket {
                         .add("link", animeSearchObject.getLink())
                         .add("image", animeSearchObject.getPoster())
                         .add("lastEpisode", animeSearchObject.getLastEpisode())
-                        .add("watchlist", getEpisodenumFromWatchlist(dataMap, animeSearchObject.getLink()))
+                        .add("watchlist", -1)
                         .add("episodeCount", animeSearchObject.getEpisodeCount()));
             }
             javax.json.JsonArray array = jsonArray.build();

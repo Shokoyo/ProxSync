@@ -1,7 +1,12 @@
 package de.dieser1memesprech.proxsync._9animescraper.util;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import de.dieser1memesprech.proxsync._9animescraper.AnimeSearchObject;
 import de.dieser1memesprech.proxsync._9animescraper.config.Configuration;
+import org.json.JSONException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,10 +18,42 @@ import java.util.List;
 public class AnimeUtils {
     public static List<AnimeSearchObject> search(String keyword) {
         keyword = keyword.replaceAll(" ", "+");
-        String url = Configuration.instance.BASE_URL + "/search?keyword=" + keyword;
+        String url = Configuration.instance.SEARCH_URL + keyword;
         System.out.println(url);
         String content = HtmlUtils.getHtmlContent(url);
-        return parseSearchMulti(content);
+        System.out.println(content);
+        return parseMasterSearch(content);
+    }
+
+    public static String makeDirectLinkForNameAndEpisode(String name, int episode) {
+        String content = HtmlUtils.getHtmlContent(Configuration.instance.DIRECT_LINK_API_URL + "/" + name + "/" + episode);
+        String url = "";
+        System.out.println(content);
+        try {
+            JsonArray jsonElements = new JsonParser().parse(content).getAsJsonArray();
+            url = jsonElements.get(0).getAsJsonObject().get("url_direct").getAsString();
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
+
+    public static List<AnimeSearchObject> parseMasterSearch(String json) {
+        List<AnimeSearchObject> res = new ArrayList<>();
+        JsonElement jsonElement = new JsonParser().parse(json);
+        JsonArray jsonElements = jsonElement.getAsJsonArray();
+        for(JsonElement element: jsonElements) {
+            JsonObject object = element.getAsJsonObject();
+            String title = object.get("title").getAsString();
+            String slug = object.get("slug").getAsString();
+            int id = object.get("id").getAsInt();
+            JsonObject posterObject = object.get("poster").getAsJsonObject();
+            String poster = "https://cdn.masterani.me/" + posterObject.get("path").getAsString() +
+                    posterObject.get("file").getAsString();
+            AnimeSearchObject searchObject = new AnimeSearchObject(title, slug, id, poster);
+            res.add(searchObject);
+        }
+        return res;
     }
 
     public static List<AnimeSearchObject> updatedSearch(String url) {

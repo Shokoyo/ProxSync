@@ -191,6 +191,10 @@ public class AiringUpdater implements Runnable {
     private String getPageContent(int page) {
         int year = Year.now().getValue();
         String seasonString = getSeasonString().toUpperCase();
+        if(seasonString.equals("WINTERNEXT")) {
+            seasonString = "WINTER";
+            year++;
+        }
         String variables = "{" +
                 "\"page\":" + page + "," +
                 "\"year\":" + year + "," +
@@ -222,11 +226,13 @@ public class AiringUpdater implements Runnable {
         int month = YearMonth.now().getMonthValue();
         int day = MonthDay.now().getDayOfMonth();
         String res;
-        if (month > 9 || (month == 9 && day >= 15)) {
+        if (month >=12) {
+            res = "winterNext";
+        } else if(month > 8) {
             res = "fall";
-        } else if (month > 6 || (month == 6 && day >= 15)) {
+        } else if (month > 5) {
             res = "summer";
-        } else if (month > 3 || (month == 3 && day >= 15)) {
+        } else if (month > 2) {
             res = "spring";
         } else {
             res = "winter";

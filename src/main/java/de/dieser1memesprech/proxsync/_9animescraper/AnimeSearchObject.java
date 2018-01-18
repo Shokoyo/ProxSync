@@ -3,6 +3,7 @@ package de.dieser1memesprech.proxsync._9animescraper;
 public class AnimeSearchObject {
 
     private String title;
+    private int id;
     private String link;
     private String language;
     private String host;
@@ -18,6 +19,17 @@ public class AnimeSearchObject {
         this.poster = poster;
         this.lastEpisode = currentEpisode;
         this.episodeCount = episodeCount;
+    }
+
+    public AnimeSearchObject(String title, String link, int id, String poster) {
+        this.title = title;
+        this.id = id;
+        this.link = link;
+        this.language = "EngSub";
+        this.host = "";
+        this.poster = poster;
+        this.lastEpisode = "0";
+        this.episodeCount = "0";
     }
 
     public String getLink() {

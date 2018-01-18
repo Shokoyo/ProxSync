@@ -82,7 +82,7 @@ public class SearchFilter implements Filter {
                     .add("link", animeSearchObject.getLink())
                     .add("image", animeSearchObject.getPoster())
                     .add("lastEpisode", animeSearchObject.getLastEpisode())
-                    .add("watchlist", getEpisodenumFromWatchlist(dataMap, animeSearchObject.getLink()))
+                    .add("watchlist", -1)
                     .add("episodeCount", animeSearchObject.getEpisodeCount()));
         }
         javax.json.JsonArray array = jsonArray.build();

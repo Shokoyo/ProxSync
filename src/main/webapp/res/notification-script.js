@@ -2,7 +2,7 @@
  * Created by Jeremias on 24.09.2017.
  */
 function removeNotification(key) {
-    console.log(key);
+    /*console.log(key);
     var watchRef = firebase.database().ref("/users/" + uid + "/notifications/" + key.split(".").join("-") + "/hidden");
     watchRef.set(true);
     watchRef.once('value', function() {
@@ -11,23 +11,24 @@ function removeNotification(key) {
         if(div != null) {
             div.style.display='none';
         }
-    });
+    });*/
 }
 
 function watchNext(event, key) {
-    var nextEpisodeRef = firebase.database().ref("users/" + uid + "/watchlist/" + key.replace(".", "-") + "/episode");
+    /*var watchlistRef = firebase.database().ref("users/" + uid + "/watchlist/" + key.replace(".", "-"));
     if(!(window.location.pathname === "/ProxSync/" || window.location.pathname === "/AniSync/" || window.location.pathname === "/")) {
         var newWindow = window.open('', '_blank');
     }
-    nextEpisodeRef.once('value', function(snapshot) {
-        var nextEpisode = parseInt(snapshot.val());
+    watchlistRef.once('value', function(snapshot) {
+        var nextEpisode = parseInt(snapshot.val().episode);
+        var title = snapshot.val().title;
         nextEpisode += 1;
         if(!(window.location.pathname === "/ProxSync/" || window.location.pathname === "/AniSync/" || window.location.pathname === "/")) {
-            newWindow.location = "../?id=" + key + "&episode=" + nextEpisode;
+            newWindow.location = "../?title=" + title + "&episode=" + nextEpisode;
         } else {
-            loadVideoByEpisode("https://9anime.is/watch/" + key, nextEpisode);
+            loadVideoByEpisode(title, nextEpisode);
         }
-    });
+    });*/
 }
 
 $(document).on('click', function (e) {

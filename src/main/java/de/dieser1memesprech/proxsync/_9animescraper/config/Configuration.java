@@ -12,8 +12,9 @@ public enum Configuration {
 
     public final String SITE_NAME = "9anime.is";
     public final String BASE_URL = "https://9anime.is";
-    public final String SEARCH_URL = BASE_URL + "/search";
+    public final String SEARCH_URL = "https://www.masterani.me/api/anime/search?sb=true&search=";
     public final String INFO_API_URL = BASE_URL + "/ajax/episode/info";
+    public final String DIRECT_LINK_API_URL = "http://dieser1memesprech.de/anisync/api/anime/getAnimeLinksDirect";
     private String streamServerId = "";
     private Firebase firebase = null;
     public CloseableHttpClient httpclient = HttpClients.createDefault();

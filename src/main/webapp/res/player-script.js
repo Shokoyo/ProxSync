@@ -330,11 +330,11 @@ function loadVideo() {
     socket.send(JSON.stringify(userAction));
 }
 
-function loadVideoByEpisode(url, episode) {
+function loadVideoByEpisode(name, episode) {
     if (isOwner) {
         var userAction = {
             action: "episodeLink",
-            url: url,
+            name: name,
             episode: episode
         };
         socket.send(JSON.stringify(userAction));

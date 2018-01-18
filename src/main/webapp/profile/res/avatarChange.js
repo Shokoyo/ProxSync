@@ -6,14 +6,10 @@ function uploadAvatar(file) {
     ref.child('images/avatar-' + uid + '.jpg').put(file).then(function (snapshot) {
         var avatarRef = firebase.storage().refFromURL('gs://proxsync.appspot.com/images/avatar-' + uid + '.jpg');
         avatarRef.getDownloadURL().then(function (url) {
-            firebase.database().ref("/users/" + uid + "/avatar").set(url);
+            db.collection("users").doc(uid).set({
+                avatar: url
+            }, { merge: true });
             console.log(url);
-            var starCountRef = firebase.database().ref("/users/" + uid + "/avatar");
-            starCountRef.once('value', function(snapshot) {
-                //TODO: avatar change notification
-                document.getElementById("avatar-toolbar").src = url;
-                document.getElementById("avatar-on-card").src = url;
-            });
         }).catch(function (error) {
             switch (error.code) {
                 case 'storage/object_not_found':
@@ -40,13 +36,11 @@ function uploadBanner(file) {
     ref.child('images/banner-' + uid + '.jpg').put(file).then(function (snapshot) {
         var avatarRef = firebase.storage().refFromURL('gs://proxsync.appspot.com/images/banner-' + uid + '.jpg');
         avatarRef.getDownloadURL().then(function (url) {
-            firebase.database().ref("/users/" + uid + "/banner").set(url);
+            var userRef = db.collection("users").doc(uid);
+            userRef.set({
+                banner: url
+            }, { merge: true });
             console.log(url);
-            var starCountRef = firebase.database().ref("/users/" + uid + "/banner");
-            starCountRef.on('value', function(snapshot) {
-                //TODO: avatar change notification
-                document.getElementById("banner-div").style.backgroundImage = "url(" + url + ")";
-            });
         }).catch(function (error) {
             switch (error.code) {
                 case 'storage/object_not_found':
